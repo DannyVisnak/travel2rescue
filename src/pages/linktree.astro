@@ -5,28 +5,46 @@ import { SITE } from '@/data/site';
 const links = [
   {
     label: 'Jetzt spenden – PayPal',
-    desc: 'Direkte Unterstützung für die Hunde',
+    desc: 'Direkte Hilfe für die Hunde auf Lombok',
     href: SITE.social.paypal,
     icon: '💛',
     primary: true,
   },
   {
+    label: 'Hund adoptieren',
+    desc: 'Alle Hunde & Adoptionsformular',
+    href: '/adoptieren/',
+    icon: '🏡',
+  },
+  {
+    label: 'Adoptionsformular ausfüllen',
+    desc: 'Finde dein perfektes Match',
+    href: '/adoptieren/formular/',
+    icon: '📋',
+  },
+  {
     label: 'Instagram',
-    desc: 'Tägliche Updates aus Lombok',
+    desc: '@travel2rescue – tägliche Updates aus Lombok',
     href: SITE.social.instagram,
     icon: '📸',
   },
   {
+    label: 'TikTok',
+    desc: '@travel2rescue – Videos aus dem Alltag',
+    href: SITE.social.tiktok,
+    icon: '🎵',
+  },
+  {
     label: 'Facebook',
-    desc: 'Community & News',
+    desc: 'Community & Neuigkeiten',
     href: SITE.social.facebook,
     icon: '👥',
   },
   {
-    label: 'Hund adoptieren',
-    desc: 'Finde deinen Hund aus Lombok',
-    href: '/adoptieren/',
-    icon: '🏡',
+    label: 'Banküberweisung',
+    desc: `IBAN: ${SITE.bankverbindung.iban}`,
+    href: `mailto:${SITE.email}?subject=Spende%20per%20%C3%9Cberweisung`,
+    icon: '🏦',
   },
   {
     label: 'Unsere Mission',
@@ -42,7 +60,7 @@ const links = [
   },
   {
     label: 'Volunteer werden',
-    desc: 'Komm nach Lombok und hilf aktiv',
+    desc: 'Komm nach Lombok und hilf aktiv vor Ort',
     href: '/helfen/#volunteer',
     icon: '✋',
   },
@@ -54,7 +72,7 @@ const links = [
   },
   {
     label: 'Kontakt',
-    desc: 'Fragen? Schreib uns direkt',
+    desc: SITE.email,
     href: `mailto:${SITE.email}`,
     icon: '✉️',
   },
@@ -63,7 +81,7 @@ const links = [
 
 <BaseLayout
   title="Linktree"
-  description="Alle Links von Travel2Rescue e.V. – Spenden, Instagram, Adoption, Mission und Volunteer."
+  description="Alle Links von Travel2Rescue e.V. – Spenden, Instagram, TikTok, Adoption und Volunteer."
   noIndex={false}
 >
   <section class="min-h-screen py-20 flex items-center">
@@ -78,9 +96,9 @@ const links = [
             loading="eager"
           />
         </div>
-        <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-2" loading="eager" />
-        <p class="text-white/50 text-sm">{SITE.location}</p>
-        <p class="text-white/40 text-xs mt-1">Tierschutz · Straßenhunde · Lombok</p>
+        <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-3" loading="eager" />
+        <p class="text-white/70 text-sm font-medium">Gemeinsam Hunden ein besseres Leben schenken! ❤️</p>
+        <p class="text-white/40 text-xs mt-1">{SITE.location}</p>
       </div>
 
       <!-- Links -->

@@ -1,0 +1,404 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { DOGS } from '@/data/dogs';
+---
+
+<BaseLayout
+  title="Adoptionsformular"
+  description="Füll unser Adoptionsformular aus – damit wir das perfekte Match zwischen dir und einem unserer Hunde finden können."
+>
+  <section class="py-24 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Adoptionsformular</p>
+        <h1 class="text-4xl md:text-5xl font-black mb-4">
+          Gemeinsam das <span class="text-amber-500">perfekte Match</span> finden.
+        </h1>
+        <p class="text-white/60 leading-relaxed">
+          Beantworte die Fragen ehrlich – so können wir besser einschätzen, ob ihr zueinander passt.
+          Sobald das Formular ausgefüllt ist, meldet Eileen sich per WhatsApp bei dir.
+        </p>
+      </div>
+
+      <div class="card p-8 md:p-10">
+        <form id="adoption-form" class="space-y-8">
+          <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY" />
+          <input type="hidden" name="subject" value="Adoptionsformular – Travel2Rescue" />
+          <input type="hidden" name="redirect" value="false" />
+          <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+
+          <!-- Hund -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Wer hat dein Herz erobert?</legend>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="dog-select">
+              {[...DOGS.map(d => d.name), 'Alle süß, mal schauen 🤍'].map((name) => (
+                <label class="dog-option flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                  <input type="radio" name="hund" value={name} class="sr-only" required />
+                  <span>{name}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <!-- Persönliche Daten -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Persönliche Daten</legend>
+            <div>
+              <label class="form-label" for="name">Vor- und Nachname *</label>
+              <input type="text" id="name" name="name" required class="input-field" placeholder="Max Mustermann" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="geburtsdatum">Geburtsdatum *</label>
+                <input type="date" id="geburtsdatum" name="geburtsdatum" required class="input-field" />
+              </div>
+              <div>
+                <label class="form-label" for="telefon">Telefonnummer (WhatsApp) *</label>
+                <input type="tel" id="telefon" name="telefon" required class="input-field" placeholder="+49 123 456789" />
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="adresse">Straße, Hausnummer, PLZ, Ort *</label>
+              <input type="text" id="adresse" name="adresse" required class="input-field" placeholder="Musterstraße 1, 12345 Musterstadt" />
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="form-label" for="beruf">Ausgeübter Beruf *</label>
+                <input type="text" id="beruf" name="beruf" required class="input-field" placeholder="z.B. Lehrerin" />
+              </div>
+              <div>
+                <label class="form-label" for="arbeitszeiten">Arbeitszeiten *</label>
+                <input type="text" id="arbeitszeiten" name="arbeitszeiten" required class="input-field" placeholder="z.B. 8:00 – 16:00 Uhr" />
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Haushalt -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Dein Haushalt</legend>
+            <div>
+              <label class="form-label">Anzahl der Personen im Haushalt *</label>
+              <div class="flex flex-wrap gap-2">
+                {['1', '2', '3', '4', 'mehr als 4'].map((n) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="personen" value={n} class="sr-only" required />
+                    <span>{n}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Hast du Kinder? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="kinder" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="kinder-alter">Wenn ja – wie alt sind deine Kinder? (z.B. 2, 4)</label>
+              <input type="text" id="kinder-alter" name="kinder_alter" class="input-field" placeholder="z.B. 2, 5" />
+            </div>
+            <div>
+              <label class="form-label">Falls deine Familienplanung noch nicht abgeschlossen ist – bist du bereit, dem Hund Wohnrecht zu gewähren wenn es Nachwuchs gibt? *</label>
+              <div class="flex flex-wrap gap-2">
+                {['Ja', 'Je nachdem wie sich der Hund benimmt', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="familienplanung" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="alleine-stunden">Wie viele Stunden müsste der Hund täglich alleine sein? *</label>
+              <input type="text" id="alleine-stunden" name="alleine_stunden" required class="input-field" placeholder="z.B. 4 Stunden" />
+            </div>
+            <div>
+              <label class="form-label" for="urlaub-freizeit">Könntest du dir bei einer Zusage frei nehmen für die Eingewöhnungszeit? *</label>
+              <input type="text" id="urlaub-freizeit" name="urlaub_freizeit" required class="input-field" placeholder="z.B. Ja, 2 Wochen Urlaub" />
+            </div>
+          </fieldset>
+
+          <!-- Erfahrung -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Deine Erfahrung mit Hunden</legend>
+            {[
+              { label: 'Hast du bereits Hundeerfahrung?', name: 'erfahrung_hund' },
+              { label: 'Hast du Erfahrung mit Tierschutz-Hunden?', name: 'erfahrung_tierschutz' },
+              { label: 'Hast du Erfahrung mit Angsthunden?', name: 'erfahrung_angst' },
+              { label: 'Hast du Erfahrung mit Jagdinstinkten?', name: 'erfahrung_jagd' },
+              { label: 'Wäre dies dein erster eigener Hund?', name: 'erster_hund' },
+            ].map((q) => (
+              <div>
+                <label class="form-label">{q.label} *</label>
+                <div class="flex gap-3">
+                  {['Ja', 'Nein'].map((v) => (
+                    <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                      <input type="radio" name={q.name} value={v} class="sr-only" required />
+                      <span>{v}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            ))}
+            <div>
+              <label class="form-label" for="andere-tiere">Leben aktuell Tiere im Haushalt – wie viele und welche? *</label>
+              <input type="text" id="andere-tiere" name="andere_tiere" required class="input-field" placeholder="z.B. 1 Katze, kein Hund" />
+            </div>
+          </fieldset>
+
+          <!-- Wohnsituation -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Wohnsituation</legend>
+            <div>
+              <label class="form-label">Eigentum oder Miete? *</label>
+              <div class="flex gap-3">
+                {['Eigentum', 'Miete'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="eigentum_miete" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Lage? *</label>
+              <div class="flex flex-wrap gap-2">
+                {['Innenstadt', 'Stadtrand', 'Ländlich'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="lage" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Gebäude? *</label>
+              <div class="flex flex-wrap gap-2">
+                {['Mehrfamilienhaus', 'Einfamilienhaus'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="gebaeude" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="vermieter">Falls zur Miete – hast du bereits deinen Vermieter gefragt?</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein', 'Nicht relevant'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="vermieter" value={v} class="sr-only" />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Ist ein Garten vorhanden? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="garten" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Ist der Garten eingezäunt?</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="garten_eingezaeunt" value={v} class="sr-only" />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Gartenart</label>
+              <div class="flex flex-wrap gap-2">
+                {['Gemeinschaftsgarten', 'Schrebergarten', 'Privater Garten am Haus'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="gartenart" value={v} class="sr-only" />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </fieldset>
+
+          <!-- Alltag mit dem Hund -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Alltag mit dem Hund</legend>
+            <div>
+              <label class="form-label" for="zeit-betreuung">Wieviel Zeit kannst du täglich für Betreuung und Auslauf aufbringen? *</label>
+              <input type="text" id="zeit-betreuung" name="zeit_betreuung" required class="input-field" placeholder="z.B. 3–4 Stunden" />
+            </div>
+            <div>
+              <label class="form-label" for="alltag-beschreibung">Beschreibe, wie du den Alltag mit deinem Hund gestalten möchtest. *</label>
+              <textarea id="alltag-beschreibung" name="alltag_beschreibung" required rows="4" class="input-field resize-none" placeholder="Gassi, Spiele, Training, Urlaub..."></textarea>
+            </div>
+            <div>
+              <label class="form-label" for="schlafplatz">Wo wird der Hund schlafen? *</label>
+              <input type="text" id="schlafplatz" name="schlafplatz" required class="input-field" placeholder="z.B. Schlafzimmer auf eigenem Bettchen" />
+            </div>
+          </fieldset>
+
+          <!-- Bereitschaft & Finanzen -->
+          <fieldset class="space-y-4">
+            <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Bereitschaft & Finanzen</legend>
+            <div>
+              <label class="form-label">Wärst du bereit, eine Hundeschule oder Trainer zu kontaktieren bei Problemen? *</label>
+              <div class="flex flex-wrap gap-2">
+                {['Ja, mache ich sowieso', 'Ja, wenn es Probleme gibt', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="hundeschule" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Kannst du ausreichend Zeit, Geduld und Verständnis für die Eingewöhnungsphase aufbringen? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="geduld_eingewoehnung" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Ist dir bewusst, dass wir keine 100%igen Aussagen zum späteren Verhalten machen können? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="bewusstsein_verhalten" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Bist du dir bewusst, dass unsere Hunde Straßenhunde-Instinkte mitbringen (Jagdinstinkt, hohes Aktivitätslevel)? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="bewusstsein_instinkte" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Bist du finanziell in der Lage, die Reisekosten (1.500–2.000 €) zu zahlen? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="reisekosten" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label" for="monatl-budget">Wie viel Euro kannst du monatlich für deinen Hund ausgeben? *</label>
+              <input type="text" id="monatl-budget" name="monatliches_budget" required class="input-field" placeholder="z.B. 150–200 € / Monat" />
+            </div>
+            <div>
+              <label class="form-label">Bist du auf unerwartete Tierarztkosten vorbereitet (z.B. OP)? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="notfallkosten" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Planst du eine Hundehaftpflicht- und/oder Krankenversicherung? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="versicherung" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Könntest du nach Berlin reisen, um den Hund abzuholen? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="abholung_berlin" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label class="form-label">Wärst du mit einem Hausbesuch einverstanden? *</label>
+              <div class="flex gap-3">
+                {['Ja', 'Nein'].map((v) => (
+                  <label class="flex items-center gap-2 rounded-xl border border-white/10 px-4 py-2 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                    <input type="radio" name="hausbesuch" value={v} class="sr-only" required />
+                    <span>{v}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+          </fieldset>
+
+          <button type="submit" class="btn-primary w-full justify-center py-4 text-base">
+            Formular absenden
+          </button>
+          <p id="form-result" class="hidden text-center text-sm pt-2" role="alert" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('adoption-form') as HTMLFormElement | null;
+  const result = document.getElementById('form-result');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!result) return;
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Wird gesendet...';
+
+    const data = new FormData(form);
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data,
+    });
+    const json = await res.json();
+
+    result.classList.remove('hidden', 'text-red-400', 'text-green-400');
+    if (json.success) {
+      result.textContent = 'Danke! Eileen meldet sich so schnell wie möglich per WhatsApp bei dir.';
+      result.classList.add('text-green-400');
+      form.reset();
+      btn.textContent = 'Gesendet ✓';
+    } else {
+      result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
+      result.classList.add('text-red-400');
+      btn.disabled = false;
+      btn.textContent = 'Formular absenden';
+    }
+    result.classList.remove('hidden');
+  });
+</script>

@@ -33,7 +33,7 @@ const { dog } = Astro.props;
     </div>
     <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
     <a
-      href="/adoptieren/"
+      href={`/adoptieren/${dog.id}/`}
       class="mt-4 btn-primary w-full justify-center py-2.5 text-xs"
     >
       Mehr über {dog.name}

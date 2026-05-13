@@ -15,15 +15,20 @@ export const SITE = {
   social: {
     instagram: 'https://www.instagram.com/travel2rescue',
     facebook: 'https://www.facebook.com/travel2rescue',
-    paypal: 'https://paypal.me/travel2rescue',
-    betterplace: 'https://www.betterplace.org',
+    paypal: 'https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA',
+    tiktok: 'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1',
   },
   founders: ['Fynn Otter', 'Eileen Medved'],
   vereinsregister: 'VR 200625',
   registergericht: 'Vereinsregister Hof',
+  bankverbindung: {
+    empfaenger: 'Travel2Rescue e.V.',
+    iban: 'DE83 7805 0000 0223 2368 37',
+    bank: 'Sparkasse Hochfranken',
+  },
   stats: {
     kastrationen: '2.500+',
-    futter: '3,7 Tonnen',
+    futter: '3,7 t',
     angestellte: '3',
     operiert: '100+',
   },
@@ -39,4 +44,4 @@ export const NAV = [
   { label: 'Über uns', href: '/ueber-uns/' },
 ];
 
-export const NAV_CTA = { label: 'Jetzt helfen', href: '/helfen/' };
+export const NAV_CTA = { label: 'Jetzt spenden', href: 'https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA' };

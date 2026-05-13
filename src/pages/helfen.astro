@@ -114,39 +114,37 @@ const faqs = [
         <p class="eyebrow mb-3">Jetzt spenden</p>
         <h2 class="section-heading">Wähle deinen Weg.</h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <a
           href={SITE.social.paypal}
           target="_blank"
           rel="noopener noreferrer"
-          class="card p-8 text-center hover:border-amber-500/30 border border-white/5 transition-colors group"
+          class="card p-8 text-center border-2 border-amber-500/40 hover:border-amber-500 transition-colors group bg-amber-500/5"
         >
-          <div class="text-4xl mb-4">💳</div>
-          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">PayPal</h3>
-          <p class="text-white/50 text-sm">Schnell, sicher und sofort wirksam.</p>
-          <div class="mt-4 btn-primary text-xs">Zu PayPal</div>
+          <div class="text-4xl mb-4">💛</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors text-amber-400">PayPal</h3>
+          <p class="text-white/60 text-sm mb-4">Schnell, sicher und sofort bei den Hunden. Empfohlen.</p>
+          <div class="btn-primary w-full justify-center">Jetzt spenden</div>
         </a>
-        <div class="card p-8 text-center border border-white/5">
+        <div class="card p-8 text-center border border-white/10">
           <div class="text-4xl mb-4">🏦</div>
-          <h3 class="text-xl font-bold mb-2">Überweisung</h3>
+          <h3 class="text-xl font-bold mb-3">Überweisung</h3>
           <p class="text-white/50 text-sm mb-4">Für größere Beträge und steuerliche Absetzbarkeit.</p>
-          <div class="text-left text-sm text-white/60 space-y-1 mt-2">
-            <p><span class="text-white/40">Empfänger:</span> Travel2Rescue e.V.</p>
-            <p><span class="text-white/40">IBAN:</span> Auf Anfrage</p>
-            <p><span class="text-white/40">Bank:</span> Auf Anfrage</p>
+          <div class="text-left text-sm space-y-2">
+            <div class="flex justify-between gap-4">
+              <span class="text-white/40 shrink-0">Empfänger</span>
+              <span class="text-white/80 font-medium text-right">{SITE.bankverbindung.empfaenger}</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="text-white/40 shrink-0">IBAN</span>
+              <span class="text-white/80 font-mono text-right">{SITE.bankverbindung.iban}</span>
+            </div>
+            <div class="flex justify-between gap-4">
+              <span class="text-white/40 shrink-0">Bank</span>
+              <span class="text-white/80 text-right">{SITE.bankverbindung.bank}</span>
+            </div>
           </div>
         </div>
-        <a
-          href={SITE.social.betterplace}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="card p-8 text-center hover:border-amber-500/30 border border-white/5 transition-colors group"
-        >
-          <div class="text-4xl mb-4">🌍</div>
-          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Betterplace</h3>
-          <p class="text-white/50 text-sm">Spendenplattform mit Spendenquittung.</p>
-          <div class="mt-4 btn-primary text-xs">Zu Betterplace</div>
-        </a>
       </div>
     </div>
   </section>

@@ -23,6 +23,7 @@
     background-color: var(--color-black);
     color: #ffffff;
     font-family: var(--font-sans);
+    overflow-x: hidden;
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
