@@ -8,6 +8,10 @@ export default config({
       }
     : { kind: 'local' },
 
+  url: process.env.NODE_ENV === 'production'
+    ? 'https://travel2rescue.de'
+    : 'http://localhost:4321',
+
   ui: {
     brand: { name: 'Travel2Rescue Admin' },
   },
