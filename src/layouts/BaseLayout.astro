@@ -76,8 +76,11 @@ const orgJsonLd = {
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
   </head>
   <body>
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-black focus:font-bold focus:rounded-lg">
+      Zum Hauptinhalt springen
+    </a>
     <Header />
-    <main class="pt-16">
+    <main id="main-content" class="pt-16">
       <slot />
     </main>
     <Footer />

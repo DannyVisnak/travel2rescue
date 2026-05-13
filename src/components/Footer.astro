@@ -85,11 +85,11 @@ import { SITE, NAV } from '@/data/site';
       </div>
     </div>
 
-    <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/30">
+    <div class="border-t border-white/5 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-white/50">
       <p>© {new Date().getFullYear()} {SITE.name} · {SITE.vereinsregister} · {SITE.registergericht}</p>
-      <nav class="flex gap-4">
-        <a href="/impressum/" class="hover:text-white/60 transition-colors">Impressum</a>
-        <a href="/datenschutz/" class="hover:text-white/60 transition-colors">Datenschutz</a>
+      <nav aria-label="Rechtliches" class="flex gap-4">
+        <a href="/impressum/" class="hover:text-white transition-colors focus:outline-none focus:underline">Impressum</a>
+        <a href="/datenschutz/" class="hover:text-white transition-colors focus:outline-none focus:underline">Datenschutz</a>
       </nav>
     </div>
   </div>
