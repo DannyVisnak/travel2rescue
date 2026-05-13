@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
+import react from '@astrojs/react';
 
 export default defineConfig({
   adapter: vercel(),
@@ -13,6 +14,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap(),
+    react(),
     keystatic(),
   ],
   vite: {
