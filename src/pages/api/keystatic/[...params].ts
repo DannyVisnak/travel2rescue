@@ -6,49 +6,13 @@ import type { APIContext } from 'astro';
 
 export const prerender = false;
 
-// Vercel serverless passes localhost as the hostname in req.url.
-// The real host comes via x-forwarded-host. Patch it before Keystatic
-// builds the OAuth redirect_uri, otherwise GitHub rejects the callback.
-function fixRequestUrl(request: Request): Request {
-  const url = new URL(request.url);
-  if (url.hostname !== 'localhost') return request;
-  const forwardedHost = request.headers.get('x-forwarded-host');
-  const forwardedProto = request.headers.get('x-forwarded-proto') || 'https';
-  if (!forwardedHost) return request;
-  url.hostname = forwardedHost.split(':')[0];
-  url.protocol = forwardedProto + ':';
-  url.port = '';
-  return new Request(url.toString(), request);
-}
-
-function envStatus(): Record<string, string> {
-  const e = process.env as Record<string, string | undefined>;
-  const fmt = (v: string | undefined) => (v ? `set(len=${v.length})` : 'MISSING');
-  return {
-    KEYSTATIC_GITHUB_CLIENT_ID: fmt(e.KEYSTATIC_GITHUB_CLIENT_ID),
-    KEYSTATIC_GITHUB_CLIENT_SECRET: fmt(e.KEYSTATIC_GITHUB_CLIENT_SECRET),
-    KEYSTATIC_SECRET: fmt(e.KEYSTATIC_SECRET),
-  };
-}
-
 export async function ALL(context: APIContext): Promise<Response> {
-  const fixed = fixRequestUrl(context.request);
-  const fixedUrl = new URL(fixed.url);
-  const isOauthCallback = fixedUrl.pathname.includes('/github/oauth/callback');
+  const url = new URL(context.request.url);
+  const isOauthCallback = url.pathname.includes('/github/oauth/callback');
 
-  if (isOauthCallback) {
-    console.log('[ks-debug] callback hit', {
-      pathname: fixedUrl.pathname,
-      hasCode: fixedUrl.searchParams.has('code'),
-      hasState: fixedUrl.searchParams.has('state'),
-      githubError: fixedUrl.searchParams.get('error'),
-      githubErrorDesc: fixedUrl.searchParams.get('error_description'),
-      env: envStatus(),
-    });
-  }
-
-  // Intercept the GitHub token-exchange fetch so we can see WHY it fails.
-  // Keystatic only surfaces "Authorization failed" to the client.
+  // Wrap fetch only during the OAuth callback flow so a failed token
+  // exchange surfaces GitHub's actual error in Vercel logs instead of
+  // collapsing into Keystatic's opaque "Authorization failed".
   const originalFetch = globalThis.fetch;
   if (isOauthCallback) {
     globalThis.fetch = (async (input: any, init?: any) => {
@@ -60,14 +24,12 @@ export async function ALL(context: APIContext): Promise<Response> {
           : input?.url;
       const res = await originalFetch(input, init);
       if (typeof urlStr === 'string' && urlStr.includes('github.com/login/oauth/access_token')) {
-        try {
-          const bodyText = await res.clone().text();
-          console.log('[ks-debug] github token endpoint response', {
+        const body = await res.clone().text();
+        if (res.status !== 200 || !body.includes('access_token')) {
+          console.error('[keystatic] github token exchange failed', {
             status: res.status,
-            body: bodyText.slice(0, 800),
+            body: body.slice(0, 500),
           });
-        } catch (err) {
-          console.log('[ks-debug] failed to read github token body', err);
         }
       }
       return res;
@@ -85,13 +47,12 @@ export async function ALL(context: APIContext): Promise<Response> {
       },
       { slugEnvName: 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG' }
     );
-    ({ body, headers, status } = await handler(fixed));
+    ({ body, headers, status } = await handler(context.request));
   } catch (err) {
     console.error(
-      '[ks-debug] keystatic handler threw',
+      '[keystatic] handler threw',
       err instanceof Error ? { name: err.name, message: err.message, stack: err.stack } : err
     );
-    if (isOauthCallback) globalThis.fetch = originalFetch;
     return new Response(
       `Keystatic handler error: ${err instanceof Error ? err.message : String(err)}`,
       { status: 500 }
@@ -100,15 +61,8 @@ export async function ALL(context: APIContext): Promise<Response> {
     if (isOauthCallback) globalThis.fetch = originalFetch;
   }
 
-  if (isOauthCallback) {
-    console.log('[ks-debug] handler returned', {
-      status,
-      bodyPreview: typeof body === 'string' ? body.slice(0, 200) : '<non-string-body>',
-    });
-  }
-
   // Reproduce the cookie-handling logic from @keystatic/astro's makeHandler
-  // so Astro can set cookies properly through its own API.
+  // so Astro can set cookies through its own API.
   const headersMap = new Map<string, string[]>();
   if (headers) {
     if (Array.isArray(headers)) {

@@ -24,7 +24,7 @@
 
 - [ ] **Projekte page** — project details (impact numbers, descriptions) are currently generic. Update `src/data/projects.ts` with real stats.
 
-- [ ] **Über uns page** — portrait photos `fynn portrait.jpeg` and `eileen portraig .jpeg` — note the typo in Eileen's filename (`portraig`). Rename if it causes issues: `mv "public/images/eileen portraig .jpeg" "public/images/eileen portrait.jpeg"` and update `ueber-uns.astro`.
+- [ ] **Über uns page** — `fynn portrait.jpeg` still has a space in the filename (low priority, works as-is). Both portraits are ~6MB / 3500px — consider compressing to ~1200px / quality 80.
 
 - [ ] **Stats** — update if numbers change: `src/data/site.ts` → `stats` object (kastrationen, futter, operiert)
 
@@ -69,5 +69,4 @@ Files with spaces in name — always quote in shell, already correctly reference
 - `fynn eileen dogs horizontal-2.jpeg`
 - `fynn eileen walking.jpeg`
 - `fynneileen dogs.jpeg`
-- `eileen portraig .jpeg` (trailing space + typo — consider renaming)
-- `eileen portrait.jpeg` (after rename, update ueber-uns.astro)
+- `fynn portrait.jpeg`

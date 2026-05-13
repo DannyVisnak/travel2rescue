@@ -123,33 +123,47 @@ tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 
 | Variable | Purpose | Notes |
 |---|---|---|
-| `KEYSTATIC_GITHUB_CLIENT_ID` | GitHub OAuth App client ID | From GitHub Settings → OAuth Apps |
-| `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret | Keep secret; rotate if leaked |
-| `KEYSTATIC_SECRET` | Session token signing secret | Random 32+ char string. Generate: `openssl rand -base64 32`. Does NOT match anything external — it's internal only. |
+| `KEYSTATIC_GITHUB_CLIENT_ID` | GitHub **App** client ID | From the App settings page (`github.com/settings/apps/<slug>`) |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub App client secret | Generated under "Client secrets" on the App settings page; rotate if leaked |
+| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | The App's URL slug | Used by the Keystatic admin UI to render the install button |
+| `KEYSTATIC_SECRET` | Session-cookie signing secret (≥32 chars) | Generate: `openssl rand -base64 32`. Internal only — does not match anything external. |
 
-### GitHub OAuth App
+### GitHub App (NOT a classic OAuth App)
 
-Settings at `https://github.com/settings/developers` → OAuth Apps → Travel2Rescue Admin:
+Keystatic requires a **GitHub App**, not a classic OAuth App. Classic OAuth Apps don't issue refresh tokens, and Keystatic's token-response schema requires `refresh_token` + `expires_in` + `refresh_token_expires_in`. Pointing Keystatic at an OAuth App fails silently with "Authorization failed" after the callback.
+
+Create at `https://github.com/settings/apps/new`:
 
 - **Homepage URL**: `https://travel2rescue.de`
-- **Authorization callback URL**: `https://travel2rescue.de/api/keystatic/github/oauth/callback`
+- **Callback URL**: `https://travel2rescue.de/api/keystatic/github/oauth/callback` (no trailing slash — Astro 308-redirects to add it)
+- ☑️ **Request user authorization (OAuth) during installation**
+- ☑️ **Expire user authorization tokens** ← critical, controls whether refresh tokens are issued
+- Webhook → uncheck "Active"
+- Repository permissions:
+  - **Contents**: Read and write
+  - **Metadata**: Read-only (mandatory, locked — may not appear as a separate row)
+  - **Pull requests**: Read and write
+- Where can this GitHub App be installed: Only on this account
 
-The callback must use `travel2rescue.de` (no `www.`).
+After creating, install on `DannyVisnak/travel2rescue` (left sidebar → Install App → select the repo).
 
-### Custom Keystatic API route — do not delete
+### Custom Keystatic API route — kept for cookie handling
 
-`src/pages/api/keystatic/[...params].ts` overrides Keystatic's auto-injected route to fix a Vercel serverless bug. In Vercel, `req.url` has `localhost` as the hostname, causing Keystatic to build `redirect_uri=https://localhost/api/keystatic/github/oauth/callback` which GitHub rejects.
+`src/pages/api/keystatic/[...params].ts` overrides Keystatic's auto-injected route to reproduce `@keystatic/astro`'s set-cookie logic via `context.cookies.set(...)` (otherwise Astro doesn't pick up the `Set-Cookie` headers Keystatic returns).
 
-The fix: read `x-forwarded-host` from the request headers and patch the URL before passing it to `makeGenericAPIRouteHandler`.
+The original `req.url`-has-hostname-`localhost` workaround that lived here is no longer needed — `security.allowedDomains` in `astro.config.mjs` makes Astro trust `x-forwarded-host` and constructs `request.url` correctly. Don't reintroduce it.
 
 ### Troubleshooting Keystatic login
 
 | Symptom | Cause | Fix |
 |---|---|---|
-| `redirect_uri=https://localhost/...` | Missing custom route | Ensure `src/pages/api/keystatic/[...params].ts` exists and is deployed |
-| "Authorization failed" after callback | Wrong `KEYSTATIC_SECRET` or `CLIENT_SECRET` | Regenerate `KEYSTATIC_SECRET` with `openssl rand -base64 32`, update in Vercel, redeploy |
-| "Bad verification code" | OAuth code expired (>10 min) | Try again (OAuth codes are single-use) |
-| Admin loads but GitHub shows auth error | Callback URL mismatch in GitHub OAuth App | Ensure callback is `https://travel2rescue.de/api/keystatic/github/oauth/callback` |
+| "Authorization failed" after callback | Configured a classic OAuth App instead of a GitHub App — token response is missing `refresh_token` / `expires_in` and Keystatic's schema rejects it | Create a GitHub App (NOT an OAuth App) and check "Expire user authorization tokens"; update Vercel env vars |
+| "Authorization failed" after callback (with a GitHub App) | `KEYSTATIC_SECRET` < 32 chars OR `KEYSTATIC_GITHUB_CLIENT_SECRET` doesn't match the App | Regenerate `KEYSTATIC_SECRET`, verify the client secret matches GitHub, redeploy |
+| `403 Cross-site POST form submissions are forbidden` on `/api/keystatic/github/refresh-token/` | Astro CSRF check sees `context.url.origin` as `http://localhost` because `x-forwarded-host` isn't trusted | Ensure `security.allowedDomains` includes `travel2rescue.de` in `astro.config.mjs` |
+| `redirect_uri=https://localhost/...` in GitHub error | `security.allowedDomains` not configured | Add `allowedDomains` to `astro.config.mjs` |
+| "Bad verification code" | OAuth code expired (>10 min) or was already used | Restart the login flow |
+| Admin loads but GitHub shows auth error | Callback URL mismatch in the GitHub App | Ensure callback is `https://travel2rescue.de/api/keystatic/github/oauth/callback` (no trailing slash) |
+| Specific singleton/collection page hangs with "Failed to fetch" | An image field references a filename with weird chars (trailing space, etc.) — Keystatic UI fetches images via GitHub API and chokes on the encoded URL | Rename the file to something filesystem-clean and update the JSON reference |
 
 ## Images
 
@@ -160,7 +174,7 @@ All images in `public/images/`. Key images:
 | Home hero | `new_hero.jpeg` (Eileen on Müllhaide dump site) |
 | Home "Fynn & Eileen" section | `fynn eileen walking.jpeg` |
 | Home quote | `fynn eileen dogs horizontal.jpg` |
-| Eileen portrait | `eileen portraig .jpeg` ⚠️ typo in filename, space before extension |
+| Eileen portrait | `eileen-portrait.jpeg` |
 | Fynn portrait | `fynn portrait.jpeg` |
 | Dog photos | `IMG_0991.jpeg` (Flummi), `DSCF2189.jpeg` (Minnie), etc. — see content/dogs/*.json |
 
@@ -172,22 +186,21 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ## Known Quirks & Issues
 
-1. **`eileen portraig .jpeg`** — typo in filename + trailing space before `.jpeg`. File works, but should be renamed. If renaming: update `content/team.json` and the fallback in `ueber-uns.astro`.
+1. **Astro route collision warning** — "The route `/api/keystatic/[...params]` is defined in both...". This is expected — our override file takes priority. Just a warning, not an error. Will become an error in a future Astro version; solution will be to configure the Keystatic integration to not inject the route.
 
-2. **Astro route collision warning** — "The route `/api/keystatic/[...params]` is defined in both...". This is expected — our override file takes priority. Just a warning, not an error. Will become an error in a future Astro version; solution will be to configure the Keystatic integration to not inject the route.
+2. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
 
-3. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
+3. **Web3Forms key placeholder** — `REPLACE_WITH_WEB3FORMS_KEY` in `src/components/ContactForm.astro` and `src/pages/adoptieren/formular.astro`. Replace with a real key from `https://web3forms.com/` before forms work.
 
-4. **Web3Forms key placeholder** — `REPLACE_WITH_WEB3FORMS_KEY` in `src/components/ContactForm.astro` and `src/pages/adoptieren/formular.astro`. Replace with a real key from `https://web3forms.com/` before forms work.
+4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
 
-5. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
+5. **Heavy portrait images (~6MB each)** — `eileen-portrait.jpeg` and `fynn portrait.jpeg` are ~3500px wide. Slow to fetch in Keystatic admin and on the live page. Consider downscaling to ~1200px / quality 80 (~300KB).
 
 ## To-Do List
 
 ### Critical (broken / blocking)
 
 - [ ] **Web3Forms key**: Replace `REPLACE_WITH_WEB3FORMS_KEY` in `ContactForm.astro` and `formular.astro` — contact and adoption forms don't work without this
-- [ ] **Fix Eileen portrait filename**: Rename `public/images/eileen portraig .jpeg` → `eileen-portrait.jpeg`, update `content/team.json` + fallback in `ueber-uns.astro`
 
 ### Content (needs Eileen)
 
