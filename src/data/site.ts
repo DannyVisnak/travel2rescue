@@ -41,6 +41,7 @@ export const NAV = [
   { label: 'Unsere Mission', href: '/mission/' },
   { label: 'Projekte', href: '/projekte/' },
   { label: 'Adoptieren', href: '/adoptieren/' },
+  { label: 'Helfen', href: '/helfen/' },
   { label: 'Über uns', href: '/ueber-uns/' },
 ];
 
