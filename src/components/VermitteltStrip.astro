@@ -1,0 +1,65 @@
+---
+interface Adopted {
+  name: string;
+  // optional image path; falls back to gradient avatar with initial
+  image?: string;
+  gradient?: string; // tailwind gradient classes, e.g. "from-amber-500/30 to-rose-500/20"
+}
+
+interface Props {
+  count?: number;
+  adopted?: Adopted[];
+}
+
+const fallback: Adopted[] = [
+  { name: 'Bella',  gradient: 'from-amber-500/40 to-rose-400/20' },
+  { name: 'Charlie', gradient: 'from-emerald-500/30 to-amber-500/20' },
+  { name: 'Luna',   gradient: 'from-sky-500/30 to-indigo-500/20' },
+  { name: 'Max',    gradient: 'from-amber-500/40 to-orange-500/20' },
+  { name: 'Mila',   gradient: 'from-fuchsia-500/30 to-amber-500/20' },
+  { name: 'Toby',   gradient: 'from-teal-500/30 to-amber-400/20' },
+  { name: 'Nala',   gradient: 'from-rose-500/30 to-amber-500/20' },
+  { name: 'Bruno',  gradient: 'from-lime-500/30 to-emerald-500/20' },
+];
+
+const { count = 25, adopted = fallback } = Astro.props as Props;
+---
+
+<section class="py-20 bg-black">
+  <div class="container-x">
+    <div class="grid lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+      <div class="lg:col-span-5">
+        <p class="eyebrow mb-3">Vermittelt</p>
+        <h2 class="section-heading">
+          Sie haben<br />
+          <span class="text-amber-500 font-serif italic font-normal tracking-normal">die Wartezeit überstanden.</span>
+        </h2>
+        <p class="mt-5 text-white/70 text-lg leading-relaxed max-w-md">
+          Jeder dieser Hunde hat 6–7 Monate Geduld eines Menschen erlebt – und dann ein Zuhause gefunden. Die Wartezeit funktioniert. Sie ist der Beweis.
+        </p>
+        <p class="mt-8 font-serif italic text-2xl md:text-3xl text-cream leading-snug">
+          {count}<span class="text-amber-500"> Hunde </span>haben dank dieser Geduld ein Zuhause gefunden.
+        </p>
+      </div>
+
+      <div class="lg:col-span-7">
+        <ul class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 gap-x-4 gap-y-6">
+          {adopted.slice(0, 8).map((dog) => (
+            <li class="flex flex-col items-center text-center">
+              <div class={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-2 ring-amber-500/20 ring-offset-2 ring-offset-black bg-gradient-to-br ${dog.gradient ?? 'from-amber-500/30 to-rose-400/20'} flex items-center justify-center`}>
+                {dog.image ? (
+                  <img src={dog.image} alt={`${dog.name} – vermittelt`} class="w-full h-full object-cover" loading="lazy" />
+                ) : (
+                  <span class="font-serif italic text-3xl text-cream/90 select-none">
+                    {dog.name.charAt(0)}
+                  </span>
+                )}
+              </div>
+              <span class="mt-2 text-xs text-white/60 tracking-wide">{dog.name}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>

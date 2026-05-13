@@ -4,7 +4,7 @@ import DogCard from '@/components/DogCard.astro';
 import CTABand from '@/components/CTABand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
-import { ADOPTION_STEPS } from '@/data/dogs';
+import VermitteltStrip from '@/components/VermitteltStrip.astro';
 import { reader } from '@/lib/keystatic';
 
 const dogEntries = await reader.collections.dogs.all();
@@ -19,11 +19,39 @@ const fallbackFaqs = [
   { question: 'Was passiert, wenn es nicht klappt?', answer: 'Kein Hund bleibt ohne Zuhause. Wir finden gemeinsam eine Lösung – sei es eine Pflegestelle, ein anderer Adoptant oder weitere Gespräche. Wir lassen niemanden fallen.' },
 ];
 const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFaqs;
+
+// 4-step timeline (in-file so it doesn't disturb src/data/dogs.ts)
+const TIMELINE = [
+  {
+    nummer: '01',
+    title: 'Kennenlernen',
+    duration: 'Wochen 1–2',
+    desc: 'Bewerbung, Telefonat, gegenseitiges Kennenlernen.',
+  },
+  {
+    nummer: '02',
+    title: 'Vorbereitung',
+    duration: 'Monate 1–4',
+    desc: 'Tollwut-Impfung, Titer-Test, Wartezeit.',
+  },
+  {
+    nummer: '03',
+    title: 'Behördliches',
+    duration: 'Monat 5–6',
+    desc: 'Papiere, Tierarzt-Atteste, Flug-Buchung.',
+  },
+  {
+    nummer: '04',
+    title: 'Ankunft',
+    duration: 'Monat 6–7',
+    desc: 'Dein Hund kommt nach Deutschland.',
+  },
+];
 ---
 
 <BaseLayout
   title="Hund adoptieren"
-  description="Gib einem geretteten Straßenhund aus Lombok ein Zuhause in Deutschland. Travel2Rescue e.V. begleitet dich durch den gesamten Adoptionsprozess – von der Auswahl bis zur Ankunft."
+  description="Gib einem geretteten Straßenhund aus Lombok ein Zuhause in Deutschland. Travel2Rescue e.V. begleitet dich durch den 6–7 monatigen Adoptionsprozess – vom Kennenlernen bis zur Ankunft."
 >
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
@@ -32,7 +60,7 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/40" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
-      <p class="eyebrow mb-5">Adoption</p>
+      <p class="eyebrow mb-5">Adoption · 6–7 Monate</p>
       <h1 class="text-5xl md:text-6xl font-black mb-6">
         Find deinen<br />
         <span class="text-amber-500">besten Freund fürs Leben.</span>
@@ -40,7 +68,80 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
       <p class="text-xl text-white/70 leading-relaxed mb-8">
         Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.
       </p>
-      <a href="#hunde" class="btn-primary btn-large">Hunde entdecken</a>
+      <div class="flex flex-wrap gap-3">
+        <a href="#hunde" class="btn-primary btn-large">Hunde entdecken</a>
+        <a href="#prozess" class="btn-ghost btn-large">So lange dauert es</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6–7 Monate Commitment Statement -->
+  <section id="prozess" class="relative py-24 bg-gradient-to-b from-black via-[#1c1410] to-[#1a1410] overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
+    <div class="container-x relative">
+      <div class="max-w-4xl mx-auto text-center">
+        <p class="eyebrow mb-5">Was uns unterscheidet</p>
+        <p class="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.25] text-cream">
+          Eine Adoption aus Lombok dauert
+          <span class="text-amber-500 not-italic font-display font-black tracking-tight">6–7 Monate.</span>
+          <br class="hidden md:block" />
+          Wir wissen, das ist viel verlangt.
+        </p>
+        <p class="mt-6 font-serif italic text-xl md:text-2xl text-white/75 leading-relaxed max-w-2xl mx-auto">
+          Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.
+        </p>
+
+        <div class="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5 text-amber-400">
+            <circle cx="12" cy="12" r="10" />
+            <polyline points="12 6 12 12 16 14" />
+          </svg>
+          <span class="text-sm text-amber-400/90 font-medium tracking-wide">Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.</span>
+        </div>
+      </div>
+
+      <!-- 4-step Timeline -->
+      <div class="mt-16 lg:mt-20">
+        <!-- horizontal connector line on desktop -->
+        <div class="relative hidden lg:block">
+          <div class="absolute left-[10%] right-[10%] top-7 h-px bg-gradient-to-r from-transparent via-amber-500/30 to-transparent" aria-hidden="true"></div>
+          <ol class="relative grid grid-cols-4 gap-6">
+            {TIMELINE.map((step) => (
+              <li class="relative">
+                <div class="flex flex-col items-center text-center">
+                  <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center backdrop-blur-sm">
+                    <span class="font-serif italic text-xl text-cream">{step.nummer}</span>
+                  </div>
+                  <div class="mt-5 w-full rounded-2xl bg-[#231a14] border border-amber-500/10 p-5 shadow-[0_2px_0_rgba(0,0,0,0.4)]">
+                    <p class="text-xs uppercase tracking-[0.15em] text-amber-500/80">{step.duration}</p>
+                    <h3 class="mt-1 text-lg font-bold text-cream">{step.title}</h3>
+                    <p class="mt-2 text-sm text-white/65 leading-relaxed">{step.desc}</p>
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+
+        <!-- vertical layout on mobile/tablet -->
+        <ol class="lg:hidden relative space-y-5 max-w-xl mx-auto pl-4">
+          <div class="absolute left-7 top-7 bottom-7 w-px bg-gradient-to-b from-amber-500/30 via-amber-500/15 to-transparent" aria-hidden="true"></div>
+          {TIMELINE.map((step) => (
+            <li class="relative flex gap-4">
+              <div class="relative shrink-0">
+                <div class="w-14 h-14 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center">
+                  <span class="font-serif italic text-xl text-cream">{step.nummer}</span>
+                </div>
+              </div>
+              <div class="flex-1 rounded-2xl bg-[#231a14] border border-amber-500/10 p-5">
+                <p class="text-xs uppercase tracking-[0.15em] text-amber-500/80">{step.duration}</p>
+                <h3 class="mt-1 text-lg font-bold text-cream">{step.title}</h3>
+                <p class="mt-2 text-sm text-white/65 leading-relaxed">{step.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
     </div>
   </section>
 
@@ -62,50 +163,51 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
     </div>
   </section>
 
-  <!-- Prozess -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
-      <div class="text-center mb-14">
-        <p class="eyebrow mb-3">So funktioniert's</p>
-        <h2 class="section-heading">Dein Weg zum<br /><span class="text-amber-500">neuen Familienmitglied.</span></h2>
+  <!-- Warum ein Straßenhund (asymmetric photo-bleed layout) -->
+  <section class="relative py-0 bg-black overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-12 lg:min-h-[560px]">
+      <!-- photo bleeds to the left edge -->
+      <div class="relative lg:col-span-7 h-72 sm:h-96 lg:h-auto">
+        <img src="/images/IMG_9452.jpg" alt="Adoptierter Hund" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+        <div class="absolute inset-0 lg:bg-gradient-to-r from-transparent via-transparent to-black/40"></div>
+        <div class="hidden lg:block absolute -right-px top-0 bottom-0 w-px bg-amber-500/10"></div>
+        <span class="absolute left-6 bottom-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-xs text-white/80 tracking-wide">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-amber-400">
+            <circle cx="11" cy="4" r="2" />
+            <circle cx="18" cy="8" r="2" />
+            <circle cx="20" cy="16" r="2" />
+            <circle cx="4" cy="8" r="2" />
+            <path d="M8 14a4 4 0 0 0-4 4 3 3 0 0 0 3 3 6 6 0 0 0 3-1 6 6 0 0 0 3 1 3 3 0 0 0 3-3 4 4 0 0 0-4-4 4 4 0 0 0-4 0Z" />
+          </svg>
+          Adoptiert · 2024
+        </span>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {ADOPTION_STEPS.map((step) => (
-          <div class="relative p-6 bg-gray-mid rounded-2xl border border-white/5">
-            <div class="text-5xl font-black text-amber-500/20 mb-4 leading-none">{step.nummer}</div>
-            <h3 class="text-lg font-bold mb-2">{step.title}</h3>
-            <p class="text-white/60 text-sm leading-relaxed">{step.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
 
-  <!-- Warum ein Straßenhund -->
-  <section class="py-20 bg-black">
-    <div class="container-x">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <img src="/images/IMG_9452.jpg" alt="Adoptierter Hund" class="rounded-2xl w-full aspect-[4/3] object-cover" loading="lazy" />
-        </div>
-        <div>
-          <p class="eyebrow mb-4">Ein Zuhause für jedes Tier</p>
-          <h2 class="text-4xl font-black mb-6">Was dich<br /><span class="text-amber-500">erwartet.</span></h2>
-          <div class="space-y-4">
+      <!-- copy on warm card -->
+      <div class="lg:col-span-5 bg-[#1a1410] flex items-center">
+        <div class="px-6 sm:px-10 lg:px-14 py-16 lg:py-24 max-w-xl">
+          <p class="eyebrow mb-4">Was dich erwartet</p>
+          <h2 class="text-4xl md:text-5xl font-black mb-3 leading-tight">
+            Ein gesundes Tier.<br />
+            <span class="text-amber-500 font-serif italic font-normal tracking-normal">Und eine echte Beziehung.</span>
+          </h2>
+          <p class="text-white/65 mb-8">Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.</p>
+
+          <div class="space-y-5">
             {[
               { title: 'Tierliebe und Fürsorge', desc: 'Unsere Hunde sind medizinisch versorgt, gechipt, geimpft und kastriert. Du bekommst ein gesundes Tier.' },
               { title: 'Nachhaltige Vermittlung', desc: 'Wir stellen sicher, dass Hund und Mensch wirklich zueinander passen. Keine Adoption auf Verdacht.' },
               { title: 'Begleitung durch den Prozess', desc: 'Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland.' },
             ].map((item) => (
               <div class="flex gap-4">
-                <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
-                  <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                <div class="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-amber-400">
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
                 <div>
-                  <h4 class="font-bold text-white mb-1">{item.title}</h4>
-                  <p class="text-white/60 text-sm">{item.desc}</p>
+                  <h4 class="font-bold text-cream mb-1">{item.title}</h4>
+                  <p class="text-white/60 text-sm leading-relaxed">{item.desc}</p>
                 </div>
               </div>
             ))}
@@ -127,6 +229,9 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
       ))}
     </div>
   </section>
+
+  <!-- Vermittelt strip — emotional closing beat -->
+  <VermitteltStrip count={25} />
 
   <!-- Adoptionsanfrage -->
   <section class="py-20 bg-black">

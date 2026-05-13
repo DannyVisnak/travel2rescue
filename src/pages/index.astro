@@ -2,10 +2,8 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
 import DogCard from '@/components/DogCard.astro';
 import FAQItem from '@/components/FAQItem.astro';
-import ContactForm from '@/components/ContactForm.astro';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
@@ -74,116 +72,122 @@ const faqs = homeData?.homeFaqs?.length
     </div>
   </section>
 
+  <!-- Trust Strip -->
+  <section class="bg-amber-500/5 border-y border-amber-500/10">
+    <div class="container-x py-4">
+      <p class="text-center text-sm text-white/60 flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
+        <span>e.V. seit 2023</span>
+        <span class="text-amber-500/40">·</span>
+        <span>Vereinsregister Hof</span>
+        <span class="text-amber-500/40">·</span>
+        <span>100% Tierschutz</span>
+        <span class="text-amber-500/40">·</span>
+        <span>Steuerlich absetzbar</span>
+      </p>
+    </div>
+  </section>
+
   <!-- Stats -->
   <StatsBand />
 
-  <!-- Über uns Teaser -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
-          <p class="eyebrow mb-4">Unsere Geschichte</p>
-          <h2 class="section-heading mb-6">
-            Aus Mitleid wurde<br />
-            <span class="text-amber-500">Verantwortung.</span>
-          </h2>
-          <p class="prose-dark text-lg mb-4">
-            Eigentlich wollten Fynn &amp; Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.
-          </p>
-          <p class="prose-dark mb-8">
-            Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins <strong class="text-white">Travel2Rescue e.V.</strong> und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.
-          </p>
-          <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
-        </div>
+  <!-- Über uns Teaser — asymmetric, photo bleeds to left edge -->
+  <section class="py-20 bg-gray-dark overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <div class="lg:col-span-6 relative">
         <div class="relative">
           <img
             src="/images/fynn eileen walking.jpeg"
             alt="Fynn und Eileen auf Lombok"
-            class="rounded-2xl w-full aspect-[4/3] object-cover"
+            class="w-full aspect-[4/3] object-cover rounded-r-2xl"
             loading="lazy"
           />
-          <div class="absolute -bottom-4 -left-4 bg-amber-500 text-black rounded-2xl p-4 text-center shadow-xl">
-            <div class="text-3xl font-black">e.V.</div>
-            <div class="text-xs font-bold uppercase">Eingetragener Verein</div>
+          <!-- Postcard caption overlay -->
+          <div class="absolute bottom-6 right-6 max-w-xs bg-cream text-black/80 px-5 py-4 shadow-2xl rotate-[-1.5deg]">
+            <p class="font-serif italic text-base leading-snug">
+              Lombok, März 2023 — der eine Welpe, der alles veränderte.
+            </p>
+            <div class="mt-2 h-px w-10 bg-black/30" />
+            <p class="mt-1 text-[10px] uppercase tracking-widest text-black/50">Fynn &amp; Eileen</p>
+          </div>
+          <!-- e.V. badge -->
+          <div class="absolute top-6 right-6 bg-amber-500 text-black rounded-2xl p-3 text-center shadow-xl">
+            <div class="text-2xl font-black leading-none">e.V.</div>
+            <div class="text-[10px] font-bold uppercase mt-1">seit 2023</div>
           </div>
         </div>
+      </div>
+
+      <div class="lg:col-span-5 container-x lg:px-0 lg:pr-8">
+        <p class="eyebrow mb-4">Unsere Geschichte</p>
+        <h2 class="section-heading mb-6">
+          Aus Mitleid wurde Verantwortung.
+        </h2>
+        <p class="prose-dark text-lg mb-4">
+          Eigentlich wollten Fynn &amp; Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.
+        </p>
+        <p class="prose-dark mb-8">
+          Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins <strong class="text-white">Travel2Rescue e.V.</strong> und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.
+        </p>
+        <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
       </div>
     </div>
   </section>
 
-  <!-- Was wir tun -->
+  <!-- Was wir tun — 2x2 grid, cream-tinted cards, Lucide outline icons -->
   <section class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-14">
         <p class="eyebrow mb-3">Was wir konkret tun</p>
-        <h2 class="section-heading">Direkt helfen.<br /><span class="text-amber-500">Nachhaltig verändern.</span></h2>
+        <h2 class="section-heading">Direkt helfen. Nachhaltig verändern.</h2>
       </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
         {[
           {
-            icon: '🏠',
             title: 'Rettung',
             desc: 'Ausgesetzt, angefahren, dem Tod nah – wir nehmen uns den Hunden an, die ohne uns keine Chance hätten.',
-            img: '/images/IMG_4737.jpeg',
+            // Lucide: heart-handshake
+            svg: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m12 5 1.6 1.6"/><path d="M22 16.92V19.5a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 19.5v-2.58"/><path d="m6 14 4 4"/><path d="m14 14-4 4"/>',
           },
           {
-            icon: '💉',
             title: 'Medizinische Versorgung',
             desc: 'Operationen, Wundversorgung, Parasitenbehandlung – wir bezahlen die Not-OP, die über Leben und Tod entscheidet.',
-            img: '/images/IMG_2106.jpeg',
+            // Lucide: stethoscope
+            svg: '<path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/>',
           },
           {
-            icon: '✂️',
             title: 'Kastration',
             desc: 'Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel.',
-            img: '/images/IMG_7449.jpeg',
+            // Lucide: scissors
+            svg: '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
           },
           {
-            icon: '🍖',
             title: 'Fütterung',
             desc: 'Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe.',
-            img: '/images/IMG_2337.jpeg',
+            // Lucide: bone
+            svg: '<path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/>',
           },
         ].map((item) => (
-          <div class="card group overflow-hidden">
-            <div class="aspect-video overflow-hidden">
-              <img src={item.img} alt={item.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 p-7 hover:bg-amber-500/10 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-500">
+              <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" set:html={item.svg} />
             </div>
-            <div class="p-5">
-              <div class="text-2xl mb-2">{item.icon}</div>
-              <h3 class="text-lg font-bold mb-2">{item.title}</h3>
-              <p class="text-white/60 text-sm leading-relaxed">{item.desc}</p>
-            </div>
+            <h3 class="text-xl font-bold mb-2">{item.title}</h3>
+            <p class="text-white/65 text-sm leading-relaxed">{item.desc}</p>
           </div>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- Aktuelle Projekte -->
+  <!-- Adoption Teaser — with counter line -->
   <section class="py-20 bg-gray-dark">
     <div class="container-x">
-      <div class="flex items-end justify-between mb-12 gap-4 flex-wrap">
-        <div>
-          <p class="eyebrow mb-3">Laufende Projekte</p>
-          <h2 class="section-heading">Hier passiert<br /><span class="text-amber-500">die Arbeit.</span></h2>
-        </div>
-        <a href="/projekte/" class="btn-ghost shrink-0">Alle Projekte</a>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {PROJECTS.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Adoption Teaser -->
-  <section class="py-20 bg-black">
-    <div class="container-x">
       <div class="text-center mb-12">
+        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
+          Aktuell warten {DOGS.length} {DOGS.length === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
+        </p>
         <p class="eyebrow mb-3">Zur Adoption freigegeben</p>
-        <h2 class="section-heading">Sie warten<br /><span class="text-amber-500">auf dich.</span></h2>
+        <h2 class="section-heading">Sie warten auf dich.</h2>
         <p class="section-subheading mx-auto mt-4">Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
@@ -197,129 +201,64 @@ const faqs = homeData?.homeFaqs?.length
     </div>
   </section>
 
-  <!-- Wie Du helfen kannst -->
-  <section class="py-20 bg-forest">
-    <div class="container-x">
-      <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Mach den Unterschied</p>
-        <h2 class="section-heading">Drei Wege zu helfen.</h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            title: 'Spenden',
-            icon: '❤️',
-            desc: 'Jeder Euro fließt direkt in Futter, Medikamente und Rettungseinsätze. Keine Verwaltungskosten, kein Bürokratiewasserkopf.',
-            cta: 'Jetzt spenden',
-            href: '/helfen/#spenden',
-          },
-          {
-            title: 'Adoptieren',
-            icon: '🏡',
-            desc: 'Gib einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch den gesamten Prozess.',
-            cta: 'Hund adoptieren',
-            href: '/adoptieren/',
-          },
-          {
-            title: 'Volunteer',
-            icon: '✋',
-            desc: 'Komm nach Lombok und hilf aktiv mit: füttern, versorgen, streicheln. Jede helfende Hand zählt.',
-            cta: 'Volunteer werden',
-            href: '/helfen/#volunteer',
-          },
-        ].map((item) => (
-          <div class="bg-forest-light rounded-2xl p-8 border border-white/10 flex flex-col">
-            <div class="text-4xl mb-4">{item.icon}</div>
-            <h3 class="text-xl font-bold mb-3">{item.title}</h3>
-            <p class="text-white/70 text-sm leading-relaxed mb-6 flex-1">{item.desc}</p>
-            <a href={item.href} class="btn-primary text-center">{item.cta}</a>
-          </div>
-        ))}
-      </div>
+  <!-- Zitat — full-bleed photo backdrop -->
+  <section class="relative py-28 md:py-36 overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="/images/fynn eileen dogs horizontal.jpg"
+        alt=""
+        class="w-full h-full object-cover object-center"
+        loading="lazy"
+      />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-black/85" />
     </div>
-  </section>
-
-  <!-- Transparenz -->
-  <section class="py-20 bg-black">
-    <div class="container-x">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-        <div>
+    <div class="container-x relative z-10">
+      <div class="max-w-4xl mx-auto text-center">
+        <svg class="w-12 h-12 mx-auto mb-8 text-amber-500/70" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M9.13 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L11.83 19s7.3-3.9 7.3-11.5c0-2.8-1.9-4.7-4.5-4.7-2.8 0-5.5 2-5.5 6.7zM0 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L2.7 19S10 15.1 10 7.5C10 4.7 8.1 2.8 5.5 2.8 2.7 2.8 0 4.8 0 9.5z" />
+        </svg>
+        <blockquote class="font-serif italic text-3xl md:text-5xl text-white leading-[1.25] mb-10">
+          „{homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.'}"
+        </blockquote>
+        <div class="flex items-center justify-center gap-4">
           <img
-            src="/images/IMG_4737.jpg"
-            alt="Futter wird an Straßenhunde verteilt"
-            class="rounded-2xl w-full aspect-video object-cover"
+            src="/images/fynn eileen dogs horizontal.jpg"
+            alt="Fynn & Eileen"
+            class="w-12 h-12 rounded-full object-cover object-top border-2 border-amber-500/40"
             loading="lazy"
           />
-        </div>
-        <div>
-          <p class="eyebrow mb-4">Dein Geld, direkt am Ziel</p>
-          <h2 class="text-4xl font-black mb-6">Was mit deiner<br /><span class="text-amber-500">Spende passiert.</span></h2>
-          <div class="space-y-5">
-            {[
-              { title: '100% Tierschutz', desc: 'Kein bürokratischer Wasserkopf. Jeder Euro fließt direkt in Futter, Medikamente, Tierarztkosten oder den Bau sicherer Unterkünfte.' },
-              { title: 'Nachhaltige Projekte', desc: 'Füttern allein reicht nicht. Wir investieren in Kastrationskampagnen – um das Leid zukünftiger Generationen zu verhindern, bevor es entsteht.' },
-              { title: 'Soforthilfe', desc: 'Keine langen Anträge, keine Wartezeiten. Wenn wir einen verletzten Hund sehen, handeln wir sofort. Deine Spende bezahlt die Not-OP.' },
-            ].map((item) => (
-              <div class="flex gap-4">
-                <div class="w-1.5 rounded-full bg-amber-500 shrink-0 mt-1" style="min-height: 1.5rem" />
-                <div>
-                  <h4 class="font-bold text-white mb-1">{item.title}</h4>
-                  <p class="text-white/60 text-sm">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div class="mt-8">
-            <a href="/helfen/" class="btn-primary btn-large">Jetzt spenden</a>
+          <div class="text-left">
+            <div class="text-white font-semibold text-sm">Fynn &amp; Eileen</div>
+            <div class="text-white/60 text-xs uppercase tracking-wider">Gründer, Travel2Rescue e.V.</div>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- Zitat -->
-  <section class="py-16 bg-gray-dark border-y border-white/5">
-    <div class="container-x text-center max-w-3xl mx-auto">
-      <blockquote class="text-2xl md:text-3xl font-bold italic text-white/90 leading-relaxed mb-6">
-        „{homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.'}"
-      </blockquote>
-      <div class="flex items-center justify-center gap-3">
-        <img src="/images/fynn eileen dogs horizontal.jpg" alt="Fynn & Eileen" class="w-10 h-10 rounded-full object-cover object-top" loading="lazy" />
-        <span class="text-white/50 text-sm">Fynn &amp; Eileen · Gründer, Travel2Rescue e.V.</span>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
+  <!-- FAQ — single column, serif questions -->
   <section class="py-20 bg-black">
-    <div class="container-x max-w-3xl mx-auto">
+    <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-12">
         <p class="eyebrow mb-3">Häufige Fragen</p>
         <h2 class="section-heading">FAQ</h2>
       </div>
-      <div>
+      <div class="divide-y divide-white/5 border-y border-white/5">
         {faqs.map((faq) => (
-          <FAQItem question={faq.question} answer={faq.answer} />
+          <details class="group py-5">
+            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
+              <h3 class="font-serif text-lg md:text-xl text-white leading-snug">
+                {faq.question}
+              </h3>
+              <span class="shrink-0 mt-1 w-7 h-7 rounded-full border border-white/15 flex items-center justify-center text-white/60 group-open:bg-amber-500 group-open:text-black group-open:border-amber-500 transition-colors">
+                <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <path d="M12 5v14M5 12h14" />
+                </svg>
+              </span>
+            </summary>
+            <p class="mt-4 pr-11 text-white/70 leading-relaxed">{faq.answer}</p>
+          </details>
         ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Kontakt -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-        <div>
-          <p class="eyebrow mb-4">Kontakt</p>
-          <h2 class="section-heading mb-4">Hast du Fragen<br /><span class="text-amber-500">oder willst helfen?</span></h2>
-          <p class="prose-dark mb-8">Wir sind nur zu zweit – aber wir antworten so schnell wie möglich. Schreib uns, was dir am Herzen liegt.</p>
-          <div class="space-y-3 text-sm text-white/60">
-            <p>📧 <a href="mailto:travel2rescue@gmail.com" class="hover:text-white">travel2rescue@gmail.com</a></p>
-            <p>📞 <a href="tel:+628535380785" class="hover:text-white">{SITE.phone}</a></p>
-            <p>📍 {SITE.address.street}, {SITE.address.zip} {SITE.address.city}</p>
-          </div>
-        </div>
-        <ContactForm />
       </div>
     </div>
   </section>

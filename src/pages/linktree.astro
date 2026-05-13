@@ -2,79 +2,100 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { SITE } from '@/data/site';
 
-const links = [
+type IconName =
+  | 'heart'
+  | 'home'
+  | 'clipboard-list'
+  | 'camera'
+  | 'music'
+  | 'users'
+  | 'landmark'
+  | 'paw-print'
+  | 'hammer'
+  | 'hand-helping'
+  | 'mail';
+
+interface LinkItem {
+  label: string;
+  desc: string;
+  href: string;
+  icon: IconName;
+  primary?: boolean;
+}
+
+const links: LinkItem[] = [
   {
     label: 'Jetzt spenden – PayPal',
     desc: 'Direkte Hilfe für die Hunde auf Lombok',
     href: SITE.social.paypal,
-    icon: '💛',
+    icon: 'heart',
     primary: true,
   },
   {
     label: 'Hund adoptieren',
     desc: 'Alle Hunde & Adoptionsformular',
     href: '/adoptieren/',
-    icon: '🏡',
+    icon: 'home',
   },
   {
     label: 'Adoptionsformular ausfüllen',
     desc: 'Finde dein perfektes Match',
     href: '/adoptieren/formular/',
-    icon: '📋',
+    icon: 'clipboard-list',
   },
   {
     label: 'Instagram',
     desc: '@travel2rescue – tägliche Updates aus Lombok',
     href: SITE.social.instagram,
-    icon: '📸',
+    icon: 'camera',
   },
   {
     label: 'TikTok',
     desc: '@travel2rescue – Videos aus dem Alltag',
     href: SITE.social.tiktok,
-    icon: '🎵',
+    icon: 'music',
   },
   {
     label: 'Facebook',
     desc: 'Community & Neuigkeiten',
     href: SITE.social.facebook,
-    icon: '👥',
+    icon: 'users',
   },
   {
     label: 'Banküberweisung',
     desc: `IBAN: ${SITE.bankverbindung.iban}`,
     href: `mailto:${SITE.email}?subject=Spende%20per%20%C3%9Cberweisung`,
-    icon: '🏦',
+    icon: 'landmark',
   },
   {
     label: 'Unsere Mission',
     desc: '50.000 Straßenhunde – was wir dagegen tun',
     href: '/mission/',
-    icon: '🐾',
+    icon: 'paw-print',
   },
   {
     label: 'Unsere Projekte',
     desc: 'Hundehütten, Müllhaide, Wing NGO Sumatra',
     href: '/projekte/',
-    icon: '🔨',
+    icon: 'hammer',
   },
   {
     label: 'Volunteer werden',
     desc: 'Komm nach Lombok und hilf aktiv vor Ort',
     href: '/helfen/#volunteer',
-    icon: '✋',
+    icon: 'hand-helping',
   },
   {
     label: 'Über Fynn & Eileen',
     desc: 'Wie alles begann',
     href: '/ueber-uns/',
-    icon: '❤️',
+    icon: 'heart',
   },
   {
     label: 'Kontakt',
     desc: SITE.email,
     href: `mailto:${SITE.email}`,
-    icon: '✉️',
+    icon: 'mail',
   },
 ];
 ---
@@ -97,8 +118,8 @@ const links = [
           />
         </div>
         <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-3" loading="eager" />
-        <p class="text-white/70 text-sm font-medium">Gemeinsam Hunden ein besseres Leben schenken! ❤️</p>
-        <p class="text-white/40 text-xs mt-1">{SITE.location}</p>
+        <p class="font-serif text-white/75 text-base italic">Gemeinsam Hunden ein besseres Leben schenken.</p>
+        <p class="text-white/40 text-xs mt-2">{SITE.location}</p>
       </div>
 
       <!-- Links -->
@@ -114,7 +135,41 @@ const links = [
                 : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white'
             }`}
           >
-            <span class="text-2xl shrink-0">{link.icon}</span>
+            <span class={`shrink-0 ${link.primary ? 'text-black' : 'text-amber-400'}`}>
+              {link.icon === 'heart' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+              )}
+              {link.icon === 'home' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              )}
+              {link.icon === 'clipboard-list' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/></svg>
+              )}
+              {link.icon === 'camera' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/></svg>
+              )}
+              {link.icon === 'music' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              )}
+              {link.icon === 'users' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+              )}
+              {link.icon === 'landmark' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" x2="21" y1="22" y2="22"/><line x1="6" x2="6" y1="18" y2="11"/><line x1="10" x2="10" y1="18" y2="11"/><line x1="14" x2="14" y1="18" y2="11"/><line x1="18" x2="18" y1="18" y2="11"/><polygon points="12 2 20 7 4 7"/></svg>
+              )}
+              {link.icon === 'paw-print' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="4" r="2"/><circle cx="18" cy="8" r="2"/><circle cx="4" cy="8" r="2"/><circle cx="20" cy="16" r="2" transform="rotate(180 20 16)"/><path d="M11 13.5a2.5 2.5 0 0 0-2.5 2.5v.5c0 .8-.7 1.5-1.5 1.5S5.5 17.3 5.5 16.5v-.5a4.5 4.5 0 0 1 9 0v.5c0 .8-.7 1.5-1.5 1.5s-1.5-.7-1.5-1.5V16a2.5 2.5 0 0 0-2.5-2.5z"/></svg>
+              )}
+              {link.icon === 'hammer' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 12-8.5 8.5c-.83.83-2.17.83-3 0 0 0 0 0 0 0a2.12 2.12 0 0 1 0-3L12 9"/><path d="M17.64 15 22 10.64"/><path d="m20.91 11.7-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91"/></svg>
+              )}
+              {link.icon === 'hand-helping' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14"/><path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.2 3.9"/><path d="m2 13 6 6"/></svg>
+              )}
+              {link.icon === 'mail' && (
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+              )}
+            </span>
             <div class="flex-1 min-w-0">
               <div class={`font-bold text-sm ${link.primary ? 'text-black' : 'text-white'}`}>{link.label}</div>
               <div class={`text-xs truncate ${link.primary ? 'text-black/70' : 'text-white/40'}`}>{link.desc}</div>

@@ -10,6 +10,13 @@ const helpData = await reader.singletons.helpContent.read();
 const cmsSettings = await reader.singletons.settings.read();
 const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
 
+const donationTiers = [
+  { amount: 10, impact: 'Eine Woche Futter für 5 Hunde' },
+  { amount: 25, impact: 'Eine Kastration: ein Hund weniger, der leidet' },
+  { amount: 50, impact: 'Notfall-OP für einen verletzten Welpen' },
+  { amount: 100, impact: 'Wöchentliche Versorgung einer Pflegestelle' },
+];
+
 const fallbackFaqs = [
   { question: 'Wie kann ich spenden?', answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.' },
   { question: 'Welche Tiere stehen zur Adoption?', answer: 'Aktuell haben wir mehrere Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.' },
@@ -46,6 +53,59 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
     </div>
   </section>
 
+  <!-- Donation tiers -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-12 max-w-2xl mx-auto">
+        <p class="eyebrow mb-3">Konkrete Wirkung</p>
+        <h2 class="section-heading">Was deine Spende<br /><span class="text-amber-500">konkret bewirkt.</span></h2>
+        <p class="mt-5 text-white/70 leading-relaxed">
+          Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 max-w-5xl mx-auto">
+        {donationTiers.map((tier) => (
+          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 hover:border-amber-500/30 transition-colors p-7 flex flex-col text-center">
+            <div class="font-display text-5xl md:text-6xl font-black text-amber-500 leading-none mb-4 tracking-tight">
+              €{tier.amount}
+            </div>
+            <p class="text-white/85 text-base leading-snug mb-6 flex-1">
+              {tier.impact}
+            </p>
+            <a
+              href={paypalUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-full bg-amber-500 hover:bg-amber-400 text-black font-semibold px-5 py-2.5 text-sm transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
+              </svg>
+              Jetzt €{tier.amount} spenden
+            </a>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-center text-white/60 mt-10 text-sm">
+        Lieber regelmäßig spenden?{' '}
+        <a
+          href={SITE.social.instagram}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-amber-400 hover:text-amber-500 underline underline-offset-4 decoration-amber-500/40 hover:decoration-amber-500"
+        >
+          Sprich uns auf Instagram an
+        </a>
+        {' '}oder ruf an:{' '}
+        <a href={`tel:${SITE.phone.replace(/\s/g, '')}`} class="text-amber-400 hover:text-amber-500 underline underline-offset-4 decoration-amber-500/40 hover:decoration-amber-500">
+          {SITE.phone}
+        </a>.
+      </p>
+    </div>
+  </section>
+
   <!-- Stats -->
   <StatsBand />
 
@@ -60,7 +120,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         {[
           {
             id: 'spenden',
-            icon: '❤️',
+            iconKey: 'heart',
             label: '01 · Spenden',
             title: 'Deine Spende rettet Leben',
             desc: 'Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.',
@@ -68,7 +128,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
           },
           {
             id: 'adoption',
-            icon: '🏡',
+            iconKey: 'home',
             label: '02 · Adoptieren',
             title: 'Gib einem Hund ein Zuhause',
             desc: 'Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.',
@@ -76,7 +136,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
           },
           {
             id: 'volunteer',
-            icon: '✋',
+            iconKey: 'hand-helping',
             label: '03 · Volunteer',
             title: 'Hilf aktiv vor Ort',
             desc: 'Komm nach Lombok und werde Teil unseres Teams: füttern, versorgen, streicheln – jede helfende Hand zählt.',
@@ -88,6 +148,26 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
               <img src={item.img} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="p-6 flex flex-col flex-1">
+              <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 mb-4">
+                {item.iconKey === 'heart' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
+                  </svg>
+                )}
+                {item.iconKey === 'home' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z" />
+                    <polyline points="9 22 9 12 15 12 15 22" />
+                  </svg>
+                )}
+                {item.iconKey === 'hand-helping' && (
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M11 12h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 14" />
+                    <path d="m7 18 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.83-2.83l-3.92 3.7" />
+                    <path d="m2 13 6 6" />
+                  </svg>
+                )}
+              </div>
               <p class="eyebrow mb-2">{item.label}</p>
               <h3 class="text-xl font-bold mb-3">{item.title}</h3>
               <p class="text-white/60 text-sm leading-relaxed flex-1">{item.desc}</p>
@@ -112,13 +192,22 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
           rel="noopener noreferrer"
           class="card p-8 text-center border-2 border-amber-500/40 hover:border-amber-500 transition-colors group bg-amber-500/5"
         >
-          <div class="text-4xl mb-4">💛</div>
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-amber-500/10 text-amber-500 mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z" />
+            </svg>
+          </div>
           <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors text-amber-400">PayPal</h3>
           <p class="text-white/60 text-sm mb-4">Schnell, sicher und sofort bei den Hunden. Empfohlen.</p>
           <div class="btn-primary w-full justify-center">Jetzt spenden</div>
         </a>
         <div class="card p-8 text-center border border-white/10">
-          <div class="text-4xl mb-4">🏦</div>
+          <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-white/5 text-white/80 mb-4 mx-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="2" y="5" width="20" height="14" rx="2" />
+              <line x1="2" y1="10" x2="22" y2="10" />
+            </svg>
+          </div>
           <h3 class="text-xl font-bold mb-3">Überweisung</h3>
           <p class="text-white/50 text-sm mb-4">Für größere Beträge und steuerliche Absetzbarkeit.</p>
           <div class="text-left text-sm space-y-2">
@@ -152,13 +241,43 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
           </p>
           <div class="grid grid-cols-2 gap-4 mb-8">
             {[
-              { icon: '🍖', label: 'Futter verteilen' },
-              { icon: '🦮', label: 'Gassi gehen' },
-              { icon: '🏗️', label: 'Bauprojekte' },
-              { icon: '🤗', label: 'Kuscheln' },
+              { iconKey: 'bone', label: 'Futter verteilen' },
+              { iconKey: 'paw', label: 'Gassi gehen' },
+              { iconKey: 'hammer', label: 'Bauprojekte' },
+              { iconKey: 'heart-handshake', label: 'Kuscheln' },
             ].map((item) => (
               <div class="bg-gray-dark rounded-xl p-4 flex items-center gap-3 border border-white/5">
-                <span class="text-2xl">{item.icon}</span>
+                <span class="text-amber-500 shrink-0">
+                  {item.iconKey === 'bone' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z" />
+                    </svg>
+                  )}
+                  {item.iconKey === 'paw' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <circle cx="11" cy="4" r="2" />
+                      <circle cx="18" cy="8" r="2" />
+                      <circle cx="4" cy="8" r="2" />
+                      <circle cx="20" cy="16" r="2" />
+                      <path d="M9 10a5 5 0 0 1 5 5v3.5a3.5 3.5 0 0 1-6.84 1.045Q6.52 17.48 4.46 16.84A3.5 3.5 0 0 1 5.5 10Z" />
+                    </svg>
+                  )}
+                  {item.iconKey === 'hammer' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9" />
+                      <path d="m18 15 4-4" />
+                      <path d="m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5" />
+                    </svg>
+                  )}
+                  {item.iconKey === 'heart-handshake' && (
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                      <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5" />
+                      <path d="M12 5 9.04 7.96a2.17 2.17 0 0 0 0 3.08c.82.82 2.13.85 3 .07l2.07-1.9a2.82 2.82 0 0 1 3.79 0l2.96 2.66" />
+                      <path d="m18 15-2-2" />
+                      <path d="m15 18-2-2" />
+                    </svg>
+                  )}
+                </span>
                 <span class="text-sm font-medium text-white/80">{item.label}</span>
               </div>
             ))}

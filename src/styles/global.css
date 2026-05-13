@@ -16,6 +16,7 @@
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
+  --font-serif: 'Fraunces', Georgia, 'Times New Roman', serif;
 }
 
 @layer base {
