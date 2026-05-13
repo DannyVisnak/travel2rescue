@@ -1,6 +1,9 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { DOGS } from '@/data/dogs';
+import { reader } from '@/lib/keystatic';
+
+const dogEntries = await reader.collections.dogs.all();
+const dogNames = dogEntries.map(({ entry }) => entry.name);
 ---
 
 <BaseLayout
@@ -31,7 +34,7 @@ import { DOGS } from '@/data/dogs';
           <fieldset class="space-y-4">
             <legend class="text-lg font-bold text-amber-400 pb-2 border-b border-white/10 w-full">Wer hat dein Herz erobert?</legend>
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3" id="dog-select">
-              {[...DOGS.map(d => d.name), 'Alle süß, mal schauen 🤍'].map((name) => (
+              {[...dogNames, 'Alle süß, mal schauen 🤍'].map((name) => (
                 <label class="dog-option flex items-center gap-2 rounded-xl border border-white/10 px-3 py-2.5 cursor-pointer hover:border-amber-500/50 transition-colors text-sm has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
                   <input type="radio" name="hund" value={name} class="sr-only" required />
                   <span>{name}</span>

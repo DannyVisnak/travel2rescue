@@ -2,7 +2,12 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTABand from '@/components/CTABand.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
-import { PROJECTS } from '@/data/projects';
+import { reader } from '@/lib/keystatic';
+
+const projectEntries = await reader.collections.projects.all();
+const PROJECTS = projectEntries
+  .map(({ slug, entry }) => ({ id: slug, ...entry }))
+  .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0));
 ---
 
 <BaseLayout

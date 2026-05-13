@@ -4,7 +4,11 @@ import DogCard from '@/components/DogCard.astro';
 import CTABand from '@/components/CTABand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
-import { DOGS, ADOPTION_STEPS } from '@/data/dogs';
+import { ADOPTION_STEPS } from '@/data/dogs';
+import { reader } from '@/lib/keystatic';
+
+const dogEntries = await reader.collections.dogs.all();
+const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
 
 const faqs = [
   {

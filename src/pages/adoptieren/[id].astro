@@ -1,12 +1,27 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTABand from '@/components/CTABand.astro';
-import { DOGS } from '@/data/dogs';
+import { reader } from '@/lib/keystatic';
 
-export function getStaticPaths() {
-  return DOGS.map((dog) => ({
-    params: { id: dog.id },
-    props: { dog },
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const entries = await reader.collections.dogs.all();
+  return entries.map(({ slug, entry }) => ({
+    params: { id: slug },
+    props: {
+      dog: {
+        id: slug,
+        name: entry.name,
+        age: entry.age,
+        breed: entry.breed,
+        character: entry.character,
+        story: entry.story,
+        image: entry.image,
+        available: entry.available,
+        tag: entry.tag || undefined,
+      },
+    },
   }));
 }
 

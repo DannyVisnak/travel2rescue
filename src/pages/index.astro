@@ -7,8 +7,18 @@ import DogCard from '@/components/DogCard.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import { SITE } from '@/data/site';
-import { PROJECTS } from '@/data/projects';
-import { DOGS } from '@/data/dogs';
+import { reader } from '@/lib/keystatic';
+
+const dogEntries = await reader.collections.dogs.all();
+const DOGS = dogEntries
+  .filter(({ entry }) => entry.available)
+  .map(({ slug, entry }) => ({ id: slug, ...entry }));
+
+const projectEntries = await reader.collections.projects.all();
+const PROJECTS = projectEntries
+  .map(({ slug, entry }) => ({ id: slug, ...entry }))
+  .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0))
+  .slice(0, 3);
 
 const faqs = [
   {
