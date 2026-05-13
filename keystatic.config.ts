@@ -1,13 +1,12 @@
 import { config, collection, fields } from '@keystatic/core';
 
 export default config({
-  // Local mode for dev (no OAuth needed).
-  // For production on Netlify, switch to:
-  //   storage: { kind: 'github', repo: { owner: 'DannyVisnak', name: 'travel2rescue' } }
-  // and set env vars: KEYSTATIC_GITHUB_CLIENT_ID, KEYSTATIC_GITHUB_CLIENT_SECRET, KEYSTATIC_SECRET
-  storage: {
-    kind: 'local',
-  },
+  storage: process.env.NODE_ENV === 'production'
+    ? {
+        kind: 'github',
+        repo: { owner: 'DannyVisnak', name: 'travel2rescue' },
+      }
+    : { kind: 'local' },
 
   ui: {
     brand: { name: 'Travel2Rescue Admin' },
