@@ -1,0 +1,332 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import StatsBand from '@/components/StatsBand.astro';
+import CTABand from '@/components/CTABand.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import DogCard from '@/components/DogCard.astro';
+import FAQItem from '@/components/FAQItem.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import { SITE } from '@/data/site';
+import { PROJECTS } from '@/data/projects';
+import { DOGS } from '@/data/dogs';
+
+const faqs = [
+  {
+    question: 'Kann ich mal vorbeikommen und die Hunde streicheln?',
+    answer: 'Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle.',
+  },
+  {
+    question: 'Ich habe einen Hund gesehen, der Hilfe braucht – was tun?',
+    answer: 'Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach.',
+  },
+  {
+    question: 'Wo genau geht mein Geld hin?',
+    answer: 'Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind.',
+  },
+  {
+    question: 'Wie funktioniert eine Adoption aus Indonesien?',
+    answer: 'Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess.',
+  },
+];
+---
+
+<BaseLayout
+  title={SITE.name}
+  description="50.000 Straßenhunde leben auf Lombok. Wir sind da. Travel2Rescue e.V. rettet, behandelt und vermittelt Straßenhunde – 100% transparent, 0% Verwaltungskosten."
+>
+  <!-- Hero -->
+  <section class="relative min-h-[90vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="/images/fynn eileen dogs horizontal.jpg"
+        alt="Fynn und Eileen mit geretteten Hunden auf Lombok"
+        class="w-full h-full object-cover object-center"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/20" />
+    </div>
+
+    <div class="container-x relative z-10 py-20">
+      <div class="max-w-2xl">
+        <p class="eyebrow mb-5">Travel2Rescue e.V. · Kuta, Lombok</p>
+        <h1 class="text-5xl md:text-7xl font-black leading-[0.95] tracking-tight mb-6">
+          50.000<br />
+          <span class="text-amber-500">Straßenhunde.</span><br />
+          Nur wir sehen hin.
+        </h1>
+        <p class="text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
+          Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.
+          Fynn &amp; Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.
+        </p>
+        <div class="flex flex-wrap gap-4">
+          <a href="/helfen/" class="btn-primary btn-large">Jetzt helfen</a>
+          <a href="/mission/" class="btn-ghost btn-large">Unsere Mission</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/30 animate-bounce">
+      <span class="text-xs uppercase tracking-widest">Mehr erfahren</span>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <StatsBand />
+
+  <!-- Über uns Teaser -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <p class="eyebrow mb-4">Unsere Geschichte</p>
+          <h2 class="section-heading mb-6">
+            Aus Mitleid wurde<br />
+            <span class="text-amber-500">Verantwortung.</span>
+          </h2>
+          <p class="prose-dark text-lg mb-4">
+            Eigentlich wollten Fynn &amp; Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.
+          </p>
+          <p class="prose-dark mb-8">
+            Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins <strong class="text-white">Travel2Rescue e.V.</strong> und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.
+          </p>
+          <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
+        </div>
+        <div class="relative">
+          <img
+            src="/images/fynn eileen walking.jpeg"
+            alt="Fynn und Eileen auf Lombok"
+            class="rounded-2xl w-full aspect-[4/3] object-cover"
+            loading="lazy"
+          />
+          <div class="absolute -bottom-4 -left-4 bg-amber-500 text-black rounded-2xl p-4 text-center shadow-xl">
+            <div class="text-3xl font-black">e.V.</div>
+            <div class="text-xs font-bold uppercase">Eingetragener Verein</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Was wir tun -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">Was wir konkret tun</p>
+        <h2 class="section-heading">Direkt helfen.<br /><span class="text-amber-500">Nachhaltig verändern.</span></h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {[
+          {
+            icon: '🏠',
+            title: 'Rettung',
+            desc: 'Ausgesetzt, angefahren, dem Tod nah – wir nehmen uns den Hunden an, die ohne uns keine Chance hätten.',
+            img: '/images/IMG_2543.jpg',
+          },
+          {
+            icon: '💉',
+            title: 'Medizinische Versorgung',
+            desc: 'Operationen, Wundversorgung, Parasitenbehandlung – wir bezahlen die Not-OP, die über Leben und Tod entscheidet.',
+            img: '/images/IMG_0891.jpg',
+          },
+          {
+            icon: '✂️',
+            title: 'Kastration',
+            desc: 'Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel.',
+            img: '/images/IMG_2322.jpg',
+          },
+          {
+            icon: '🍖',
+            title: 'Fütterung',
+            desc: 'Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe.',
+            img: '/images/IMG_7449.jpg',
+          },
+        ].map((item) => (
+          <div class="card group overflow-hidden">
+            <div class="aspect-video overflow-hidden">
+              <img src={item.img} alt={item.title} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" loading="lazy" />
+            </div>
+            <div class="p-5">
+              <div class="text-2xl mb-2">{item.icon}</div>
+              <h3 class="text-lg font-bold mb-2">{item.title}</h3>
+              <p class="text-white/60 text-sm leading-relaxed">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Aktuelle Projekte -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="flex items-end justify-between mb-12 gap-4 flex-wrap">
+        <div>
+          <p class="eyebrow mb-3">Laufende Projekte</p>
+          <h2 class="section-heading">Hier passiert<br /><span class="text-amber-500">die Arbeit.</span></h2>
+        </div>
+        <a href="/projekte/" class="btn-ghost shrink-0">Alle Projekte</a>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {PROJECTS.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Adoption Teaser -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Zur Adoption freigegeben</p>
+        <h2 class="section-heading">Sie warten<br /><span class="text-amber-500">auf dich.</span></h2>
+        <p class="section-subheading mx-auto mt-4">Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {DOGS.map((dog) => (
+          <DogCard dog={dog} />
+        ))}
+      </div>
+      <div class="text-center">
+        <a href="/adoptieren/" class="btn-primary btn-large">Alle Hunde ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Wie Du helfen kannst -->
+  <section class="py-20 bg-forest">
+    <div class="container-x">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">Mach den Unterschied</p>
+        <h2 class="section-heading">Drei Wege zu helfen.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            title: 'Spenden',
+            icon: '❤️',
+            desc: 'Jeder Euro fließt direkt in Futter, Medikamente und Rettungseinsätze. Keine Verwaltungskosten, kein Bürokratiewasserkopf.',
+            cta: 'Jetzt spenden',
+            href: '/helfen/#spenden',
+          },
+          {
+            title: 'Adoptieren',
+            icon: '🏡',
+            desc: 'Gib einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch den gesamten Prozess.',
+            cta: 'Hund adoptieren',
+            href: '/adoptieren/',
+          },
+          {
+            title: 'Volunteer',
+            icon: '✋',
+            desc: 'Komm nach Lombok und hilf aktiv mit: füttern, versorgen, streicheln. Jede helfende Hand zählt.',
+            cta: 'Volunteer werden',
+            href: '/helfen/#volunteer',
+          },
+        ].map((item) => (
+          <div class="bg-forest-light rounded-2xl p-8 border border-white/10 flex flex-col">
+            <div class="text-4xl mb-4">{item.icon}</div>
+            <h3 class="text-xl font-bold mb-3">{item.title}</h3>
+            <p class="text-white/70 text-sm leading-relaxed mb-6 flex-1">{item.desc}</p>
+            <a href={item.href} class="btn-primary text-center">{item.cta}</a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Transparenz -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <img
+            src="/images/IMG_4737.jpg"
+            alt="Futter wird an Straßenhunde verteilt"
+            class="rounded-2xl w-full aspect-video object-cover"
+            loading="lazy"
+          />
+        </div>
+        <div>
+          <p class="eyebrow mb-4">Dein Geld, direkt am Ziel</p>
+          <h2 class="text-4xl font-black mb-6">Was mit deiner<br /><span class="text-amber-500">Spende passiert.</span></h2>
+          <div class="space-y-5">
+            {[
+              { title: '100% Tierschutz', desc: 'Kein bürokratischer Wasserkopf. Jeder Euro fließt direkt in Futter, Medikamente, Tierarztkosten oder den Bau sicherer Unterkünfte.' },
+              { title: 'Nachhaltige Projekte', desc: 'Füttern allein reicht nicht. Wir investieren in Kastrationskampagnen – um das Leid zukünftiger Generationen zu verhindern, bevor es entsteht.' },
+              { title: 'Soforthilfe', desc: 'Keine langen Anträge, keine Wartezeiten. Wenn wir einen verletzten Hund sehen, handeln wir sofort. Deine Spende bezahlt die Not-OP.' },
+            ].map((item) => (
+              <div class="flex gap-4">
+                <div class="w-1.5 rounded-full bg-amber-500 shrink-0 mt-1" style="min-height: 1.5rem" />
+                <div>
+                  <h4 class="font-bold text-white mb-1">{item.title}</h4>
+                  <p class="text-white/60 text-sm">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="mt-8">
+            <a href="/helfen/" class="btn-primary btn-large">Jetzt spenden</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Zitat -->
+  <section class="py-16 bg-gray-dark border-y border-white/5">
+    <div class="container-x text-center max-w-3xl mx-auto">
+      <blockquote class="text-2xl md:text-3xl font-bold italic text-white/90 leading-relaxed mb-6">
+        „Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen."
+      </blockquote>
+      <div class="flex items-center justify-center gap-3">
+        <img src="/images/fynn eileen dogs horizontal.jpg" alt="Fynn & Eileen" class="w-10 h-10 rounded-full object-cover object-top" loading="lazy" />
+        <span class="text-white/50 text-sm">Fynn &amp; Eileen · Gründer, Travel2Rescue e.V.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 bg-black">
+    <div class="container-x max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Häufige Fragen</p>
+        <h2 class="section-heading">FAQ</h2>
+      </div>
+      <div>
+        {faqs.map((faq) => (
+          <FAQItem question={faq.question} answer={faq.answer} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+        <div>
+          <p class="eyebrow mb-4">Kontakt</p>
+          <h2 class="section-heading mb-4">Hast du Fragen<br /><span class="text-amber-500">oder willst helfen?</span></h2>
+          <p class="prose-dark mb-8">Wir sind nur zu zweit – aber wir antworten so schnell wie möglich. Schreib uns, was dir am Herzen liegt.</p>
+          <div class="space-y-3 text-sm text-white/60">
+            <p>📧 <a href="mailto:travel2rescue@gmail.com" class="hover:text-white">travel2rescue@gmail.com</a></p>
+            <p>📞 <a href="tel:+628535380785" class="hover:text-white">{SITE.phone}</a></p>
+            <p>📍 {SITE.address.street}, {SITE.address.zip} {SITE.address.city}</p>
+          </div>
+        </div>
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    headline="Wir brauchen Deine Hilfe."
+    sub="Jede Spende, egal wie groß, rettet Leben. Heute. Sofort."
+    primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
+    secondary={{ label: 'Hund adoptieren', href: '/adoptieren/' }}
+  />
+</BaseLayout>

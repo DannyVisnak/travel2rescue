@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTABand from '@/components/CTABand.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { PROJECTS } from '@/data/projects';
+---
+
+<BaseLayout
+  title="Unsere Projekte"
+  description="Hundehütten am Tanjung Aan, Müllhaide-Rettungen und Wing NGO Sumatra: Drei aktive Tierschutzprojekte von Travel2Rescue e.V. auf Lombok und Sumatra."
+>
+  <!-- Hero -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/IMG_2820.jpg" alt="Hundehütten Projekt" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-black/70" />
+    </div>
+    <div class="container-x relative z-10 text-center max-w-3xl mx-auto">
+      <p class="eyebrow mb-5">Aktive Projekte</p>
+      <h1 class="text-5xl md:text-6xl font-black mb-6">
+        Hier passiert<br />
+        <span class="text-amber-500">die Arbeit.</span>
+      </h1>
+      <p class="text-xl text-white/70">
+        Drei konkrete Projekte. Drei Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.
+      </p>
+    </div>
+  </section>
+
+  <!-- Projekte -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
+        {PROJECTS.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+
+      <!-- Detailansichten -->
+      <div class="space-y-20">
+        {PROJECTS.map((project, i) => (
+          <div id={project.id} class={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
+            <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
+              <img
+                src={project.image}
+                alt={project.title}
+                class="rounded-2xl w-full aspect-[4/3] object-cover"
+                loading="lazy"
+              />
+            </div>
+            <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
+              <p class="eyebrow mb-3">Projekt {project.nummer}</p>
+              <h2 class="text-3xl md:text-4xl font-black mb-2">{project.title}</h2>
+              <p class="text-amber-500 font-semibold mb-5">{project.subtitle} · {project.location}</p>
+              <p class="prose-dark mb-6">{project.description}</p>
+              <div class="bg-forest/30 border border-forest rounded-xl p-5">
+                <p class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-2">Konkrete Wirkung</p>
+                <p class="text-white/80 text-sm">{project.impact}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Mehr Projekte kommen -->
+  <section class="py-16 bg-gray-dark border-y border-white/5">
+    <div class="container-x text-center max-w-2xl mx-auto">
+      <p class="eyebrow mb-4">Mehr kommt</p>
+      <h2 class="text-3xl font-black mb-4">Jede Spende ermöglicht<br /><span class="text-amber-500">das nächste Projekt.</span></h2>
+      <p class="text-white/60 mb-8">Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.</p>
+      <a href="/helfen/" class="btn-primary btn-large">Projekte unterstützen</a>
+    </div>
+  </section>
+
+  <CTABand />
+</BaseLayout>

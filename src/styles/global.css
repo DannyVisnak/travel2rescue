@@ -1,0 +1,100 @@
+@import "tailwindcss";
+
+@theme {
+  --color-black: #0D0D0D;
+  --color-forest: #1A3D2B;
+  --color-forest-light: #2A5C40;
+  --color-amber: #F59313;
+  --color-amber-dark: #D97706;
+  --color-cream: #F5F0E8;
+  --color-gray-dark: #1A1A1A;
+  --color-gray-mid: #2D2D2D;
+  --color-gray-text: #9CA3AF;
+
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: var(--color-black);
+    color: #ffffff;
+    font-family: var(--font-sans);
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer;
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer bg-amber-500 text-black hover:bg-amber-400 focus:ring-amber-500 px-6 py-3 text-sm uppercase tracking-wider;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer border border-white/30 text-white hover:border-white hover:bg-white/10 px-6 py-3 text-sm uppercase tracking-wider;
+  }
+
+  .btn-large {
+    @apply px-8 py-4 text-base;
+  }
+
+  .eyebrow {
+    @apply text-xs font-bold uppercase tracking-[0.2em] text-amber-500;
+  }
+
+  .section-heading {
+    @apply text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight;
+  }
+
+  .section-subheading {
+    @apply text-xl md:text-2xl text-white/70 max-w-2xl leading-relaxed;
+  }
+
+  .card {
+    @apply rounded-2xl bg-gray-dark border border-white/5 overflow-hidden;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-semibold;
+  }
+
+  .stat-number {
+    @apply text-5xl md:text-6xl font-black text-amber-500 leading-none;
+  }
+
+  .stat-label {
+    @apply text-sm text-white/60 uppercase tracking-wider mt-1;
+  }
+
+  .prose-dark {
+    @apply text-white/80 leading-relaxed;
+  }
+
+  .prose-dark p {
+    @apply mb-4;
+  }
+
+  .section-divider {
+    @apply border-t border-white/5;
+  }
+
+  .input-field {
+    @apply w-full rounded-xl bg-white/5 border border-white/10 px-4 py-3 text-white placeholder-white/30 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent transition-all;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-white/70 mb-1.5;
+  }
+}

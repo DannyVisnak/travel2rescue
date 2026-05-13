@@ -1,0 +1,243 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import StatsBand from '@/components/StatsBand.astro';
+import FAQItem from '@/components/FAQItem.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import { SITE } from '@/data/site';
+
+const faqs = [
+  {
+    question: 'Wie kann ich spenden?',
+    answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.',
+  },
+  {
+    question: 'Welche Tiere stehen zur Adoption?',
+    answer: 'Aktuell haben wir drei Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.',
+  },
+  {
+    question: 'Welche Aufgaben gibt es für Freiwillige?',
+    answer: 'Füttern, Gassi gehen, Kuscheln, beim Aufbau von Hundehütten helfen, Fotos und Social Media. Wir passen die Aufgaben an deine Skills an.',
+  },
+  {
+    question: 'Kann ich eine Patenschaft übernehmen?',
+    answer: 'Ja! Eine Patenschaft bedeutet, dass du monatlich einen Betrag spendest, der einem bestimmten Hund oder unserem allgemeinen Betrieb zugute kommt. Schreib uns an.',
+  },
+  {
+    question: 'Wie wird meine Spende verwendet?',
+    answer: '100% in die Tierhilfe. Kein Cent geht an Verwaltung. Futter, Medikamente, Tierarztkosten, Kastrationsprojekte – das ist es. Jederzeit transparent auf Anfrage.',
+  },
+];
+---
+
+<BaseLayout
+  title="Jetzt helfen"
+  description="Spende für Straßenhunde auf Lombok, adoptiere einen Hund oder komm als Volunteer zu Travel2Rescue e.V. – 100% transparent, 0% Verwaltungskosten."
+>
+  <!-- Hero -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/IMG_4737.jpg" alt="Fütterungsaktion auf Lombok" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/50" />
+    </div>
+    <div class="container-x relative z-10 max-w-3xl">
+      <p class="eyebrow mb-5">Jetzt helfen</p>
+      <h1 class="text-5xl md:text-7xl font-black mb-6">
+        Deine Hilfe<br />
+        <span class="text-amber-500">rettet Leben.</span>
+      </h1>
+      <p class="text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
+        Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a href="#spenden" class="btn-primary btn-large">Jetzt spenden</a>
+        <a href="#volunteer" class="btn-ghost btn-large">Volunteer werden</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats -->
+  <StatsBand />
+
+  <!-- 3 Wege -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">Wie du helfen kannst</p>
+        <h2 class="section-heading">Drei Wege.<br /><span class="text-amber-500">Ein Ziel.</span></h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {[
+          {
+            id: 'spenden',
+            icon: '❤️',
+            label: '01 · Spenden',
+            title: 'Deine Spende rettet Leben',
+            desc: 'Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.',
+            img: '/images/IMG_2977.jpg',
+          },
+          {
+            id: 'adoption',
+            icon: '🏡',
+            label: '02 · Adoptieren',
+            title: 'Gib einem Hund ein Zuhause',
+            desc: 'Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.',
+            img: '/images/IMG_9452.jpg',
+          },
+          {
+            id: 'volunteer',
+            icon: '✋',
+            label: '03 · Volunteer',
+            title: 'Hilf aktiv vor Ort',
+            desc: 'Komm nach Lombok und werde Teil unseres Teams: füttern, versorgen, streicheln – jede helfende Hand zählt.',
+            img: '/images/fynn eileen walking.jpeg',
+          },
+        ].map((item) => (
+          <div id={item.id} class="card overflow-hidden flex flex-col">
+            <div class="aspect-video overflow-hidden">
+              <img src={item.img} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
+            </div>
+            <div class="p-6 flex flex-col flex-1">
+              <p class="eyebrow mb-2">{item.label}</p>
+              <h3 class="text-xl font-bold mb-3">{item.title}</h3>
+              <p class="text-white/60 text-sm leading-relaxed flex-1">{item.desc}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Spenden Optionen -->
+  <section id="spenden-wege" class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">Jetzt spenden</p>
+        <h2 class="section-heading">Wähle deinen Weg.</h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        <a
+          href={SITE.social.paypal}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="card p-8 text-center hover:border-amber-500/30 border border-white/5 transition-colors group"
+        >
+          <div class="text-4xl mb-4">💳</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">PayPal</h3>
+          <p class="text-white/50 text-sm">Schnell, sicher und sofort wirksam.</p>
+          <div class="mt-4 btn-primary text-xs">Zu PayPal</div>
+        </a>
+        <div class="card p-8 text-center border border-white/5">
+          <div class="text-4xl mb-4">🏦</div>
+          <h3 class="text-xl font-bold mb-2">Überweisung</h3>
+          <p class="text-white/50 text-sm mb-4">Für größere Beträge und steuerliche Absetzbarkeit.</p>
+          <div class="text-left text-sm text-white/60 space-y-1 mt-2">
+            <p><span class="text-white/40">Empfänger:</span> Travel2Rescue e.V.</p>
+            <p><span class="text-white/40">IBAN:</span> Auf Anfrage</p>
+            <p><span class="text-white/40">Bank:</span> Auf Anfrage</p>
+          </div>
+        </div>
+        <a
+          href={SITE.social.betterplace}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="card p-8 text-center hover:border-amber-500/30 border border-white/5 transition-colors group"
+        >
+          <div class="text-4xl mb-4">🌍</div>
+          <h3 class="text-xl font-bold mb-2 group-hover:text-amber-400 transition-colors">Betterplace</h3>
+          <p class="text-white/50 text-sm">Spendenplattform mit Spendenquittung.</p>
+          <div class="mt-4 btn-primary text-xs">Zu Betterplace</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Volunteer -->
+  <section id="volunteer" class="py-20 bg-black">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <p class="eyebrow mb-4">Freiwilligenarbeit</p>
+          <h2 class="text-4xl font-black mb-6">Komm vorbei und<br /><span class="text-amber-500">unterstütz uns.</span></h2>
+          <p class="prose-dark mb-6">
+            Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.
+          </p>
+          <div class="grid grid-cols-2 gap-4 mb-8">
+            {[
+              { icon: '🍖', label: 'Futter verteilen' },
+              { icon: '🦮', label: 'Gassi gehen' },
+              { icon: '🏗️', label: 'Bauprojekte' },
+              { icon: '🤗', label: 'Kuscheln' },
+            ].map((item) => (
+              <div class="bg-gray-dark rounded-xl p-4 flex items-center gap-3 border border-white/5">
+                <span class="text-2xl">{item.icon}</span>
+                <span class="text-sm font-medium text-white/80">{item.label}</span>
+              </div>
+            ))}
+          </div>
+          <a href="#kontakt" class="btn-primary">Volunteer werden</a>
+        </div>
+        <div>
+          <img
+            src="/images/IMG_2820.jpg"
+            alt="Volunteer bei Travel2Rescue"
+            class="rounded-2xl w-full aspect-[4/3] object-cover"
+            loading="lazy"
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Adoption -->
+  <section class="py-20 bg-forest">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <img src="/images/IMG_9452.jpg" alt="Hund zur Adoption" class="rounded-2xl w-full aspect-[4/3] object-cover" loading="lazy" />
+        </div>
+        <div>
+          <p class="eyebrow mb-4">Adoption</p>
+          <h2 class="text-4xl font-black mb-6">Der Weg zur<br /><span class="text-amber-500">Adoption.</span></h2>
+          <ol class="space-y-4 mb-8">
+            {[
+              'Hund aus unseren Profilen auswählen',
+              'Adoptionsformular ausfüllen',
+              'Videocall mit Eileen',
+              'Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)',
+            ].map((step, i) => (
+              <li class="flex gap-4 items-start">
+                <span class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
+                <span class="text-white/80">{step}</span>
+              </li>
+            ))}
+          </ol>
+          <a href="/adoptieren/" class="btn-primary btn-large">Alle Hunde ansehen</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Häufige Fragen</p>
+        <h2 class="section-heading">FAQ</h2>
+      </div>
+      {faqs.map((faq) => (
+        <FAQItem question={faq.question} answer={faq.answer} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Kontakt -->
+  <section id="kontakt" class="py-20 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <p class="eyebrow mb-3">Kontakt</p>
+        <h2 class="text-3xl font-black mb-4">Noch Fragen?<br /><span class="text-amber-500">Schreib uns.</span></h2>
+      </div>
+      <ContactForm subject="Helfen – Anfrage" />
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,158 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DogCard from '@/components/DogCard.astro';
+import CTABand from '@/components/CTABand.astro';
+import FAQItem from '@/components/FAQItem.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import { DOGS, ADOPTION_STEPS } from '@/data/dogs';
+
+const faqs = [
+  {
+    question: 'Wie läuft der Adoptionsprozess ab?',
+    answer: 'Du füllst unser Formular aus, dann führen wir einen Videocall durch. Wenn alles passt, folgen weitere Gespräche und dann beginnt die Ausreisevorbereitung deines Hundes nach Deutschland.',
+  },
+  {
+    question: 'Welche Voraussetzungen muss ich erfüllen?',
+    answer: 'Ein gesichertes Zuhause, Zeit und die Bereitschaft, 6–7 Monate auf deinen Hund zu warten. Keine Erfahrung mit Straßenhunden notwendig – wir begleiten dich durch alles.',
+  },
+  {
+    question: 'Gibt es eine Adoptionsgebühr?',
+    answer: 'Ja, eine Schutzgebühr, die die Ausreisekosten (Titer-Test, Tierarztuntersuchungen, Flug) deckt. Diese wird im Gespräch individuell abgestimmt.',
+  },
+  {
+    question: 'Warum dauert die Adoption so lange?',
+    answer: 'Aufgrund der Tollwut-Bestimmungen der EU dauert die Ausreisevorbereitung mindestens 6–7 Monate: Tollwutimpfung, Titer-Test, Wartezeit, Papiere. Das ist Pflicht – kein Bürokratismus.',
+  },
+  {
+    question: 'Was passiert, wenn es nicht klappt?',
+    answer: 'Kein Hund bleibt ohne Zuhause. Wir finden gemeinsam eine Lösung – sei es eine Pflegestelle, ein anderer Adoptant oder weitere Gespräche. Wir lassen niemanden fallen.',
+  },
+];
+---
+
+<BaseLayout
+  title="Hund adoptieren"
+  description="Gib einem geretteten Straßenhund aus Lombok ein Zuhause in Deutschland. Travel2Rescue e.V. begleitet dich durch den gesamten Adoptionsprozess – von der Auswahl bis zur Ankunft."
+>
+  <!-- Hero -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="/images/fynneileen dogs.jpeg" alt="Gerettete Hunde bei Travel2Rescue" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/40" />
+    </div>
+    <div class="container-x relative z-10 max-w-2xl">
+      <p class="eyebrow mb-5">Adoption</p>
+      <h1 class="text-5xl md:text-6xl font-black mb-6">
+        Find deinen<br />
+        <span class="text-amber-500">besten Freund fürs Leben.</span>
+      </h1>
+      <p class="text-xl text-white/70 leading-relaxed mb-8">
+        Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.
+      </p>
+      <a href="#hunde" class="btn-primary btn-large">Hunde entdecken</a>
+    </div>
+  </section>
+
+  <!-- Hunde -->
+  <section id="hunde" class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Verfügbare Hunde</p>
+        <h2 class="section-heading">Sie warten<br /><span class="text-amber-500">auf dich.</span></h2>
+        <p class="section-subheading mx-auto mt-4">
+          Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {DOGS.map((dog) => (
+          <DogCard dog={dog} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Prozess -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">So funktioniert's</p>
+        <h2 class="section-heading">Dein Weg zum<br /><span class="text-amber-500">neuen Familienmitglied.</span></h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {ADOPTION_STEPS.map((step) => (
+          <div class="relative p-6 bg-gray-mid rounded-2xl border border-white/5">
+            <div class="text-5xl font-black text-amber-500/20 mb-4 leading-none">{step.nummer}</div>
+            <h3 class="text-lg font-bold mb-2">{step.title}</h3>
+            <p class="text-white/60 text-sm leading-relaxed">{step.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Warum ein Straßenhund -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <img src="/images/IMG_9452.jpg" alt="Adoptierter Hund" class="rounded-2xl w-full aspect-[4/3] object-cover" loading="lazy" />
+        </div>
+        <div>
+          <p class="eyebrow mb-4">Ein Zuhause für jedes Tier</p>
+          <h2 class="text-4xl font-black mb-6">Was dich<br /><span class="text-amber-500">erwartet.</span></h2>
+          <div class="space-y-4">
+            {[
+              { title: 'Tierliebe und Fürsorge', desc: 'Unsere Hunde sind medizinisch versorgt, gechipt, geimpft und kastriert. Du bekommst ein gesundes Tier.' },
+              { title: 'Nachhaltige Vermittlung', desc: 'Wir stellen sicher, dass Hund und Mensch wirklich zueinander passen. Keine Adoption auf Verdacht.' },
+              { title: 'Begleitung durch den Prozess', desc: 'Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland.' },
+            ].map((item) => (
+              <div class="flex gap-4">
+                <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500/30 flex items-center justify-center shrink-0 mt-0.5">
+                  <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 class="font-bold text-white mb-1">{item.title}</h4>
+                  <p class="text-white/60 text-sm">{item.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x max-w-3xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Häufige Fragen</p>
+        <h2 class="section-heading">FAQ Adoption</h2>
+      </div>
+      {faqs.map((faq) => (
+        <FAQItem question={faq.question} answer={faq.answer} />
+      ))}
+    </div>
+  </section>
+
+  <!-- Adoptionsanfrage -->
+  <section class="py-20 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <p class="eyebrow mb-3">Bereit?</p>
+        <h2 class="text-3xl font-black mb-4">Stell deine<br /><span class="text-amber-500">Adoptionsanfrage.</span></h2>
+        <p class="text-white/60">Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt.</p>
+      </div>
+      <ContactForm subject="Adoptionsanfrage" />
+    </div>
+  </section>
+
+  <CTABand
+    headline="Noch kein Hund, aber helfen?"
+    sub="Spende rettet das Leben der Hunde, bis sie ihr Zuhause finden."
+    primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
+    secondary={{ label: 'Volunteer werden', href: '/helfen/#volunteer' }}
+  />
+</BaseLayout>

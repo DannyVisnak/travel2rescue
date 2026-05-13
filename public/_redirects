@@ -1,0 +1,6 @@
+# Netlify / Cloudflare Pages redirects
+
+# Legacy URL redirects
+/home /  301
+/uber-uns /ueber-uns/ 301
+/link-tree /linktree/ 301

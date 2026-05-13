@@ -1,0 +1,42 @@
+---
+import type { Dog } from '@/data/dogs';
+
+interface Props {
+  dog: Dog;
+}
+
+const { dog } = Astro.props;
+---
+
+<article class="card group overflow-hidden">
+  <div class="relative aspect-[4/3] overflow-hidden">
+    <img
+      src={dog.image}
+      alt={`${dog.name} – zur Adoption`}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
+    {dog.tag && (
+      <div class="absolute top-3 left-3">
+        <span class="pill bg-amber-500 text-black text-xs font-bold">{dog.tag}</span>
+      </div>
+    )}
+  </div>
+  <div class="p-5">
+    <div class="flex items-start justify-between mb-2">
+      <div>
+        <h3 class="text-xl font-bold">{dog.name}</h3>
+        <p class="text-white/50 text-sm">{dog.age} · {dog.breed}</p>
+      </div>
+      <span class="text-xs text-amber-400 font-semibold uppercase tracking-wide mt-1">{dog.character}</span>
+    </div>
+    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
+    <a
+      href="/adoptieren/"
+      class="mt-4 btn-primary w-full justify-center py-2.5 text-xs"
+    >
+      Mehr über {dog.name}
+    </a>
+  </div>
+</article>

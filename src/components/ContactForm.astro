@@ -1,0 +1,100 @@
+---
+interface Props {
+  subject?: string;
+}
+const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
+---
+
+<div class="card p-8 md:p-10">
+  <h3 class="text-2xl font-bold mb-6">Hast du Fragen oder möchtest du helfen?</h3>
+  <form
+    id="contact-form"
+    method="POST"
+    action="https://api.web3forms.com/submit"
+    class="space-y-4"
+  >
+    <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY" />
+    <input type="hidden" name="subject" value={subject} />
+    <input type="hidden" name="redirect" value="false" />
+    <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div>
+        <label for="vorname" class="form-label">Vorname *</label>
+        <input type="text" id="vorname" name="vorname" required placeholder="Max" class="input-field" />
+      </div>
+      <div>
+        <label for="nachname" class="form-label">Nachname</label>
+        <input type="text" id="nachname" name="nachname" placeholder="Mustermann" class="input-field" />
+      </div>
+    </div>
+
+    <div>
+      <label for="email" class="form-label">E-Mail *</label>
+      <input type="email" id="email" name="email" required placeholder="deine@email.de" class="input-field" />
+    </div>
+
+    <div>
+      <label for="telefon" class="form-label">Telefon (optional)</label>
+      <input type="tel" id="telefon" name="telefon" placeholder="+49 123 456789" class="input-field" />
+    </div>
+
+    <div>
+      <label for="betreff" class="form-label">Worum geht es?</label>
+      <select id="betreff" name="betreff" class="input-field">
+        <option value="">Bitte wählen...</option>
+        <option value="spenden">Ich möchte spenden</option>
+        <option value="adoption">Ich interessiere mich für eine Adoption</option>
+        <option value="volunteer">Ich möchte Volunteer werden</option>
+        <option value="presse">Presse / Kooperation</option>
+        <option value="sonstiges">Sonstiges</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="nachricht" class="form-label">Nachricht *</label>
+      <textarea
+        id="nachricht"
+        name="nachricht"
+        required
+        rows="4"
+        placeholder="Schreib uns, was dir am Herzen liegt..."
+        class="input-field resize-none"
+      ></textarea>
+    </div>
+
+    <button type="submit" class="btn-primary w-full justify-center py-4 text-base">
+      Nachricht senden
+    </button>
+
+    <p id="form-result" class="hidden text-center text-sm pt-2"></p>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  const result = document.getElementById('form-result');
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!result) return;
+
+    const data = new FormData(form);
+    const res = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      body: data,
+    });
+    const json = await res.json();
+
+    result.classList.remove('hidden', 'text-red-400', 'text-green-400');
+    if (json.success) {
+      result.textContent = 'Danke! Wir melden uns so schnell wie möglich bei dir.';
+      result.classList.add('text-green-400');
+      form.reset();
+    } else {
+      result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
+      result.classList.add('text-red-400');
+    }
+    result.classList.remove('hidden');
+  });
+</script>

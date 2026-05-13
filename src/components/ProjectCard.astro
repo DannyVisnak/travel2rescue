@@ -1,0 +1,38 @@
+---
+import type { Project } from '@/data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="card group overflow-hidden">
+  <div class="relative aspect-[16/9] overflow-hidden">
+    <img
+      src={project.image}
+      alt={project.title}
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      loading="lazy"
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+    <div class="absolute bottom-4 left-4">
+      <span class="eyebrow">Projekt {project.nummer}</span>
+    </div>
+    <div class="absolute top-4 right-4">
+      <span class="pill bg-amber-500/20 text-amber-400 border border-amber-500/30">
+        {project.status === 'aktiv' ? '● Aktiv' : project.status}
+      </span>
+    </div>
+  </div>
+  <div class="p-6">
+    <h3 class="text-xl font-bold mb-1">{project.title}</h3>
+    <p class="text-amber-500 text-sm font-medium mb-3">{project.subtitle}</p>
+    <p class="text-white/60 text-sm leading-relaxed mb-4">{project.description}</p>
+    <div class="border-t border-white/5 pt-4">
+      <p class="text-xs text-white/40 uppercase tracking-wider mb-1">Wirkung</p>
+      <p class="text-sm text-white/70">{project.impact}</p>
+    </div>
+  </div>
+</article>

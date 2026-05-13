@@ -1,0 +1,118 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { SITE } from '@/data/site';
+
+const links = [
+  {
+    label: 'Jetzt spenden – PayPal',
+    desc: 'Direkte Unterstützung für die Hunde',
+    href: SITE.social.paypal,
+    icon: '💛',
+    primary: true,
+  },
+  {
+    label: 'Instagram',
+    desc: 'Tägliche Updates aus Lombok',
+    href: SITE.social.instagram,
+    icon: '📸',
+  },
+  {
+    label: 'Facebook',
+    desc: 'Community & News',
+    href: SITE.social.facebook,
+    icon: '👥',
+  },
+  {
+    label: 'Hund adoptieren',
+    desc: 'Finde deinen Hund aus Lombok',
+    href: '/adoptieren/',
+    icon: '🏡',
+  },
+  {
+    label: 'Unsere Mission',
+    desc: '50.000 Straßenhunde – was wir dagegen tun',
+    href: '/mission/',
+    icon: '🐾',
+  },
+  {
+    label: 'Unsere Projekte',
+    desc: 'Hundehütten, Müllhaide, Wing NGO Sumatra',
+    href: '/projekte/',
+    icon: '🔨',
+  },
+  {
+    label: 'Volunteer werden',
+    desc: 'Komm nach Lombok und hilf aktiv',
+    href: '/helfen/#volunteer',
+    icon: '✋',
+  },
+  {
+    label: 'Über Fynn & Eileen',
+    desc: 'Wie alles begann',
+    href: '/ueber-uns/',
+    icon: '❤️',
+  },
+  {
+    label: 'Kontakt',
+    desc: 'Fragen? Schreib uns direkt',
+    href: `mailto:${SITE.email}`,
+    icon: '✉️',
+  },
+];
+---
+
+<BaseLayout
+  title="Linktree"
+  description="Alle Links von Travel2Rescue e.V. – Spenden, Instagram, Adoption, Mission und Volunteer."
+  noIndex={false}
+>
+  <section class="min-h-screen py-20 flex items-center">
+    <div class="container-x w-full max-w-lg mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-10">
+        <div class="w-24 h-24 rounded-full overflow-hidden mx-auto mb-4 border-2 border-amber-500/40">
+          <img
+            src="/images/fynn eileen dogs horizontal.jpg"
+            alt="Travel2Rescue"
+            class="w-full h-full object-cover object-top"
+            loading="eager"
+          />
+        </div>
+        <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-2" loading="eager" />
+        <p class="text-white/50 text-sm">{SITE.location}</p>
+        <p class="text-white/40 text-xs mt-1">Tierschutz · Straßenhunde · Lombok</p>
+      </div>
+
+      <!-- Links -->
+      <div class="space-y-3">
+        {links.map((link) => (
+          <a
+            href={link.href}
+            target={link.href.startsWith('http') || link.href.startsWith('mailto') ? '_blank' : undefined}
+            rel={link.href.startsWith('http') ? 'noopener noreferrer' : undefined}
+            class={`flex items-center gap-4 w-full rounded-2xl px-5 py-4 border transition-all duration-200 group ${
+              link.primary
+                ? 'bg-amber-500 border-amber-400 text-black hover:bg-amber-400'
+                : 'bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20 text-white'
+            }`}
+          >
+            <span class="text-2xl shrink-0">{link.icon}</span>
+            <div class="flex-1 min-w-0">
+              <div class={`font-bold text-sm ${link.primary ? 'text-black' : 'text-white'}`}>{link.label}</div>
+              <div class={`text-xs truncate ${link.primary ? 'text-black/70' : 'text-white/40'}`}>{link.desc}</div>
+            </div>
+            <svg class={`w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity ${link.primary ? 'text-black' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        ))}
+      </div>
+
+      <!-- Footer -->
+      <div class="text-center mt-10 text-xs text-white/20">
+        <p>{SITE.name} · {SITE.address.street}, {SITE.address.zip} {SITE.address.city}</p>
+        <p class="mt-1">{SITE.email}</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

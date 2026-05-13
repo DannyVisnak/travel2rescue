@@ -1,0 +1,30 @@
+---
+interface Props {
+  headline?: string;
+  sub?: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  dark?: boolean;
+}
+
+const {
+  headline = 'Wir brauchen Deine Hilfe.',
+  sub = 'Jede Spende, egal wie groß, rettet Leben. Heute. Sofort.',
+  primary = { label: 'Jetzt spenden', href: '/helfen/' },
+  secondary = { label: 'Mehr erfahren', href: '/mission/' },
+  dark = true,
+} = Astro.props;
+---
+
+<section class={`py-20 ${dark ? 'bg-forest' : 'bg-gray-dark'}`}>
+  <div class="container-x text-center">
+    <h2 class="text-4xl md:text-5xl font-black text-white mb-4">{headline}</h2>
+    <p class="text-white/60 text-lg mb-8 max-w-lg mx-auto">{sub}</p>
+    <div class="flex flex-wrap justify-center gap-4">
+      <a href={primary.href} class="btn-primary btn-large">{primary.label}</a>
+      {secondary && (
+        <a href={secondary.href} class="btn-ghost btn-large">{secondary.label}</a>
+      )}
+    </div>
+  </div>
+</section>
