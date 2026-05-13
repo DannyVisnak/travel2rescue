@@ -1,5 +1,6 @@
 ---
 import { SITE } from '@/data/site';
+import { reader } from '@/lib/keystatic';
 
 interface Stat {
   value: string;
@@ -10,10 +11,11 @@ interface Props {
   stats?: Stat[];
 }
 
+const cms = await reader.singletons.settings.read();
 const defaultStats: Stat[] = [
-  { value: SITE.stats.kastrationen, label: 'Kastrationen' },
-  { value: SITE.stats.futter, label: 'Futter verteilt' },
-  { value: SITE.stats.operiert, label: 'Hunde monatlich operiert' },
+  { value: cms?.statsKastrationen ?? SITE.stats.kastrationen, label: 'Kastrationen' },
+  { value: cms?.statsFutter ?? SITE.stats.futter, label: 'Futter verteilt' },
+  { value: cms?.statsOperiert ?? SITE.stats.operiert, label: 'Hunde monatlich operiert' },
   { value: '0 €', label: 'Verwaltungskosten' },
 ];
 

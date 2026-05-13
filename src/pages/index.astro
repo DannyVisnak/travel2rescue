@@ -20,24 +20,15 @@ const PROJECTS = projectEntries
   .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0))
   .slice(0, 3);
 
-const faqs = [
-  {
-    question: 'Kann ich mal vorbeikommen und die Hunde streicheln?',
-    answer: 'Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle.',
-  },
-  {
-    question: 'Ich habe einen Hund gesehen, der Hilfe braucht – was tun?',
-    answer: 'Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach.',
-  },
-  {
-    question: 'Wo genau geht mein Geld hin?',
-    answer: 'Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind.',
-  },
-  {
-    question: 'Wie funktioniert eine Adoption aus Indonesien?',
-    answer: 'Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess.',
-  },
-];
+const homeData = await reader.singletons.homeContent.read();
+const faqs = homeData?.homeFaqs?.length
+  ? homeData.homeFaqs
+  : [
+      { question: 'Kann ich mal vorbeikommen und die Hunde streicheln?', answer: 'Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle.' },
+      { question: 'Ich habe einen Hund gesehen, der Hilfe braucht – was tun?', answer: 'Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach.' },
+      { question: 'Wo genau geht mein Geld hin?', answer: 'Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind.' },
+      { question: 'Wie funktioniert eine Adoption aus Indonesien?', answer: 'Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess.' },
+    ];
 ---
 
 <BaseLayout
@@ -290,7 +281,7 @@ const faqs = [
   <section class="py-16 bg-gray-dark border-y border-white/5">
     <div class="container-x text-center max-w-3xl mx-auto">
       <blockquote class="text-2xl md:text-3xl font-bold italic text-white/90 leading-relaxed mb-6">
-        „Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen."
+        „{homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.'}"
       </blockquote>
       <div class="flex items-center justify-center gap-3">
         <img src="/images/fynn eileen dogs horizontal.jpg" alt="Fynn & Eileen" class="w-10 h-10 rounded-full object-cover object-top" loading="lazy" />

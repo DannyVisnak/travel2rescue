@@ -4,6 +4,9 @@ import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import { SITE } from '@/data/site';
+import { reader } from '@/lib/keystatic';
+
+const team = await reader.singletons.team.read();
 ---
 
 <BaseLayout
@@ -89,17 +92,17 @@ import { SITE } from '@/data/site';
         <!-- Eileen -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src="/images/eileen portraig .jpeg" alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={team?.eileenImage ?? '/images/eileen portraig .jpeg'} alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Eileen</h3>
-            <p class="text-amber-500 font-semibold">Die unermüdliche Hundemama</p>
+            <p class="text-amber-500 font-semibold">{team?.eileenRole ?? 'Die unermüdliche Hundemama'}</p>
           </div>
           <p class="text-white/60 text-sm leading-relaxed mb-4">
-            Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.
+            {team?.eileenBio1 ?? 'Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.'}
           </p>
           <p class="text-white/60 text-sm leading-relaxed">
-            Ihr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.
+            {team?.eileenBio2 ?? 'Ihr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.'}
           </p>
           <div class="mt-5 pill bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs">
             HERZBLUT
@@ -109,17 +112,17 @@ import { SITE } from '@/data/site';
         <!-- Fynn -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src="/images/fynn portrait.jpeg" alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={team?.fynnImage ?? '/images/fynn portrait.jpeg'} alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Fynn</h3>
-            <p class="text-amber-500 font-semibold">Der Ruhepol & Baumeister</p>
+            <p class="text-amber-500 font-semibold">{team?.fynnRole ?? 'Der Ruhepol & Baumeister'}</p>
           </div>
           <p class="text-white/60 text-sm leading-relaxed mb-4">
-            25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.
+            {team?.fynnBio1 ?? '25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.'}
           </p>
           <p class="text-white/60 text-sm leading-relaxed">
-            Sein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.
+            {team?.fynnBio2 ?? 'Sein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.'}
           </p>
           <div class="mt-5 pill bg-forest/40 text-green-400 border border-green-500/20 text-xs">
             RUHEPOL

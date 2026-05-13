@@ -4,29 +4,20 @@ import StatsBand from '@/components/StatsBand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import { SITE } from '@/data/site';
+import { reader } from '@/lib/keystatic';
 
-const faqs = [
-  {
-    question: 'Wie kann ich spenden?',
-    answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.',
-  },
-  {
-    question: 'Welche Tiere stehen zur Adoption?',
-    answer: 'Aktuell haben wir drei Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.',
-  },
-  {
-    question: 'Welche Aufgaben gibt es für Freiwillige?',
-    answer: 'Füttern, Gassi gehen, Kuscheln, beim Aufbau von Hundehütten helfen, Fotos und Social Media. Wir passen die Aufgaben an deine Skills an.',
-  },
-  {
-    question: 'Kann ich eine Patenschaft übernehmen?',
-    answer: 'Ja! Eine Patenschaft bedeutet, dass du monatlich einen Betrag spendest, der einem bestimmten Hund oder unserem allgemeinen Betrieb zugute kommt. Schreib uns an.',
-  },
-  {
-    question: 'Wie wird meine Spende verwendet?',
-    answer: '100% in die Tierhilfe. Kein Cent geht an Verwaltung. Futter, Medikamente, Tierarztkosten, Kastrationsprojekte – das ist es. Jederzeit transparent auf Anfrage.',
-  },
+const helpData = await reader.singletons.helpContent.read();
+const cmsSettings = await reader.singletons.settings.read();
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+
+const fallbackFaqs = [
+  { question: 'Wie kann ich spenden?', answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.' },
+  { question: 'Welche Tiere stehen zur Adoption?', answer: 'Aktuell haben wir mehrere Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.' },
+  { question: 'Welche Aufgaben gibt es für Freiwillige?', answer: 'Füttern, Gassi gehen, Kuscheln, beim Aufbau von Hundehütten helfen, Fotos und Social Media. Wir passen die Aufgaben an deine Skills an.' },
+  { question: 'Kann ich eine Patenschaft übernehmen?', answer: 'Ja! Eine Patenschaft bedeutet, dass du monatlich einen Betrag spendest, der einem bestimmten Hund oder unserem allgemeinen Betrieb zugute kommt. Schreib uns an.' },
+  { question: 'Wie wird meine Spende verwendet?', answer: '100% in die Tierhilfe. Kein Cent geht an Verwaltung. Futter, Medikamente, Tierarztkosten, Kastrationsprojekte – das ist es. Jederzeit transparent auf Anfrage.' },
 ];
+const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
 ---
 
 <BaseLayout
@@ -116,7 +107,7 @@ const faqs = [
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <a
-          href={SITE.social.paypal}
+          href={paypalUrl}
           target="_blank"
           rel="noopener noreferrer"
           class="card p-8 text-center border-2 border-amber-500/40 hover:border-amber-500 transition-colors group bg-amber-500/5"

@@ -6,4 +6,5 @@ dist/
 .env.*
 .astro/
 .netlify/
+.vercel/
 media/

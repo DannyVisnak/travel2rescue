@@ -2,135 +2,229 @@
 
 ## Project
 
-Static website for **Travel2Rescue e.V.** — a German nonprofit (Selb, Bavaria) run by Fynn Otter & Eileen Medved from Lombok, Indonesia. They rescue, treat, and rehome street dogs (and cats). Conversion goal: donations (PayPal) and adoption inquiries. German language throughout.
+Static Astro 5 site for **Travel2Rescue e.V.**, a German-registered nonprofit (Selb, Bavaria) run by Fynn Otter & Eileen Medved from Lombok, Indonesia. They rescue, treat, and rehome street dogs (and cats). Conversion goal: donations (PayPal) + adoption inquiries. German language throughout.
+
+**Live site**: `https://travel2rescue.de`  
+**GitHub repo**: `https://github.com/DannyVisnak/travel2rescue`  
+**CMS admin**: `https://travel2rescue.de/keystatic/`
 
 ## Commands
 
 ```bash
-npm run dev      # Astro dev server on http://localhost:4321
-npm run build    # Static output to dist/
+npm run dev      # Astro dev on http://localhost:4321
+npm run build    # Static + Vercel SSR bundle to dist/
 npm run preview  # Preview built site
 ```
 
-No test suite, no linter, no formatter. TypeScript errors surface during `npm run build`.
+No test suite, no linter. TypeScript errors surface in `npm run build`.
 
 ## Tech Stack
 
-- **Astro 5** static site, `trailingSlash: 'always'`, `build.format: 'directory'`
-- **Tailwind CSS v4** via `@tailwindcss/vite` — NO PostCSS config
-- **TypeScript strict** (`astro/tsconfigs/strict`)
-- **`@/*` alias** → `src/*`
-- **`@astrojs/sitemap`** — site URL: `https://www.travel2rescue.de`
-- **No React** — pure Astro components only
-- **Web3Forms** for contact/adoption form submission (key placeholder: `REPLACE_WITH_WEB3FORMS_KEY`)
-- **Fonts**: Inter from rsms.me + Clash Display from fontshare CDN
+| | |
+|---|---|
+| **Astro 5** | `trailingSlash: 'always'`, `build.format: 'directory'` |
+| **Tailwind CSS v4** | via `@tailwindcss/vite` — no PostCSS config |
+| **`@astrojs/vercel`** | SSR adapter (v8.x, Astro 5 compatible) |
+| **Keystatic CMS** | `@keystatic/core` ^0.5.x + `@keystatic/astro` ^5.x |
+| **`@astrojs/react`** | Required by Keystatic admin UI |
+| **`@/*` alias** | → `src/*` |
+
+Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `#F25C3A` (overrides `--color-amber-500` / `--color-amber-400`). Use `text-amber-500`, `bg-amber-500`, etc. — they resolve to coral. Do **not** use accent on large backgrounds.
+
+**Tailwind v4 rule**: Never `@apply` a custom component class inside another custom class — causes "unknown utility" error. Inline all utilities instead.
 
 ## Site Structure
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/pages/index.astro` | Home — hero, stats, about, projects, dogs, donate CTA |
-| `/mission/` | `src/pages/mission.astro` | 50k street dogs problem + 4 pillars |
-| `/projekte/` | `src/pages/projekte.astro` | 3 projects (Hundehütten, Müllhaide, Wing NGO) |
-| `/adoptieren/` | `src/pages/adoptieren/index.astro` | All dog profiles + process |
-| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog page (dynamic) |
-| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | Full 39-field adoption form |
-| `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels |
-| `/ueber-uns/` | `src/pages/ueber-uns.astro` | Fynn & Eileen origin story |
-| `/linktree/` | `src/pages/linktree.astro` | Social link hub (12 links) |
+| `/` | `src/pages/index.astro` | Home — hero, stats, about, projects, dogs, quote, FAQ |
+| `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (hardcoded copy) |
+| `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
+| `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
+| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic) |
+| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → Web3Forms |
+| `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
+| `/ueber-uns/` | `src/pages/ueber-uns.astro` | Team bios (reads Keystatic) + origin story |
+| `/linktree/` | `src/pages/linktree.astro` | Social link hub (Instagram traffic) |
 | `/impressum/` | `src/pages/impressum.astro` | Legal — keep verbatim |
-| `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy policy — keep verbatim |
+| `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy — keep verbatim |
 
 ## Data Layer
 
-All content is typed TypeScript in `src/data/` — never MDX/markdown:
+### Keystatic CMS (primary content source)
 
-- **`src/data/site.ts`** — `SITE` (name, url, email, phone, address, social links incl. PayPal + TikTok, bankverbindung, stats, og), `NAV`, `NAV_CTA`
-- **`src/data/dogs.ts`** — `Dog` interface + `DOGS` array (9 real dogs: Flummi, Minnie, Molly, Milka, Jack, Linus, Freddy, Kiki, Pinki) + `ADOPTION_STEPS`
-- **`src/data/projects.ts`** — `Project` interface + `PROJECTS` array (3 projects)
+All content Eileen edits goes through Keystatic at `https://travel2rescue.de/keystatic/`.
 
-## Key Data Values
+**Reader instance**: `src/lib/keystatic.ts` → `reader` singleton used by all pages.
+
+| Reader call | Content | JSON file |
+|---|---|---|
+| `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
+| `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
+| `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
+| `reader.singletons.homeContent.read()` | Hero text, founder quote, home FAQs | `content/pages/home.json` |
+| `reader.singletons.helpContent.read()` | Helfen FAQs + adoption FAQs | `content/pages/help.json` |
+| `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
+
+Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist.
+
+**Image field note**: Dog and project `image` fields use `fields.image({ directory: 'public/images', publicPath: '/images/' })`. JSON stores just the filename (e.g., `IMG_0991.jpeg`). The reader prepends `/images/` automatically. When migrating existing entries with `/images/filename` paths, strip the prefix.
+
+### Static fallbacks
+
+`src/data/site.ts` — `SITE` object (name, url, email, phone, address, social links, bank details, OG image). Used as fallback when Keystatic singletons are null. Also exports `NAV`, `NAV_CTA`.
+
+`src/data/dogs.ts` — `ADOPTION_STEPS` array (4 steps for the adoptieren page). Dog profiles are now in Keystatic, not here.
+
+`src/data/projects.ts` — `Project` interface only. Project data is in Keystatic.
+
+### Key static data
 
 ```ts
-// PayPal donate link (do NOT change without updating everywhere)
-paypal: 'https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA'
-
-// TikTok
-tiktok: 'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
-
-// Instagram
+// From src/data/site.ts:
+email:    'travel2rescue@gmail.com'
+phone:    '+62 853-5380-7785'
+paypal:   'https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA'
+iban:     'DE83 7805 0000 0223 2368 37'
+bank:     'Sparkasse Hochfranken'
+register: 'VR 200625 · Vereinsregister Hof'
 instagram: 'https://www.instagram.com/travel2rescue'
-
-// Facebook
-facebook: 'https://www.facebook.com/travel2rescue'
-
-// Bank
-iban: 'DE83 7805 0000 0223 2368 37'
-bank: 'Sparkasse Hochfranken'
-empfaenger: 'Travel2Rescue e.V.'
-
-// Vereinsregister
-VR 200625 · Vereinsregister Hof
+tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 ```
-
-## Design System
-
-Tokens live in `src/styles/global.css` under `@theme`:
-- `--color-black: #0D0D0D` — page background
-- `--color-forest: #1A3D2B` — secondary sections
-- `--color-amber: #F59313` — primary accent (CTAs, highlights)
-- `--color-gray-dark: #1A1A1A` — card backgrounds
-- `--color-gray-mid: #2D2D2D` — nested cards
-
-Component classes to use (never re-implement inline):
-`container-x`, `card`, `btn-primary`, `btn-ghost`, `btn-large`, `pill`, `eyebrow`, `section-heading`, `section-subheading`, `stat-number`, `stat-label`, `prose-dark`, `input-field`, `form-label`
-
-**Tailwind v4 rule**: Never `@apply` a custom component class inside another custom class — causes "unknown utility" error. Inline all utilities instead.
 
 ## Components
 
-- `Header.astro` — fixed nav, mobile hamburger (aria-expanded toggles), PayPal CTA opens `target="_blank"`
+- `BaseLayout.astro` — SEO meta (title, description, canonical, og:image), Organization JSON-LD, Inter from rsms.me, TopBar + Header + Footer
+- `Header.astro` — fixed nav, mobile hamburger (`aria-expanded`), logo (h-16), PayPal CTA
 - `Footer.astro` — 4-col grid, social icons (Instagram, Facebook, PayPal, TikTok)
-- `StatsBand.astro` — 4 stats (2.500+ Kastrationen, 3,7 t Futter, 100+ operiert, 0€ Verwaltungskosten)
-- `CTABand.astro` — reusable CTA strip with `headline`, `sub`, `primary`, `secondary` props
-- `ProjectCard.astro` — project card with image, status badge, impact facts
-- `DogCard.astro` — adoption dog card, links to `/adoptieren/[dog.id]/`
+- `StatsBand.astro` — reads `reader.singletons.settings` directly; use `<StatsBand />` without props
+- `CTABand.astro` — accepts `headline`, `sub`, `primary`, `secondary` props
+- `ProjectCard.astro` — project card with image + status badge
+- `DogCard.astro` — adoption card linking to `/adoptieren/[dog.id]/`
 - `FAQItem.astro` — `<details>/<summary>` accordion
-- `ContactForm.astro` — Web3Forms POST, `role="alert"` on result
-- `ContactForm.astro` — accepts `subject` prop
+- `ContactForm.astro` — Web3Forms POST, `role="alert"` result, accepts `subject` prop
+
+**Use these CSS classes** from `global.css` — never rebuild them inline: `container-x`, `card`, `btn-primary`, `btn-ghost`, `btn-large`, `pill`, `eyebrow`, `section-heading`, `section-subheading`, `stat-number`, `stat-label`, `prose-dark`, `input-field`, `form-label`
+
+## Keystatic CMS Setup
+
+### What Eileen can edit
+
+| Section in admin | What changes |
+|---|---|
+| 🐾 Hunde | Add dogs, update stories, upload photos directly, mark as vermittelt |
+| 🏗️ Projekte | Update descriptions, impacts, upload photos |
+| ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
+| 🏠 Startseite – Texte & FAQ | Hero headline, hero subtext, founder quote, home FAQs |
+| 💝 Helfen-Seite & Adoptions-FAQ | All FAQ entries on helfen + adoptieren pages |
+| 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
+
+### Env vars (all required in Vercel)
+
+| Variable | Purpose | Notes |
+|---|---|---|
+| `KEYSTATIC_GITHUB_CLIENT_ID` | GitHub OAuth App client ID | From GitHub Settings → OAuth Apps |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub OAuth App client secret | Keep secret; rotate if leaked |
+| `KEYSTATIC_SECRET` | Session token signing secret | Random 32+ char string. Generate: `openssl rand -base64 32`. Does NOT match anything external — it's internal only. |
+
+### GitHub OAuth App
+
+Settings at `https://github.com/settings/developers` → OAuth Apps → Travel2Rescue Admin:
+
+- **Homepage URL**: `https://travel2rescue.de`
+- **Authorization callback URL**: `https://travel2rescue.de/api/keystatic/github/oauth/callback`
+
+The callback must use `travel2rescue.de` (no `www.`).
+
+### Custom Keystatic API route — do not delete
+
+`src/pages/api/keystatic/[...params].ts` overrides Keystatic's auto-injected route to fix a Vercel serverless bug. In Vercel, `req.url` has `localhost` as the hostname, causing Keystatic to build `redirect_uri=https://localhost/api/keystatic/github/oauth/callback` which GitHub rejects.
+
+The fix: read `x-forwarded-host` from the request headers and patch the URL before passing it to `makeGenericAPIRouteHandler`.
+
+### Troubleshooting Keystatic login
+
+| Symptom | Cause | Fix |
+|---|---|---|
+| `redirect_uri=https://localhost/...` | Missing custom route | Ensure `src/pages/api/keystatic/[...params].ts` exists and is deployed |
+| "Authorization failed" after callback | Wrong `KEYSTATIC_SECRET` or `CLIENT_SECRET` | Regenerate `KEYSTATIC_SECRET` with `openssl rand -base64 32`, update in Vercel, redeploy |
+| "Bad verification code" | OAuth code expired (>10 min) | Try again (OAuth codes are single-use) |
+| Admin loads but GitHub shows auth error | Callback URL mismatch in GitHub OAuth App | Ensure callback is `https://travel2rescue.de/api/keystatic/github/oauth/callback` |
 
 ## Images
 
-All images live in `public/images/`. Key assignments:
+All images in `public/images/`. Key images:
 
-| Section | Image |
+| Location | Filename |
 |---|---|
-| Home hero | `fynn eileen dogs horizontal.jpg` |
-| Rettung tile | `IMG_4737.jpeg` (Eileen on motorcycle with rescued puppy) |
-| Medizin tile | `IMG_2106.jpeg` (vet operating at beach) |
-| Kastration tile | `IMG_7449.jpeg` (2000 Kastrationen celebration) |
-| Fütterung tile | `IMG_2337.jpeg` (Eileen feeding multiple dogs) |
-| Flummi | `IMG_0991.jpeg` |
-| Minnie | `DSCF2189.jpeg` |
-| Molly | `IMG_2027.jpeg` |
-| Milka | `IMG_2793.jpeg` |
-| Jack | `DSCF2220.jpeg` |
-| Linus | `IMG_2205.jpeg` |
-| Freddy | `IMG_8636.jpeg` |
-| Kiki | `IMG_8309.jpeg` |
-| Pinki | `IMG_9452.jpeg` |
+| Home hero | `new_hero.jpeg` (Eileen on Müllhaide dump site) |
+| Home "Fynn & Eileen" section | `fynn eileen walking.jpeg` |
+| Home quote | `fynn eileen dogs horizontal.jpg` |
+| Eileen portrait | `eileen portraig .jpeg` ⚠️ typo in filename, space before extension |
+| Fynn portrait | `fynn portrait.jpeg` |
+| Dog photos | `IMG_0991.jpeg` (Flummi), `DSCF2189.jpeg` (Minnie), etc. — see content/dogs/*.json |
 
-## Conventions
+## Deployment
 
-- German UI copy throughout. `lang="de"`, `og:locale="de_DE"`
-- All internal hrefs end with trailing slash
-- PayPal CTA always opens `target="_blank" rel="noopener noreferrer"`
-- No Betterplace — removed. Donation options: PayPal (primary) + Überweisung with real IBAN
-- WCAG: skip link in BaseLayout, `aria-expanded` on hamburger, `aria-label` on all `<nav>`, `role="alert"` on form results
-- `overflow-x: hidden` on body (mobile overflow fix)
-- No Betterplace references anywhere
+Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Vercel project settings.
 
-## GitHub
+**Do not commit** `.vercel/` directory.
 
-Remote: `https://github.com/DannyVisnak/travel2rescue`  
-Branch: `main`
+## Known Quirks & Issues
+
+1. **`eileen portraig .jpeg`** — typo in filename + trailing space before `.jpeg`. File works, but should be renamed. If renaming: update `content/team.json` and the fallback in `ueber-uns.astro`.
+
+2. **Astro route collision warning** — "The route `/api/keystatic/[...params]` is defined in both...". This is expected — our override file takes priority. Just a warning, not an error. Will become an error in a future Astro version; solution will be to configure the Keystatic integration to not inject the route.
+
+3. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
+
+4. **Web3Forms key placeholder** — `REPLACE_WITH_WEB3FORMS_KEY` in `src/components/ContactForm.astro` and `src/pages/adoptieren/formular.astro`. Replace with a real key from `https://web3forms.com/` before forms work.
+
+5. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
+
+## To-Do List
+
+### Critical (broken / blocking)
+
+- [ ] **Web3Forms key**: Replace `REPLACE_WITH_WEB3FORMS_KEY` in `ContactForm.astro` and `formular.astro` — contact and adoption forms don't work without this
+- [ ] **Fix Eileen portrait filename**: Rename `public/images/eileen portraig .jpeg` → `eileen-portrait.jpeg`, update `content/team.json` + fallback in `ueber-uns.astro`
+
+### Content (needs Eileen)
+
+- [ ] **Real dog stories and photos** for 8 dogs (Minnie, Molly, Milka, Jack, Linus, Freddy, Kiki, Pinki) — current content is placeholder text
+- [ ] **Real photos** via Keystatic admin (Eileen can upload directly from her phone)
+- [ ] **Stats update** — verify Kastrationen/Futter/Operiert numbers are current (editable in Keystatic: ⚙️ Statistiken)
+- [ ] **PayPal link** — verify the URL is correct and active (editable in Keystatic: ⚙️ Statistiken)
+
+### Technical improvements
+
+- [ ] **OG image** — Create a proper 1200×630 branded PNG (`public/og-image.png`). Currently using `fynn eileen dogs horizontal.jpg` which isn't sized correctly for social sharing.
+- [ ] **Sitemap** — Verify all routes appear in `/sitemap-index.xml` after deploy
+- [ ] **Google Search Console** — Submit sitemap, verify domain ownership
+- [ ] **Patenschaft page** — FAQ on helfen page mentions Patenschaften but there's no dedicated page/flow for it
+
+### CMS improvements (medium effort)
+
+- [ ] **Origin story chapters** (on Über uns page) — Currently hardcoded. Could be a Keystatic singleton with 4 `fields.array()` entries if Eileen wants to update them.
+- [ ] **Mission page pillars** — The 4 pillar cards on `/mission/` are hardcoded. Rarely changes but could be CMS-managed.
+- [ ] **Adoption form questions** — See evaluation below.
+
+### Nice to have (low priority)
+
+- [ ] **Patenschaft flow** — Monthly sponsorship for a specific dog (requires Stripe or external form)
+- [ ] **News/Aktuelles section** — Keystatic collection for news posts (easy to add, needs design)
+- [ ] **Instagram feed embed** — Live feed from @travel2rescue on home page or linktree
+
+---
+
+## Adoption Form — CMS Evaluation
+
+The adoption form (`/adoptieren/formular/`) has ~25 questions in 7 fieldsets. The "which dog" section already updates dynamically from Keystatic dogs.
+
+**Option A — Label-only CMS** (~1 day work)  
+Add a `formLabels` singleton to Keystatic with ~30 text fields (one per question label + section heading). The form logic (radio vs. text, required flags, option values) stays hardcoded. Covers ~90% of what Eileen might want to change.
+
+**Option B — Full dynamic form** (~3 days work)  
+A `formSections` collection where each section has an array of questions with type (radio/text/textarea), label, options, required flag. Requires a dynamic React form renderer. Completely flexible but complex.
+
+**Recommendation: Do nothing for now.** The form questions are carefully curated screening criteria that should be reviewed by a developer before changing. They've been battle-tested. The one thing that already changes dynamically (which dogs appear) is already wired to Keystatic. If Eileen frequently requests question changes, implement Option A — it's the best effort/value trade-off.

@@ -1,0 +1,46 @@
+{
+  "helpFaqs": [
+    {
+      "question": "Wie kann ich spenden?",
+      "answer": "Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden."
+    },
+    {
+      "question": "Welche Tiere stehen zur Adoption?",
+      "answer": "Aktuell haben wir mehrere Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates."
+    },
+    {
+      "question": "Welche Aufgaben gibt es für Freiwillige?",
+      "answer": "Füttern, Gassi gehen, Kuscheln, beim Aufbau von Hundehütten helfen, Fotos und Social Media. Wir passen die Aufgaben an deine Skills an."
+    },
+    {
+      "question": "Kann ich eine Patenschaft übernehmen?",
+      "answer": "Ja! Eine Patenschaft bedeutet, dass du monatlich einen Betrag spendest, der einem bestimmten Hund oder unserem allgemeinen Betrieb zugute kommt. Schreib uns an."
+    },
+    {
+      "question": "Wie wird meine Spende verwendet?",
+      "answer": "100% in die Tierhilfe. Kein Cent geht an Verwaltung. Futter, Medikamente, Tierarztkosten, Kastrationsprojekte – das ist es. Jederzeit transparent auf Anfrage."
+    }
+  ],
+  "adoptionFaqs": [
+    {
+      "question": "Wie läuft der Adoptionsprozess ab?",
+      "answer": "Du füllst unser Formular aus, dann führen wir einen Videocall durch. Wenn alles passt, folgen weitere Gespräche und dann beginnt die Ausreisevorbereitung deines Hundes nach Deutschland."
+    },
+    {
+      "question": "Welche Voraussetzungen muss ich erfüllen?",
+      "answer": "Ein gesichertes Zuhause, Zeit und die Bereitschaft, 6–7 Monate auf deinen Hund zu warten. Keine Erfahrung mit Straßenhunden notwendig – wir begleiten dich durch alles."
+    },
+    {
+      "question": "Gibt es eine Adoptionsgebühr?",
+      "answer": "Ja, eine Schutzgebühr, die die Ausreisekosten (Titer-Test, Tierarztuntersuchungen, Flug) deckt. Diese wird im Gespräch individuell abgestimmt."
+    },
+    {
+      "question": "Warum dauert die Adoption so lange?",
+      "answer": "Aufgrund der Tollwut-Bestimmungen der EU dauert die Ausreisevorbereitung mindestens 6–7 Monate: Tollwutimpfung, Titer-Test, Wartezeit, Papiere. Das ist Pflicht – kein Bürokratismus."
+    },
+    {
+      "question": "Was passiert, wenn es nicht klappt?",
+      "answer": "Kein Hund bleibt ohne Zuhause. Wir finden gemeinsam eine Lösung – sei es eine Pflegestelle, ein anderer Adoptant oder weitere Gespräche. Wir lassen niemanden fallen."
+    }
+  ]
+}
