@@ -21,26 +21,91 @@ function fixRequestUrl(request: Request): Request {
   return new Request(url.toString(), request);
 }
 
-function tryEnv(key: string): string | undefined {
-  try {
-    return (import.meta.env as Record<string, string | undefined>)[key];
-  } catch {
-    return undefined;
-  }
+function envStatus(): Record<string, string> {
+  const e = process.env as Record<string, string | undefined>;
+  const fmt = (v: string | undefined) => (v ? `set(len=${v.length})` : 'MISSING');
+  return {
+    KEYSTATIC_GITHUB_CLIENT_ID: fmt(e.KEYSTATIC_GITHUB_CLIENT_ID),
+    KEYSTATIC_GITHUB_CLIENT_SECRET: fmt(e.KEYSTATIC_GITHUB_CLIENT_SECRET),
+    KEYSTATIC_SECRET: fmt(e.KEYSTATIC_SECRET),
+  };
 }
 
 export async function ALL(context: APIContext): Promise<Response> {
-  const handler = makeGenericAPIRouteHandler(
-    {
-      config,
-      clientId: tryEnv('KEYSTATIC_GITHUB_CLIENT_ID'),
-      clientSecret: tryEnv('KEYSTATIC_GITHUB_CLIENT_SECRET'),
-      secret: tryEnv('KEYSTATIC_SECRET'),
-    },
-    { slugEnvName: 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG' }
-  );
+  const fixed = fixRequestUrl(context.request);
+  const fixedUrl = new URL(fixed.url);
+  const isOauthCallback = fixedUrl.pathname.includes('/github/oauth/callback');
 
-  const { body, headers, status } = await handler(fixRequestUrl(context.request));
+  if (isOauthCallback) {
+    console.log('[ks-debug] callback hit', {
+      pathname: fixedUrl.pathname,
+      hasCode: fixedUrl.searchParams.has('code'),
+      hasState: fixedUrl.searchParams.has('state'),
+      githubError: fixedUrl.searchParams.get('error'),
+      githubErrorDesc: fixedUrl.searchParams.get('error_description'),
+      env: envStatus(),
+    });
+  }
+
+  // Intercept the GitHub token-exchange fetch so we can see WHY it fails.
+  // Keystatic only surfaces "Authorization failed" to the client.
+  const originalFetch = globalThis.fetch;
+  if (isOauthCallback) {
+    globalThis.fetch = (async (input: any, init?: any) => {
+      const urlStr =
+        typeof input === 'string'
+          ? input
+          : input instanceof URL
+          ? input.toString()
+          : input?.url;
+      const res = await originalFetch(input, init);
+      if (typeof urlStr === 'string' && urlStr.includes('github.com/login/oauth/access_token')) {
+        try {
+          const bodyText = await res.clone().text();
+          console.log('[ks-debug] github token endpoint response', {
+            status: res.status,
+            body: bodyText.slice(0, 800),
+          });
+        } catch (err) {
+          console.log('[ks-debug] failed to read github token body', err);
+        }
+      }
+      return res;
+    }) as typeof fetch;
+  }
+
+  let body: unknown, headers: unknown, status: number | undefined;
+  try {
+    const handler = makeGenericAPIRouteHandler(
+      {
+        config,
+        clientId: process.env.KEYSTATIC_GITHUB_CLIENT_ID,
+        clientSecret: process.env.KEYSTATIC_GITHUB_CLIENT_SECRET,
+        secret: process.env.KEYSTATIC_SECRET,
+      },
+      { slugEnvName: 'PUBLIC_KEYSTATIC_GITHUB_APP_SLUG' }
+    );
+    ({ body, headers, status } = await handler(fixed));
+  } catch (err) {
+    console.error(
+      '[ks-debug] keystatic handler threw',
+      err instanceof Error ? { name: err.name, message: err.message, stack: err.stack } : err
+    );
+    if (isOauthCallback) globalThis.fetch = originalFetch;
+    return new Response(
+      `Keystatic handler error: ${err instanceof Error ? err.message : String(err)}`,
+      { status: 500 }
+    );
+  } finally {
+    if (isOauthCallback) globalThis.fetch = originalFetch;
+  }
+
+  if (isOauthCallback) {
+    console.log('[ks-debug] handler returned', {
+      status,
+      bodyPreview: typeof body === 'string' ? body.slice(0, 200) : '<non-string-body>',
+    });
+  }
 
   // Reproduce the cookie-handling logic from @keystatic/astro's makeHandler
   // so Astro can set cookies properly through its own API.
@@ -84,7 +149,7 @@ export async function ALL(context: APIContext): Promise<Response> {
     }
   }
 
-  return new Response(body, {
+  return new Response(body as any, {
     status,
     headers: [...headersMap.entries()].flatMap(([k, vals]) => vals.map(v => [k, v])),
   });
