@@ -297,7 +297,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   </section>
 
   <!-- Adoption -->
-  <section class="py-20 bg-forest">
+  <section class="py-20 bg-beige">
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
@@ -305,7 +305,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         </div>
         <div>
           <p class="eyebrow mb-4">Adoption</p>
-          <h2 class="text-4xl font-black mb-6">Der Weg zur<br /><span class="text-amber-500">Adoption.</span></h2>
+          <h2 class="text-4xl font-black mb-6 text-black">Der Weg zur<br /><span class="text-amber-500">Adoption.</span></h2>
           <ol class="space-y-4 mb-8">
             {[
               'Hund aus unseren Profilen auswählen',
@@ -315,7 +315,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
             ].map((step, i) => (
               <li class="flex gap-4 items-start">
                 <span class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                <span class="text-white/80">{step}</span>
+                <span class="text-black/80">{step}</span>
               </li>
             ))}
           </ol>

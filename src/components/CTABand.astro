@@ -16,14 +16,23 @@ const {
 } = Astro.props;
 ---
 
-<section class={`py-20 ${dark ? 'bg-forest' : 'bg-gray-dark'}`}>
+<section class={`py-20 ${dark ? 'bg-beige' : 'bg-gray-dark'}`}>
   <div class="container-x text-center">
-    <h2 class="font-serif text-4xl md:text-5xl font-black text-white mb-4 tracking-tight">{headline}</h2>
-    <p class="text-white/60 text-lg mb-8 max-w-lg mx-auto">{sub}</p>
+    <h2 class={`font-serif text-4xl md:text-5xl font-black mb-4 tracking-tight ${dark ? 'text-black' : 'text-white'}`}>{headline}</h2>
+    <p class={`text-lg mb-8 max-w-lg mx-auto ${dark ? 'text-black/70' : 'text-white/60'}`}>{sub}</p>
     <div class="flex flex-wrap justify-center gap-4">
       <a href={primary.href} class="btn-primary btn-large">{primary.label}</a>
       {secondary && (
-        <a href={secondary.href} class="btn-ghost btn-large">{secondary.label}</a>
+        <a
+          href={secondary.href}
+          class={`inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer px-8 py-4 text-base uppercase tracking-wider ${
+            dark
+              ? 'border border-black/30 text-black hover:border-black hover:bg-black/10 focus:ring-black/40'
+              : 'border border-white/30 text-white hover:border-white hover:bg-white/10 focus:ring-white/40'
+          }`}
+        >
+          {secondary.label}
+        </a>
       )}
     </div>
   </div>
