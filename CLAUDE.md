@@ -190,7 +190,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 2. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
 
-3. **Web3Forms key placeholder** — `REPLACE_WITH_WEB3FORMS_KEY` in `src/components/ContactForm.astro` and `src/pages/adoptieren/formular.astro`. Replace with a real key from `https://web3forms.com/` before forms work.
+3. **Resend mail integration** — Both forms POST to internal API routes (`/api/contact`, `/api/adoption`) which send via Resend (`src/lib/email.ts`). Requires `RESEND_API_KEY` in Vercel. Optional: `RESEND_FROM` (default `Travel2Rescue <kontakt@travel2rescue.de>`) and `RESEND_TO` (default `travel2rescue@gmail.com`). Sender domain `travel2rescue.de` must be verified in Resend (DNS records).
 
 4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
 
@@ -200,7 +200,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### Critical (broken / blocking)
 
-- [ ] **Web3Forms key**: Replace `REPLACE_WITH_WEB3FORMS_KEY` in `ContactForm.astro` and `formular.astro` — contact and adoption forms don't work without this
+- [ ] **Resend setup**: Set `RESEND_API_KEY` in Vercel and verify `travel2rescue.de` as sending domain in Resend dashboard. Without these, both forms return 500.
 
 ### Content (needs Eileen)
 

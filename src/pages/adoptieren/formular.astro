@@ -24,11 +24,8 @@ const dogNames = dogEntries.map(({ entry }) => entry.name);
       </div>
 
       <div class="card p-8 md:p-10">
-        <form id="adoption-form" class="space-y-8">
-          <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY" />
-          <input type="hidden" name="subject" value="Adoptionsformular – Travel2Rescue" />
-          <input type="hidden" name="redirect" value="false" />
-          <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+        <form id="adoption-form" method="POST" action="/api/adoption" class="space-y-8">
+          <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
           <!-- Hund -->
           <fieldset class="space-y-4">
@@ -384,14 +381,17 @@ const dogNames = dogEntries.map(({ entry }) => entry.name);
     btn.textContent = 'Wird gesendet...';
 
     const data = new FormData(form);
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: data,
-    });
-    const json = await res.json();
+    let ok = false;
+    try {
+      const res = await fetch('/api/adoption', { method: 'POST', body: data });
+      const json = await res.json();
+      ok = res.ok && json.ok === true;
+    } catch {
+      ok = false;
+    }
 
     result.classList.remove('hidden', 'text-red-400', 'text-green-400');
-    if (json.success) {
+    if (ok) {
       result.textContent = 'Danke! Eileen meldet sich so schnell wie möglich per WhatsApp bei dir.';
       result.classList.add('text-green-400');
       form.reset();

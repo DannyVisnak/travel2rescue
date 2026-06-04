@@ -10,13 +10,11 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
   <form
     id="contact-form"
     method="POST"
-    action="https://api.web3forms.com/submit"
+    action="/api/contact"
     class="space-y-4"
   >
-    <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY" />
     <input type="hidden" name="subject" value={subject} />
-    <input type="hidden" name="redirect" value="false" />
-    <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+    <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -79,21 +77,36 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
     e.preventDefault();
     if (!result) return;
 
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    if (btn) {
+      btn.disabled = true;
+      btn.dataset.original = btn.textContent ?? '';
+      btn.textContent = 'Wird gesendet...';
+    }
+
     const data = new FormData(form);
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: data,
-    });
-    const json = await res.json();
+    let ok = false;
+    try {
+      const res = await fetch('/api/contact', { method: 'POST', body: data });
+      const json = await res.json();
+      ok = res.ok && json.ok === true;
+    } catch {
+      ok = false;
+    }
 
     result.classList.remove('hidden', 'text-red-400', 'text-green-400');
-    if (json.success) {
+    if (ok) {
       result.textContent = 'Danke! Wir melden uns so schnell wie möglich bei dir.';
       result.classList.add('text-green-400');
       form.reset();
+      if (btn) btn.textContent = 'Gesendet ✓';
     } else {
       result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
       result.classList.add('text-red-400');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = btn.dataset.original ?? 'Nachricht senden';
+      }
     }
     result.classList.remove('hidden');
   });
