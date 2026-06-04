@@ -5,12 +5,59 @@ import CTABand from '@/components/CTABand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import VermitteltStrip from '@/components/VermitteltStrip.astro';
+import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
 
 const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
 
+const a = await reader.singletons.adoptionContent.read();
 const helpData = await reader.singletons.helpContent.read();
+
+const heroEyebrow = a?.heroEyebrow ?? 'Adoption · 6–7 Monate';
+const heroTitle = a?.heroTitle ?? 'Find deinen';
+const heroTitleAccent = a?.heroTitleAccent ?? 'besten Freund fürs Leben.';
+const heroSub = a?.heroSub ?? 'Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.';
+const heroImage = a?.heroImage ?? '/images/fynneileen dogs.jpeg';
+
+const commitmentEyebrow = a?.commitmentEyebrow ?? 'Was uns unterscheidet';
+const commitmentText = a?.commitmentText ?? 'Eine Adoption aus Lombok dauert';
+const commitmentAccent = a?.commitmentAccent ?? '6–7 Monate.';
+const commitmentSub = a?.commitmentSub ?? 'Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.';
+const commitmentBadge = a?.commitmentBadge ?? 'Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.';
+
+const TIMELINE = a?.timeline?.length
+  ? a.timeline
+  : [
+      { nummer: '01', title: 'Kennenlernen', duration: 'Wochen 1–2', desc: 'Bewerbung, Telefonat, gegenseitiges Kennenlernen.' },
+      { nummer: '02', title: 'Vorbereitung', duration: 'Monate 1–4', desc: 'Tollwut-Impfung, Titer-Test, Wartezeit.' },
+      { nummer: '03', title: 'Behördliches', duration: 'Monat 5–6', desc: 'Papiere, Tierarzt-Atteste, Flug-Buchung.' },
+      { nummer: '04', title: 'Ankunft', duration: 'Monat 6–7', desc: 'Dein Hund kommt nach Deutschland.' },
+    ];
+
+const dogsEyebrow = a?.dogsEyebrow ?? 'Verfügbare Hunde';
+const dogsHeadline = a?.dogsHeadline ?? 'Sie warten';
+const dogsHeadlineAccent = a?.dogsHeadlineAccent ?? 'auf dich.';
+const dogsSub = a?.dogsSub ?? 'Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.';
+
+const benefitsEyebrow = a?.benefitsEyebrow ?? 'Was dich erwartet';
+const benefitsHeadline = a?.benefitsHeadline ?? 'Ein gesundes Tier.';
+const benefitsHeadlineAccent = a?.benefitsHeadlineAccent ?? 'Und eine echte Beziehung.';
+const benefitsSub = a?.benefitsSub ?? 'Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.';
+const benefitsImage = a?.benefitsImage ?? '/images/IMG_9452.jpg';
+const benefits = a?.benefits?.length
+  ? a.benefits
+  : [
+      { title: 'Tierliebe und Fürsorge', desc: 'Unsere Hunde sind medizinisch versorgt, gechipt, geimpft und kastriert. Du bekommst ein gesundes Tier.' },
+      { title: 'Nachhaltige Vermittlung', desc: 'Wir stellen sicher, dass Hund und Mensch wirklich zueinander passen. Keine Adoption auf Verdacht.' },
+      { title: 'Begleitung durch den Prozess', desc: 'Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland.' },
+    ];
+
+const formEyebrow = a?.formEyebrow ?? 'Bereit?';
+const formHeadline = a?.formHeadline ?? 'Stell deine';
+const formHeadlineAccent = a?.formHeadlineAccent ?? 'Adoptionsanfrage.';
+const formSub = a?.formSub ?? 'Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt.';
+
 const fallbackFaqs = [
   { question: 'Wie läuft der Adoptionsprozess ab?', answer: 'Du füllst unser Formular aus, dann führen wir einen Videocall durch. Wenn alles passt, folgen weitere Gespräche und dann beginnt die Ausreisevorbereitung deines Hundes nach Deutschland.' },
   { question: 'Welche Voraussetzungen muss ich erfüllen?', answer: 'Ein gesichertes Zuhause, Zeit und die Bereitschaft, 6–7 Monate auf deinen Hund zu warten. Keine Erfahrung mit Straßenhunden notwendig – wir begleiten dich durch alles.' },
@@ -19,34 +66,6 @@ const fallbackFaqs = [
   { question: 'Was passiert, wenn es nicht klappt?', answer: 'Kein Hund bleibt ohne Zuhause. Wir finden gemeinsam eine Lösung – sei es eine Pflegestelle, ein anderer Adoptant oder weitere Gespräche. Wir lassen niemanden fallen.' },
 ];
 const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFaqs;
-
-// 4-step timeline (in-file so it doesn't disturb src/data/dogs.ts)
-const TIMELINE = [
-  {
-    nummer: '01',
-    title: 'Kennenlernen',
-    duration: 'Wochen 1–2',
-    desc: 'Bewerbung, Telefonat, gegenseitiges Kennenlernen.',
-  },
-  {
-    nummer: '02',
-    title: 'Vorbereitung',
-    duration: 'Monate 1–4',
-    desc: 'Tollwut-Impfung, Titer-Test, Wartezeit.',
-  },
-  {
-    nummer: '03',
-    title: 'Behördliches',
-    duration: 'Monat 5–6',
-    desc: 'Papiere, Tierarzt-Atteste, Flug-Buchung.',
-  },
-  {
-    nummer: '04',
-    title: 'Ankunft',
-    duration: 'Monat 6–7',
-    desc: 'Dein Hund kommt nach Deutschland.',
-  },
-];
 ---
 
 <BaseLayout
@@ -56,17 +75,17 @@ const TIMELINE = [
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/fynneileen dogs.jpeg" alt="Gerettete Hunde bei Travel2Rescue" class="w-full h-full object-cover" loading="eager" />
+      <img src={heroImage} alt="Gerettete Hunde bei Travel2Rescue" class="w-full h-full object-cover" loading="eager" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/40" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
-      <p class="eyebrow mb-5">Adoption · 6–7 Monate</p>
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="text-5xl md:text-6xl font-black mb-6">
-        Find deinen<br />
-        <span class="text-amber-500">besten Freund fürs Leben.</span>
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500">{heroTitleAccent}</span>
       </h1>
       <p class="text-xl text-white/70 leading-relaxed mb-8">
-        Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.
+        {heroSub}
       </p>
       <div class="flex flex-wrap gap-3">
         <a href="#hunde" class="btn-primary btn-large">Hunde entdecken</a>
@@ -80,15 +99,15 @@ const TIMELINE = [
     <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
     <div class="container-x relative">
       <div class="max-w-4xl mx-auto text-center">
-        <p class="eyebrow mb-5">Was uns unterscheidet</p>
+        <p class="eyebrow mb-5">{commitmentEyebrow}</p>
         <p class="font-serif italic text-3xl md:text-4xl lg:text-5xl leading-[1.25] text-cream">
-          Eine Adoption aus Lombok dauert
-          <span class="text-amber-500 not-italic font-display font-black tracking-tight">6–7 Monate.</span>
+          {commitmentText}
+          <span class="text-amber-500 not-italic font-display font-black tracking-tight">{commitmentAccent}</span>
           <br class="hidden md:block" />
           Wir wissen, das ist viel verlangt.
         </p>
         <p class="mt-6 font-serif italic text-xl md:text-2xl text-white/75 leading-relaxed max-w-2xl mx-auto">
-          Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.
+          {commitmentSub}
         </p>
 
         <div class="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-500/10 border border-amber-500/20">
@@ -96,7 +115,7 @@ const TIMELINE = [
             <circle cx="12" cy="12" r="10" />
             <polyline points="12 6 12 12 16 14" />
           </svg>
-          <span class="text-sm text-amber-400/90 font-medium tracking-wide">Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.</span>
+          <span class="text-sm text-amber-400/90 font-medium tracking-wide">{commitmentBadge}</span>
         </div>
       </div>
 
@@ -149,10 +168,10 @@ const TIMELINE = [
   <section id="hunde" class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-12">
-        <p class="eyebrow mb-3">Verfügbare Hunde</p>
-        <h2 class="section-heading">Sie warten<br /><span class="text-amber-500">auf dich.</span></h2>
+        <p class="eyebrow mb-3">{dogsEyebrow}</p>
+        <h2 class="section-heading"><Lines text={dogsHeadline} /><br /><span class="text-amber-500">{dogsHeadlineAccent}</span></h2>
         <p class="section-subheading mx-auto mt-4">
-          Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.
+          {dogsSub}
         </p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -168,7 +187,7 @@ const TIMELINE = [
     <div class="grid grid-cols-1 lg:grid-cols-12 lg:min-h-[560px]">
       <!-- photo bleeds to the left edge -->
       <div class="relative lg:col-span-7 h-72 sm:h-96 lg:h-auto">
-        <img src="/images/IMG_9452.jpg" alt="Adoptierter Hund" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
+        <img src={benefitsImage} alt="Adoptierter Hund" class="absolute inset-0 w-full h-full object-cover" loading="lazy" />
         <div class="absolute inset-0 lg:bg-gradient-to-r from-transparent via-transparent to-black/40"></div>
         <div class="hidden lg:block absolute -right-px top-0 bottom-0 w-px bg-amber-500/10"></div>
         <span class="absolute left-6 bottom-6 inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-black/60 backdrop-blur-sm border border-white/10 text-xs text-white/80 tracking-wide">
@@ -186,19 +205,15 @@ const TIMELINE = [
       <!-- copy on warm card -->
       <div class="lg:col-span-5 bg-[#1a1410] flex items-center">
         <div class="px-6 sm:px-10 lg:px-14 py-16 lg:py-24 max-w-xl">
-          <p class="eyebrow mb-4">Was dich erwartet</p>
+          <p class="eyebrow mb-4">{benefitsEyebrow}</p>
           <h2 class="text-4xl md:text-5xl font-black mb-3 leading-tight">
-            Ein gesundes Tier.<br />
-            <span class="text-amber-500 font-serif italic font-normal tracking-normal">Und eine echte Beziehung.</span>
+            <Lines text={benefitsHeadline} /><br />
+            <span class="text-amber-500 font-serif italic font-normal tracking-normal">{benefitsHeadlineAccent}</span>
           </h2>
-          <p class="text-white/65 mb-8">Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.</p>
+          <p class="text-white/65 mb-8">{benefitsSub}</p>
 
           <div class="space-y-5">
-            {[
-              { title: 'Tierliebe und Fürsorge', desc: 'Unsere Hunde sind medizinisch versorgt, gechipt, geimpft und kastriert. Du bekommst ein gesundes Tier.' },
-              { title: 'Nachhaltige Vermittlung', desc: 'Wir stellen sicher, dass Hund und Mensch wirklich zueinander passen. Keine Adoption auf Verdacht.' },
-              { title: 'Begleitung durch den Prozess', desc: 'Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland.' },
-            ].map((item) => (
+            {benefits.map((item) => (
               <div class="flex gap-4">
                 <div class="w-8 h-8 rounded-full bg-amber-500/10 border border-amber-500/20 flex items-center justify-center shrink-0 mt-0.5">
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-amber-400">
@@ -237,9 +252,9 @@ const TIMELINE = [
   <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-10">
-        <p class="eyebrow mb-3">Bereit?</p>
-        <h2 class="text-3xl font-black mb-4">Stell deine<br /><span class="text-amber-500">Adoptionsanfrage.</span></h2>
-        <p class="text-white/60">Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt.</p>
+        <p class="eyebrow mb-3">{formEyebrow}</p>
+        <h2 class="text-3xl font-black mb-4"><Lines text={formHeadline} /><br /><span class="text-amber-500">{formHeadlineAccent}</span></h2>
+        <p class="text-white/60">{formSub}</p>
       </div>
       <ContactForm subject="Adoptionsanfrage" />
     </div>

@@ -1,0 +1,36 @@
+{
+  "heroEyebrow": "Adoption · 6–7 Monate",
+  "heroTitle": "Find deinen",
+  "heroTitleAccent": "besten Freund fürs Leben.",
+  "heroSub": "Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.",
+  "heroImage": null,
+  "commitmentEyebrow": "Was uns unterscheidet",
+  "commitmentText": "Eine Adoption aus Lombok dauert",
+  "commitmentAccent": "6–7 Monate.",
+  "commitmentSub": "Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.",
+  "commitmentBadge": "Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.",
+  "timeline": [
+    { "nummer": "01", "title": "Kennenlernen", "duration": "Wochen 1–2", "desc": "Bewerbung, Telefonat, gegenseitiges Kennenlernen." },
+    { "nummer": "02", "title": "Vorbereitung", "duration": "Monate 1–4", "desc": "Tollwut-Impfung, Titer-Test, Wartezeit." },
+    { "nummer": "03", "title": "Behördliches", "duration": "Monat 5–6", "desc": "Papiere, Tierarzt-Atteste, Flug-Buchung." },
+    { "nummer": "04", "title": "Ankunft", "duration": "Monat 6–7", "desc": "Dein Hund kommt nach Deutschland." }
+  ],
+  "dogsEyebrow": "Verfügbare Hunde",
+  "dogsHeadline": "Sie warten",
+  "dogsHeadlineAccent": "auf dich.",
+  "dogsSub": "Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.",
+  "benefitsEyebrow": "Was dich erwartet",
+  "benefitsHeadline": "Ein gesundes Tier.",
+  "benefitsHeadlineAccent": "Und eine echte Beziehung.",
+  "benefitsSub": "Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.",
+  "benefitsImage": "IMG_9452.jpg",
+  "benefits": [
+    { "title": "Tierliebe und Fürsorge", "desc": "Unsere Hunde sind medizinisch versorgt, gechipt, geimpft und kastriert. Du bekommst ein gesundes Tier." },
+    { "title": "Nachhaltige Vermittlung", "desc": "Wir stellen sicher, dass Hund und Mensch wirklich zueinander passen. Keine Adoption auf Verdacht." },
+    { "title": "Begleitung durch den Prozess", "desc": "Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland." }
+  ],
+  "formEyebrow": "Bereit?",
+  "formHeadline": "Stell deine",
+  "formHeadlineAccent": "Adoptionsanfrage.",
+  "formSub": "Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt."
+}

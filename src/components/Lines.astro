@@ -1,0 +1,14 @@
+---
+// Renders text with newline (\n) characters as <br/> line breaks.
+// Used so CMS-managed headings/paragraphs can keep their intended line breaks.
+interface Props {
+  text?: string | null;
+  fallback?: string;
+}
+const { text, fallback = '' } = Astro.props;
+const value = text ?? fallback;
+const lines = value.split('\n');
+---
+{lines.map((line, i) => (
+  <>{i > 0 && <br />}{line}</>
+))}

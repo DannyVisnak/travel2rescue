@@ -3,7 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import DogCard from '@/components/DogCard.astro';
-import FAQItem from '@/components/FAQItem.astro';
+import Lines from '@/components/Lines.astro';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
@@ -12,13 +12,55 @@ const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));
 
-const projectEntries = await reader.collections.projects.all();
-const PROJECTS = projectEntries
-  .map(({ slug, entry }) => ({ id: slug, ...entry }))
-  .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0))
-  .slice(0, 3);
-
 const homeData = await reader.singletons.homeContent.read();
+
+// Hero
+const heroEyebrow = homeData?.heroEyebrow ?? 'Travel2Rescue e.V. · Kuta, Lombok';
+const heroTitleTop = homeData?.heroTitleTop ?? '50.000';
+const heroTitleAccent = homeData?.heroTitleAccent ?? 'Straßenhunde.';
+const heroTitleBottom = homeData?.heroTitleBottom ?? 'Nur wir sehen hin.';
+const heroSub = homeData?.heroSub ?? 'Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.';
+const heroImage = homeData?.heroImage ?? '/images/new_hero.jpeg';
+
+const trustItems = homeData?.trustItems?.length
+  ? homeData.trustItems
+  : ['e.V. seit 2023', 'Vereinsregister Hof', '100% Tierschutz', 'Steuerlich absetzbar'];
+
+// Story teaser
+const storyEyebrow = homeData?.storyEyebrow ?? 'Unsere Geschichte';
+const storyHeadline = homeData?.storyHeadline ?? 'Aus Mitleid wurde Verantwortung.';
+const storyText1 = homeData?.storyText1 ?? 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
+const storyText2 = homeData?.storyText2 ?? 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
+const storyImage = homeData?.storyImage ?? '/images/fynn eileen walking.jpeg';
+const storyPostcard = homeData?.storyPostcard ?? 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
+
+// Was wir tun — icons stay fixed, text editable
+const SERVICE_ICONS = [
+  '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m12 5 1.6 1.6"/><path d="M22 16.92V19.5a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 19.5v-2.58"/><path d="m6 14 4 4"/><path d="m14 14-4 4"/>',
+  '<path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/>',
+  '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
+  '<path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/>',
+];
+const defaultServices = [
+  { title: 'Rettung', desc: 'Ausgesetzt, angefahren, dem Tod nah – wir nehmen uns den Hunden an, die ohne uns keine Chance hätten.' },
+  { title: 'Medizinische Versorgung', desc: 'Operationen, Wundversorgung, Parasitenbehandlung – wir bezahlen die Not-OP, die über Leben und Tod entscheidet.' },
+  { title: 'Kastration', desc: 'Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel.' },
+  { title: 'Fütterung', desc: 'Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe.' },
+];
+const servicesEyebrow = homeData?.servicesEyebrow ?? 'Was wir konkret tun';
+const servicesHeadline = homeData?.servicesHeadline ?? 'Direkt helfen. Nachhaltig verändern.';
+const servicesSource = homeData?.services?.length ? homeData.services : defaultServices;
+const services = servicesSource.map((s, i) => ({ ...s, svg: SERVICE_ICONS[i] ?? SERVICE_ICONS[0] }));
+
+// Dogs teaser
+const dogsEyebrow = homeData?.dogsEyebrow ?? 'Zur Adoption freigegeben';
+const dogsHeadline = homeData?.dogsHeadline ?? 'Sie warten auf dich.';
+const dogsSub = homeData?.dogsSub ?? 'Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.';
+
+const founderQuote = homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.';
+
+const faqEyebrow = homeData?.faqEyebrow ?? 'Häufige Fragen';
+const faqHeadline = homeData?.faqHeadline ?? 'FAQ';
 const faqs = homeData?.homeFaqs?.length
   ? homeData.homeFaqs
   : [
@@ -37,7 +79,7 @@ const faqs = homeData?.homeFaqs?.length
   <section class="relative min-h-[90vh] flex items-center overflow-hidden">
     <div class="absolute inset-0">
       <img
-        src="/images/new_hero.jpeg"
+        src={heroImage}
         alt="Eileen auf der Müllhaide auf Lombok – Travel2Rescue e.V."
         class="w-full h-full object-cover object-[40%_center]"
         loading="eager"
@@ -47,15 +89,14 @@ const faqs = homeData?.homeFaqs?.length
 
     <div class="container-x relative z-10 py-20">
       <div class="max-w-2xl">
-        <p class="eyebrow mb-5">Travel2Rescue e.V. · Kuta, Lombok</p>
+        <p class="eyebrow mb-5">{heroEyebrow}</p>
         <h1 class="text-5xl md:text-7xl font-black leading-[0.95] tracking-normal mb-6">
-          50.000<br />
-          <span class="text-amber-500">Straßenhunde.</span><br />
-          Nur wir sehen hin.
+          {heroTitleTop}<br />
+          <span class="text-amber-500">{heroTitleAccent}</span><br />
+          {heroTitleBottom}
         </h1>
         <p class="text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
-          Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.
-          Fynn &amp; Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.
+          <Lines text={heroSub} />
         </p>
         <div class="flex flex-wrap gap-4">
           <a href="/helfen/" class="btn-primary btn-large">Jetzt helfen</a>
@@ -76,13 +117,12 @@ const faqs = homeData?.homeFaqs?.length
   <section class="bg-amber-500/5 border-y border-amber-500/10">
     <div class="container-x py-4">
       <p class="text-center text-sm text-white/60 flex flex-wrap justify-center items-center gap-x-3 gap-y-1">
-        <span>e.V. seit 2023</span>
-        <span class="text-amber-500/40">·</span>
-        <span>Vereinsregister Hof</span>
-        <span class="text-amber-500/40">·</span>
-        <span>100% Tierschutz</span>
-        <span class="text-amber-500/40">·</span>
-        <span>Steuerlich absetzbar</span>
+        {trustItems.map((item, i) => (
+          <>
+            {i > 0 && <span class="text-amber-500/40">·</span>}
+            <span>{item}</span>
+          </>
+        ))}
       </p>
     </div>
   </section>
@@ -96,7 +136,7 @@ const faqs = homeData?.homeFaqs?.length
       <div class="lg:col-span-6 relative">
         <div class="relative">
           <img
-            src="/images/fynn eileen walking.jpeg"
+            src={storyImage}
             alt="Fynn und Eileen auf Lombok"
             class="w-full aspect-[4/3] object-cover rounded-r-2xl"
             loading="lazy"
@@ -104,7 +144,7 @@ const faqs = homeData?.homeFaqs?.length
           <!-- Postcard caption overlay -->
           <div class="absolute bottom-6 right-6 max-w-xs bg-cream text-black/80 px-5 py-4 shadow-2xl rotate-[-1.5deg]">
             <p class="font-serif italic text-base leading-snug">
-              Lombok, März 2023 — der eine Welpe, der alles veränderte.
+              {storyPostcard}
             </p>
             <div class="mt-2 h-px w-10 bg-black/30" />
             <p class="mt-1 text-[10px] uppercase tracking-widest text-black/50">Fynn &amp; Eileen</p>
@@ -118,15 +158,15 @@ const faqs = homeData?.homeFaqs?.length
       </div>
 
       <div class="lg:col-span-5 container-x lg:px-0 lg:pr-8">
-        <p class="eyebrow mb-4">Unsere Geschichte</p>
+        <p class="eyebrow mb-4">{storyEyebrow}</p>
         <h2 class="section-heading mb-6">
-          Aus Mitleid wurde Verantwortung.
+          <Lines text={storyHeadline} />
         </h2>
         <p class="prose-dark text-lg mb-4">
-          Eigentlich wollten Fynn &amp; Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.
+          {storyText1}
         </p>
         <p class="prose-dark mb-8">
-          Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins <strong class="text-white">Travel2Rescue e.V.</strong> und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.
+          {storyText2}
         </p>
         <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
       </div>
@@ -137,36 +177,11 @@ const faqs = homeData?.homeFaqs?.length
   <section class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Was wir konkret tun</p>
-        <h2 class="section-heading">Direkt helfen. Nachhaltig verändern.</h2>
+        <p class="eyebrow mb-3">{servicesEyebrow}</p>
+        <h2 class="section-heading"><Lines text={servicesHeadline} /></h2>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {[
-          {
-            title: 'Rettung',
-            desc: 'Ausgesetzt, angefahren, dem Tod nah – wir nehmen uns den Hunden an, die ohne uns keine Chance hätten.',
-            // Lucide: heart-handshake
-            svg: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/><path d="m12 5 1.6 1.6"/><path d="M22 16.92V19.5a2.5 2.5 0 0 1-2.5 2.5h-15A2.5 2.5 0 0 1 2 19.5v-2.58"/><path d="m6 14 4 4"/><path d="m14 14-4 4"/>',
-          },
-          {
-            title: 'Medizinische Versorgung',
-            desc: 'Operationen, Wundversorgung, Parasitenbehandlung – wir bezahlen die Not-OP, die über Leben und Tod entscheidet.',
-            // Lucide: stethoscope
-            svg: '<path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/>',
-          },
-          {
-            title: 'Kastration',
-            desc: 'Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel.',
-            // Lucide: scissors
-            svg: '<circle cx="6" cy="6" r="3"/><path d="M8.12 8.12 12 12"/><path d="M20 4 8.12 15.88"/><circle cx="6" cy="18" r="3"/><path d="M14.8 14.8 20 20"/>',
-          },
-          {
-            title: 'Fütterung',
-            desc: 'Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe.',
-            // Lucide: bone
-            svg: '<path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/>',
-          },
-        ].map((item) => (
+        {services.map((item) => (
           <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 p-7 hover:bg-amber-500/10 transition-colors">
             <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-500">
               <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" set:html={item.svg} />
@@ -186,9 +201,9 @@ const faqs = homeData?.homeFaqs?.length
         <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
           Aktuell warten {DOGS.length} {DOGS.length === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
         </p>
-        <p class="eyebrow mb-3">Zur Adoption freigegeben</p>
-        <h2 class="section-heading">Sie warten auf dich.</h2>
-        <p class="section-subheading mx-auto mt-4">Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.</p>
+        <p class="eyebrow mb-3">{dogsEyebrow}</p>
+        <h2 class="section-heading">{dogsHeadline}</h2>
+        <p class="section-subheading mx-auto mt-4">{dogsSub}</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
         {DOGS.map((dog) => (
@@ -218,7 +233,7 @@ const faqs = homeData?.homeFaqs?.length
           <path d="M9.13 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L11.83 19s7.3-3.9 7.3-11.5c0-2.8-1.9-4.7-4.5-4.7-2.8 0-5.5 2-5.5 6.7zM0 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L2.7 19S10 15.1 10 7.5C10 4.7 8.1 2.8 5.5 2.8 2.7 2.8 0 4.8 0 9.5z" />
         </svg>
         <blockquote class="font-serif italic text-3xl md:text-5xl text-white leading-[1.25] mb-10">
-          „{homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.'}"
+          „{founderQuote}"
         </blockquote>
         <div class="flex items-center justify-center gap-4">
           <img
@@ -240,8 +255,8 @@ const faqs = homeData?.homeFaqs?.length
   <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-12">
-        <p class="eyebrow mb-3">Häufige Fragen</p>
-        <h2 class="section-heading">FAQ</h2>
+        <p class="eyebrow mb-3">{faqEyebrow}</p>
+        <h2 class="section-heading">{faqHeadline}</h2>
       </div>
       <div class="divide-y divide-white/5 border-y border-white/5">
         {faqs.map((faq) => (
@@ -264,8 +279,6 @@ const faqs = homeData?.homeFaqs?.length
   </section>
 
   <CTABand
-    headline="Wir brauchen Deine Hilfe."
-    sub="Jede Spende, egal wie groß, rettet Leben. Heute. Sofort."
     primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
     secondary={{ label: 'Hund adoptieren', href: '/adoptieren/' }}
   />

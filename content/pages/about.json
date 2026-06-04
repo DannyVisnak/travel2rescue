@@ -1,0 +1,44 @@
+{
+  "heroEyebrow": "Über uns",
+  "heroTitle": "Wer sind",
+  "heroTitleAccent": "wir eigentlich?",
+  "heroSub": "Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.",
+  "heroImage": null,
+  "storyEyebrow": "Wie alles begann",
+  "storyHeadline": "Der Weg\nzum Verein.",
+  "storyChapters": [
+    {
+      "title": "Der Plan war einfach.",
+      "text": "Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien.",
+      "image": "IMG_2198.jpg"
+    },
+    {
+      "title": "Dann kam dieser Welpe.",
+      "text": "Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit.",
+      "image": "IMG_0991.jpg"
+    },
+    {
+      "title": "Aus einer Schüssel Futter wurde eine Bewegung.",
+      "text": "Statt weiterzureisen, blieben sie auf Bali, dann Lombok. Was mit gelegentlichem Futter vor der Tür begann, sprach sich herum. Bald warteten immer mehr hungrige Schnauzen. Medizinische Notfälle kamen hinzu. Die Reise war vorbei. Die Mission hatte begonnen.",
+      "image": "IMG_4737.jpg"
+    },
+    {
+      "title": "Travel2Rescue e.V. war geboren.",
+      "text": "Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.",
+      "image": "IMG_2820.jpg"
+    }
+  ],
+  "teamEyebrow": "Das Team",
+  "teamHeadline": "Kein Büro.\nKeine Bürokratie.",
+  "teamSub": "Nur wir zwei, ein paar Helfer und eine riesige Mission.",
+  "realityEyebrow": "Die Realität",
+  "realityHeadline": "Kein klassischer\nTierschutzverein.",
+  "realityImage": "IMG_2543.jpg",
+  "realityPoints": [
+    { "title": "Unsere Struktur", "desc": "Kein großes Team, keine Bürokratie. Jeder Cent fließt direkt in die Hilfe für die Hunde. Wir zwei, ein paar angestellte Helfer und eine überwältigende Aufgabe." },
+    { "title": "Unser Alltag", "desc": "Statt Romantik gibt es Schweiß, Tränen und durchwachte Nächte. Kampf gegen Tötungen, Kastrationen und Notfälle auf der Straße. Kein Urlaub. Keine Pause." },
+    { "title": "Unser Antrieb", "desc": "Zwischen Straßenkampf und Tierklinik versuchen sie, ihr Leben zu erhalten. Chaotisch, ja. Aber sie würden es niemals tauschen." }
+  ],
+  "contactEyebrow": "Direkt schreiben",
+  "contactHeadline": "Wir freuen uns\nvon dir zu hören."
+}
