@@ -4,6 +4,8 @@ import StatsBand from '@/components/StatsBand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Lines from '@/components/Lines.astro';
+import FaqSchema from '@/components/FaqSchema.astro';
+import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
@@ -15,7 +17,7 @@ const heroEyebrow = helpData?.heroEyebrow ?? 'Jetzt helfen';
 const heroTitle = helpData?.heroTitle ?? 'Deine Hilfe';
 const heroTitleAccent = helpData?.heroTitleAccent ?? 'rettet Leben.';
 const heroSub = helpData?.heroSub ?? 'Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.';
-const heroImage = helpData?.heroImage ?? '/images/IMG_4737.jpg';
+const heroImage = img(helpData?.heroImage, '/images/IMG_4737.jpg');
 
 const tiersEyebrow = helpData?.tiersEyebrow ?? 'Konkrete Wirkung';
 const tiersHeadline = helpData?.tiersHeadline ?? 'Was deine Spende\nkonkret bewirkt.';
@@ -46,7 +48,7 @@ const ways = waysSource.map((w, i) => ({
   ...w,
   id: WAY_META[i]?.id ?? `way-${i}`,
   iconKey: WAY_META[i]?.iconKey ?? 'heart',
-  image: (w as any).image ?? WAY_META[i]?.image ?? '/images/IMG_2977.jpg',
+  image: img((w as any).image, WAY_META[i]?.image ?? '/images/IMG_2977.jpg'),
 }));
 
 const volunteerEyebrow = helpData?.volunteerEyebrow ?? 'Freiwilligenarbeit';
@@ -57,7 +59,7 @@ const volunteerLabels = helpData?.volunteerTasks?.length
   ? helpData.volunteerTasks
   : ['Futter verteilen', 'Gassi gehen', 'Bauprojekte', 'Kuscheln'];
 const volunteerTasks = volunteerLabels.map((label, i) => ({ label, iconKey: VOLUNTEER_ICONS[i] ?? 'paw' }));
-const volunteerImage = helpData?.volunteerImage ?? '/images/IMG_2820.jpg';
+const volunteerImage = img(helpData?.volunteerImage, '/images/IMG_2820.jpg');
 
 const adoptStepsEyebrow = helpData?.adoptStepsEyebrow ?? 'Adoption';
 const adoptStepsHeadline = helpData?.adoptStepsHeadline ?? 'Der Weg zur';
@@ -70,7 +72,7 @@ const adoptSteps = helpData?.adoptSteps?.length
       'Videocall mit Eileen',
       'Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)',
     ];
-const adoptStepsImage = helpData?.adoptStepsImage ?? '/images/IMG_9452.jpg';
+const adoptStepsImage = img(helpData?.adoptStepsImage, '/images/IMG_9452.jpg');
 
 const faqEyebrow = helpData?.faqEyebrow ?? 'Häufige Fragen';
 const faqHeadline = helpData?.faqHeadline ?? 'FAQ';
@@ -370,4 +372,6 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
       <ContactForm subject="Helfen – Anfrage" />
     </div>
   </section>
+
+  <FaqSchema faqs={faqs} />
 </BaseLayout>

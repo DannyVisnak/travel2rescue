@@ -4,8 +4,10 @@ import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import DogCard from '@/components/DogCard.astro';
 import Lines from '@/components/Lines.astro';
+import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries
@@ -20,7 +22,7 @@ const heroTitleTop = homeData?.heroTitleTop ?? '50.000';
 const heroTitleAccent = homeData?.heroTitleAccent ?? 'Straßenhunde.';
 const heroTitleBottom = homeData?.heroTitleBottom ?? 'Nur wir sehen hin.';
 const heroSub = homeData?.heroSub ?? 'Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.';
-const heroImage = homeData?.heroImage ?? '/images/new_hero.jpeg';
+const heroImage = img(homeData?.heroImage, '/images/new_hero.jpeg');
 
 const trustItems = homeData?.trustItems?.length
   ? homeData.trustItems
@@ -31,7 +33,7 @@ const storyEyebrow = homeData?.storyEyebrow ?? 'Unsere Geschichte';
 const storyHeadline = homeData?.storyHeadline ?? 'Aus Mitleid wurde Verantwortung.';
 const storyText1 = homeData?.storyText1 ?? 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
 const storyText2 = homeData?.storyText2 ?? 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
-const storyImage = homeData?.storyImage ?? '/images/fynn eileen walking.jpeg';
+const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
 const storyPostcard = homeData?.storyPostcard ?? 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
 
 // Was wir tun — icons stay fixed, text editable
@@ -282,4 +284,6 @@ const faqs = homeData?.homeFaqs?.length
     primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
     secondary={{ label: 'Hund adoptieren', href: '/adoptieren/' }}
   />
+
+  <FaqSchema faqs={faqs} />
 </BaseLayout>

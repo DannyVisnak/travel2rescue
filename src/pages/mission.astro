@@ -4,6 +4,7 @@ import StatsBand from '@/components/StatsBand.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const m = await reader.singletons.missionContent.read();
 
@@ -11,7 +12,7 @@ const heroEyebrow = m?.heroEyebrow ?? 'Unsere Mission';
 const heroTitle = m?.heroTitle ?? 'Wir kämpfen für Hunde,';
 const heroTitleAccent = m?.heroTitleAccent ?? 'die sonst niemand sieht.';
 const heroSub = m?.heroSub ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.';
-const heroImage = m?.heroImage ?? '/images/IMG_2977.jpg';
+const heroImage = img(m?.heroImage, '/images/IMG_2977.jpg');
 
 const problemEyebrow = m?.problemEyebrow ?? 'Das Problem';
 const problemHeadline = m?.problemHeadline ?? 'Der tägliche\nÜberlebenskampf.';
@@ -21,7 +22,7 @@ const defaultProblems = [
   { title: 'Gezielte Tötungen & Krankheiten', image: '/images/IMG_3554.jpg', desc: 'Dazu kommt die Gefahr durch Vergiftungen, wenn versucht wird, das „Straßenhundeproblem" auf grausame Weise zu lösen. Unbehandelte Wunden, Parasiten und Hautkrankheiten schwächen die Tiere täglich.', solution: 'Impf- und Entwurmungsprogramme, Behandlung von Hautkrankheiten, Aufklärung über humanen Tierschutz.' },
 ];
 const problems = m?.problems?.length
-  ? m.problems.map((p) => ({ ...p, image: p.image ?? '/images/IMG_2027.jpg' }))
+  ? m.problems.map((p) => ({ ...p, image: img(p.image, '/images/IMG_2027.jpg') }))
   : defaultProblems;
 
 const quote = m?.quote ?? 'Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben.';
@@ -37,7 +38,7 @@ const defaultPillars = [
   { title: 'Rettungen', desc: 'Wenn ein Hund angefahren, ausgesetzt oder in akuter Lebensgefahr ist, handeln wir sofort. Wir fokussieren uns auf den Süden Lomboks, holen Notfälle von der Straße und geben ihnen ein Zuhause auf Zeit.', image: '/images/IMG_2543.jpg', stat: '0 €', statLabel: 'Verwaltungskosten' },
 ];
 const pillars = m?.pillars?.length
-  ? m.pillars.map((p) => ({ ...p, image: p.image ?? '/images/IMG_2322.jpg' }))
+  ? m.pillars.map((p) => ({ ...p, image: img(p.image, '/images/IMG_2322.jpg') }))
   : defaultPillars;
 
 const catsEyebrow = m?.catsEyebrow ?? 'Auch sie brauchen uns';
@@ -45,7 +46,7 @@ const catsHeadline = m?.catsHeadline ?? 'Die Straßenkatzen –\nwir schauen nic
 const catsText1 = m?.catsText1 ?? 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.';
 const catsText2 = m?.catsText2 ?? 'In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
 const catsLinkLabel = m?.catsLinkLabel ?? 'Projekt Wing NGO Sumatra';
-const catsImage = m?.catsImage ?? '/images/IMG_5371.jpg';
+const catsImage = img(m?.catsImage, '/images/IMG_5371.jpg');
 
 const visionEyebrow = m?.visionEyebrow ?? 'Unsere Vision';
 const visionHeadline = m?.visionHeadline ?? 'Größer als\nwir selbst.';

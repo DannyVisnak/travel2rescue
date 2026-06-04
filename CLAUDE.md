@@ -74,7 +74,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 
 Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist. **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
-**Image field note**: Dog and project `image` fields use `fields.image({ directory: 'public/images', publicPath: '/images/' })`. JSON stores just the filename (e.g., `IMG_0991.jpeg`). The reader prepends `/images/` automatically. When migrating existing entries with `/images/filename` paths, strip the prefix.
+**Image field note**: All `fields.image({ directory: 'public/images', publicPath: '/images/' })` fields store just the filename in JSON (e.g., `IMG_0991.jpeg`). ⚠️ The `reader` does **NOT** prepend `publicPath` for `fields.image` (that only happens for document-field images) — it returns the bare filename. So always wrap image values with `img()` from `src/lib/img.ts` before using them in `src=`/`ogImage`: `img(entry.image, '/images/fallback.jpg')`. `img()` prepends `/images/` to bare names and passes through values already starting with `/` or `http`, so it's safe on fallbacks too. (Before this helper existed, every CMS image rendered as a relative URL and 404'd.)
 
 ### Static fallbacks
 
@@ -209,7 +209,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 3. **Resend mail integration** — Both forms POST to internal API routes (`/api/contact`, `/api/adoption`) which send via Resend (`src/lib/email.ts`). Requires `RESEND_API_KEY` in Vercel. Optional: `RESEND_FROM` (default `Travel2Rescue <kontakt@travel2rescue.de>`) and `RESEND_TO` (default `travel2rescue@gmail.com`). Sender domain `travel2rescue.de` must be verified in Resend (DNS records).
 
-4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
+4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader returns it **bare** (no `publicPath` prepend), so consume it through `img()` from `src/lib/img.ts`. If you see broken images, check the value is wrapped in `img(...)` and that `content/*/[entry].json` has bare filenames.
 
 5. **Heavy portrait images (~6MB each)** — `eileen-portrait.jpeg` and `fynn portrait.jpeg` are ~3500px wide. Slow to fetch in Keystatic admin and on the live page. Consider downscaling to ~1200px / quality 80 (~300KB).
 

@@ -5,6 +5,7 @@ import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const team = await reader.singletons.team.read();
 const c = await reader.singletons.aboutContent.read();
@@ -13,7 +14,7 @@ const heroEyebrow = c?.heroEyebrow ?? 'Über uns';
 const heroTitle = c?.heroTitle ?? 'Wer sind';
 const heroTitleAccent = c?.heroTitleAccent ?? 'wir eigentlich?';
 const heroSub = c?.heroSub ?? 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
-const heroImage = c?.heroImage ?? '/images/fynn eileen dogs horizontal.jpg';
+const heroImage = img(c?.heroImage, '/images/fynn eileen dogs horizontal.jpg');
 
 const storyEyebrow = c?.storyEyebrow ?? 'Wie alles begann';
 const storyHeadline = c?.storyHeadline ?? 'Der Weg\nzum Verein.';
@@ -24,7 +25,7 @@ const defaultChapters = [
   { title: 'Travel2Rescue e.V. war geboren.', text: 'Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.', image: '/images/IMG_2820.jpg' },
 ];
 const storyChapters = c?.storyChapters?.length
-  ? c.storyChapters.map((ch, i) => ({ ...ch, image: ch.image ?? defaultChapters[i]?.image ?? '/images/IMG_2198.jpg' }))
+  ? c.storyChapters.map((ch, i) => ({ ...ch, image: img(ch.image, defaultChapters[i]?.image ?? '/images/IMG_2198.jpg') }))
   : defaultChapters;
 
 const teamEyebrow = c?.teamEyebrow ?? 'Das Team';
@@ -33,7 +34,7 @@ const teamSub = c?.teamSub ?? 'Nur wir zwei, ein paar Helfer und eine riesige Mi
 
 const realityEyebrow = c?.realityEyebrow ?? 'Die Realität';
 const realityHeadline = c?.realityHeadline ?? 'Kein klassischer\nTierschutzverein.';
-const realityImage = c?.realityImage ?? '/images/IMG_2543.jpg';
+const realityImage = img(c?.realityImage, '/images/IMG_2543.jpg');
 const realityPoints = c?.realityPoints?.length
   ? c.realityPoints
   : [
@@ -108,7 +109,7 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
         <!-- Eileen -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src={team?.eileenImage ?? '/images/eileen-portrait.jpeg'} alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={img(team?.eileenImage, '/images/eileen-portrait.jpeg')} alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Eileen</h3>
@@ -128,7 +129,7 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
         <!-- Fynn -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src={team?.fynnImage ?? '/images/fynn-portrait.jpeg'} alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={img(team?.fynnImage, '/images/fynn-portrait.jpeg')} alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Fynn</h3>

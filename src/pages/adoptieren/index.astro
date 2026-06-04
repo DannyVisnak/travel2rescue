@@ -6,7 +6,9 @@ import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import VermitteltStrip from '@/components/VermitteltStrip.astro';
 import Lines from '@/components/Lines.astro';
+import FaqSchema from '@/components/FaqSchema.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
@@ -18,7 +20,7 @@ const heroEyebrow = a?.heroEyebrow ?? 'Adoption · 6–7 Monate';
 const heroTitle = a?.heroTitle ?? 'Find deinen';
 const heroTitleAccent = a?.heroTitleAccent ?? 'besten Freund fürs Leben.';
 const heroSub = a?.heroSub ?? 'Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.';
-const heroImage = a?.heroImage ?? '/images/fynneileen dogs.jpeg';
+const heroImage = img(a?.heroImage, '/images/fynneileen dogs.jpeg');
 
 const commitmentEyebrow = a?.commitmentEyebrow ?? 'Was uns unterscheidet';
 const commitmentText = a?.commitmentText ?? 'Eine Adoption aus Lombok dauert';
@@ -44,7 +46,7 @@ const benefitsEyebrow = a?.benefitsEyebrow ?? 'Was dich erwartet';
 const benefitsHeadline = a?.benefitsHeadline ?? 'Ein gesundes Tier.';
 const benefitsHeadlineAccent = a?.benefitsHeadlineAccent ?? 'Und eine echte Beziehung.';
 const benefitsSub = a?.benefitsSub ?? 'Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.';
-const benefitsImage = a?.benefitsImage ?? '/images/IMG_9452.jpg';
+const benefitsImage = img(a?.benefitsImage, '/images/IMG_9452.jpg');
 const benefits = a?.benefits?.length
   ? a.benefits
   : [
@@ -266,4 +268,6 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
     primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
     secondary={{ label: 'Volunteer werden', href: '/helfen/#volunteer' }}
   />
+
+  <FaqSchema faqs={faqs} />
 </BaseLayout>

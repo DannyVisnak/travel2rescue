@@ -4,6 +4,7 @@ import CTABand from '@/components/CTABand.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const projectEntries = await reader.collections.projects.all();
 const PROJECTS = projectEntries
@@ -15,7 +16,7 @@ const heroEyebrow = p?.heroEyebrow ?? 'Aktive Projekte';
 const heroTitle = p?.heroTitle ?? 'Hier passiert';
 const heroTitleAccent = p?.heroTitleAccent ?? 'die Arbeit.';
 const heroSub = p?.heroSub ?? 'Drei konkrete Projekte. Drei Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
-const heroImage = p?.heroImage ?? '/images/IMG_2820.jpg';
+const heroImage = img(p?.heroImage, '/images/IMG_2820.jpg');
 
 const outroEyebrow = p?.outroEyebrow ?? 'Mehr kommt';
 const outroHeadline = p?.outroHeadline ?? 'Jede Spende ermöglicht\ndas nächste Projekt.';
@@ -60,7 +61,7 @@ const outroButton = p?.outroButton ?? 'Projekte unterstützen';
           <div id={project.id} class={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
             <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
               <img
-                src={project.image}
+                src={img(project.image)}
                 alt={project.title}
                 class="rounded-2xl w-full aspect-[4/3] object-cover"
                 loading="lazy"

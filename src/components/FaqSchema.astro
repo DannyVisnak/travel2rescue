@@ -1,0 +1,25 @@
+---
+// Emits FAQPage JSON-LD so FAQ entries are eligible for Google rich results.
+// Pass the same faqs array a page renders.
+interface FaqEntry {
+  question: string;
+  answer: string;
+}
+interface Props {
+  faqs: FaqEntry[];
+}
+const { faqs } = Astro.props;
+const mainEntity = (faqs ?? [])
+  .filter((f) => f.question && f.answer)
+  .map((f) => ({
+    '@type': 'Question',
+    name: f.question,
+    acceptedAnswer: { '@type': 'Answer', text: f.answer },
+  }));
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity,
+};
+---
+{mainEntity.length > 0 && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
