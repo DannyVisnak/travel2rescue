@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Keep the CMS admin and form/API endpoints out of search results
+Disallow: /keystatic/
+Disallow: /api/
+
+Sitemap: https://www.travel2rescue.de/sitemap-index.xml
