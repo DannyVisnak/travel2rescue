@@ -33,7 +33,9 @@ export const SITE = {
     operiert: '100+',
   },
   og: {
-    image: '/images/fynn eileen dogs horizontal.jpg',
+    image: '/og-image.png',
+    width: 1200,
+    height: 630,
   },
 };
 
