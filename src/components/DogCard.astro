@@ -1,5 +1,6 @@
 ---
 import type { Dog } from '@/data/dogs';
+import { img } from '@/lib/img';
 
 interface Props {
   dog: Dog;
@@ -11,7 +12,7 @@ const { dog } = Astro.props;
 <article class="card group overflow-hidden">
   <div class="relative aspect-[4/3] overflow-hidden">
     <img
-      src={dog.image}
+      src={img(dog.image)}
       alt={`${dog.name} – zur Adoption`}
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"
