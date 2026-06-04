@@ -1,5 +1,9 @@
 ---
 import { SITE, NAV } from '@/data/site';
+import { reader } from '@/lib/keystatic';
+
+const site = await reader.singletons.siteContent.read();
+const footerTagline = site?.footerTagline ?? 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
 ---
 
 <footer class="bg-gray-dark border-t border-white/5 pt-16 pb-8">
@@ -10,7 +14,7 @@ import { SITE, NAV } from '@/data/site';
           <img src="/logo.avif" alt={SITE.name} class="h-10 w-auto mb-4" loading="lazy" />
         </a>
         <p class="text-white/50 text-sm leading-relaxed max-w-xs">
-          Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.
+          {footerTagline}
         </p>
         <div class="flex gap-3 mt-5">
           <a

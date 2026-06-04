@@ -1,8 +1,57 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
-import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import Lines from '@/components/Lines.astro';
+import { reader } from '@/lib/keystatic';
+
+const m = await reader.singletons.missionContent.read();
+
+const heroEyebrow = m?.heroEyebrow ?? 'Unsere Mission';
+const heroTitle = m?.heroTitle ?? 'Wir kämpfen für Hunde,';
+const heroTitleAccent = m?.heroTitleAccent ?? 'die sonst niemand sieht.';
+const heroSub = m?.heroSub ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.';
+const heroImage = m?.heroImage ?? '/images/IMG_2977.jpg';
+
+const problemEyebrow = m?.problemEyebrow ?? 'Das Problem';
+const problemHeadline = m?.problemHeadline ?? 'Der tägliche\nÜberlebenskampf.';
+const defaultProblems = [
+  { title: 'Der ständige Hunger', image: '/images/IMG_2027.jpg', desc: 'Für die meisten Hunde auf Lombok gibt es niemanden, der hinsieht. Aus purer Verzweiflung fressen viele Steine, Müll oder Plastik – das führt zu inneren Verletzungen, Vergiftungen und oft einem qualvollen Tod.', solution: 'Tägliche Fütterungsrunden, sauberes Wasser, Aufklärung der Gemeinden über artgerechte Ernährung.' },
+  { title: 'Gefahr auf der Straße', image: '/images/IMG_0891.jpg', desc: 'Unfälle mit Rollern oder Autos sind Alltag. Viele Hunde bleiben schwer verletzt oder gelähmt am Straßenrand zurück – ohne jede medizinische Hilfe, ohne dass jemand kommt.', solution: 'Mobile Tierarztteams, Rettung und Transport zu Tierkliniken, Rehabilitationsprogramme.' },
+  { title: 'Gezielte Tötungen & Krankheiten', image: '/images/IMG_3554.jpg', desc: 'Dazu kommt die Gefahr durch Vergiftungen, wenn versucht wird, das „Straßenhundeproblem" auf grausame Weise zu lösen. Unbehandelte Wunden, Parasiten und Hautkrankheiten schwächen die Tiere täglich.', solution: 'Impf- und Entwurmungsprogramme, Behandlung von Hautkrankheiten, Aufklärung über humanen Tierschutz.' },
+];
+const problems = m?.problems?.length
+  ? m.problems.map((p) => ({ ...p, image: p.image ?? '/images/IMG_2027.jpg' }))
+  : defaultProblems;
+
+const quote = m?.quote ?? 'Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben.';
+const quoteAuthor = m?.quoteAuthor ?? 'Fynn & Eileen';
+
+const pillarsEyebrow = m?.pillarsEyebrow ?? 'Unser Ansatz';
+const pillarsHeadline = m?.pillarsHeadline ?? 'Den Kreislauf\ndurchbrechen.';
+const pillarsSub = m?.pillarsSub ?? 'Wir bekämpfen nicht nur die Symptome. Wir packen das Problem an der Wurzel.';
+const defaultPillars = [
+  { title: 'Kastrationen', desc: 'Nur durch flächendeckende Kastrationen stoppen wir das Leid, bevor es entsteht. Eine einzige unkastrierte Hündin kann in 6 Jahren durch unkontrollierte Vermehrung bis zu 60.000 Nachkommen verursachen.', image: '/images/IMG_2322.jpg', stat: '2.500+', statLabel: 'Kastrationen durchgeführt' },
+  { title: 'Fütterungen', desc: 'Futter bedeutet Leben – und Vertrauen. Wir versorgen die Straßenhunde täglich mit nahrhaftem Futter und frischem Wasser. Diese Fütterungsrunden bewahren vor giftigem Müll und bauen das Vertrauen auf, das wir für medizinische Hilfe brauchen.', image: '/images/IMG_4737.jpg', stat: '3,7 Tonnen', statLabel: 'Futter verteilt' },
+  { title: 'Medizinische Versorgung', desc: 'Schon kleine Verletzungen können ohne Hilfe tödlich enden. Jeder von uns kastrierte Hund erhält automatisch eine Parasitenbehandlung. Auf der Straße versorgen wir tiefe Wunden und stoppen lebensgefährlichen Madenbefall.', image: '/images/IMG_0991.jpg', stat: '100+', statLabel: 'Hunde monatlich operiert' },
+  { title: 'Rettungen', desc: 'Wenn ein Hund angefahren, ausgesetzt oder in akuter Lebensgefahr ist, handeln wir sofort. Wir fokussieren uns auf den Süden Lomboks, holen Notfälle von der Straße und geben ihnen ein Zuhause auf Zeit.', image: '/images/IMG_2543.jpg', stat: '0 €', statLabel: 'Verwaltungskosten' },
+];
+const pillars = m?.pillars?.length
+  ? m.pillars.map((p) => ({ ...p, image: p.image ?? '/images/IMG_2322.jpg' }))
+  : defaultPillars;
+
+const catsEyebrow = m?.catsEyebrow ?? 'Auch sie brauchen uns';
+const catsHeadline = m?.catsHeadline ?? 'Die Straßenkatzen –\nwir schauen nicht weg.';
+const catsText1 = m?.catsText1 ?? 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.';
+const catsText2 = m?.catsText2 ?? 'In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
+const catsLinkLabel = m?.catsLinkLabel ?? 'Projekt Wing NGO Sumatra';
+const catsImage = m?.catsImage ?? '/images/IMG_5371.jpg';
+
+const visionEyebrow = m?.visionEyebrow ?? 'Unsere Vision';
+const visionHeadline = m?.visionHeadline ?? 'Größer als\nwir selbst.';
+const visionText1 = m?.visionText1 ?? 'Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.';
+const visionText2 = m?.visionText2 ?? 'Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.';
+const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
 ---
 
 <BaseLayout
@@ -13,7 +62,7 @@ import ContactForm from '@/components/ContactForm.astro';
   <section class="relative py-28 overflow-hidden">
     <div class="absolute inset-0">
       <img
-        src="/images/IMG_2977.jpg"
+        src={heroImage}
         alt="Straßenhund auf Lombok"
         class="w-full h-full object-cover"
         loading="eager"
@@ -21,13 +70,13 @@ import ContactForm from '@/components/ContactForm.astro';
       <div class="absolute inset-0 bg-black/75" />
     </div>
     <div class="container-x relative z-10 text-center max-w-3xl mx-auto">
-      <p class="eyebrow mb-5">Unsere Mission</p>
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-7xl font-semibold leading-[1.05] tracking-tight mb-6">
-        Wir kämpfen für Hunde,<br />
-        <span class="text-amber-500 italic">die sonst niemand sieht.</span>
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500 italic">{heroTitleAccent}</span>
       </h1>
       <p class="text-xl text-white/70 leading-relaxed">
-        Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.
+        {heroSub}
       </p>
     </div>
   </section>
@@ -39,33 +88,14 @@ import ContactForm from '@/components/ContactForm.astro';
   <section class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Das Problem</p>
-        <h2 class="section-heading">Der tägliche<br />Überlebenskampf.</h2>
+        <p class="eyebrow mb-3">{problemEyebrow}</p>
+        <h2 class="section-heading"><Lines text={problemHeadline} /></h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            title: 'Der ständige Hunger',
-            img: '/images/IMG_2027.jpg',
-            desc: 'Für die meisten Hunde auf Lombok gibt es niemanden, der hinsieht. Aus purer Verzweiflung fressen viele Steine, Müll oder Plastik – das führt zu inneren Verletzungen, Vergiftungen und oft einem qualvollen Tod.',
-            solution: 'Tägliche Fütterungsrunden, sauberes Wasser, Aufklärung der Gemeinden über artgerechte Ernährung.',
-          },
-          {
-            title: 'Gefahr auf der Straße',
-            img: '/images/IMG_0891.jpg',
-            desc: 'Unfälle mit Rollern oder Autos sind Alltag. Viele Hunde bleiben schwer verletzt oder gelähmt am Straßenrand zurück – ohne jede medizinische Hilfe, ohne dass jemand kommt.',
-            solution: 'Mobile Tierarztteams, Rettung und Transport zu Tierkliniken, Rehabilitationsprogramme.',
-          },
-          {
-            title: 'Gezielte Tötungen & Krankheiten',
-            img: '/images/IMG_3554.jpg',
-            desc: 'Dazu kommt die Gefahr durch Vergiftungen, wenn versucht wird, das „Straßenhundeproblem" auf grausame Weise zu lösen. Unbehandelte Wunden, Parasiten und Hautkrankheiten schwächen die Tiere täglich.',
-            solution: 'Impf- und Entwurmungsprogramme, Behandlung von Hautkrankheiten, Aufklärung über humanen Tierschutz.',
-          },
-        ].map((item) => (
+        {problems.map((item) => (
           <div class="card overflow-hidden">
             <div class="aspect-video overflow-hidden">
-              <img src={item.img} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
+              <img src={item.image} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="p-6">
               <h3 class="text-xl font-bold mb-3">{item.title}</h3>
@@ -85,9 +115,9 @@ import ContactForm from '@/components/ContactForm.astro';
   <section class="py-16 bg-forest">
     <div class="container-x text-center max-w-2xl mx-auto">
       <blockquote class="text-2xl md:text-3xl font-bold italic text-white/90 leading-relaxed">
-        „Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben."
+        „{quote}"
       </blockquote>
-      <p class="text-white/50 mt-4">Fynn &amp; Eileen</p>
+      <p class="text-white/50 mt-4">{quoteAuthor}</p>
     </div>
   </section>
 
@@ -95,52 +125,19 @@ import ContactForm from '@/components/ContactForm.astro';
   <section class="py-20 bg-gray-dark">
     <div class="container-x">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Unser Ansatz</p>
-        <h2 class="section-heading">Den Kreislauf<br />durchbrechen.</h2>
-        <p class="section-subheading mx-auto mt-4">Wir bekämpfen nicht nur die Symptome. Wir packen das Problem an der Wurzel.</p>
+        <p class="eyebrow mb-3">{pillarsEyebrow}</p>
+        <h2 class="section-heading"><Lines text={pillarsHeadline} /></h2>
+        <p class="section-subheading mx-auto mt-4">{pillarsSub}</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {[
-          {
-            nr: '01',
-            title: 'Kastrationen',
-            desc: 'Nur durch flächendeckende Kastrationen stoppen wir das Leid, bevor es entsteht. Eine einzige unkastrierte Hündin kann in 6 Jahren durch unkontrollierte Vermehrung bis zu 60.000 Nachkommen verursachen.',
-            img: '/images/IMG_2322.jpg',
-            stat: '2.500+',
-            statLabel: 'Kastrationen durchgeführt',
-          },
-          {
-            nr: '02',
-            title: 'Fütterungen',
-            desc: 'Futter bedeutet Leben – und Vertrauen. Wir versorgen die Straßenhunde täglich mit nahrhaftem Futter und frischem Wasser. Diese Fütterungsrunden bewahren vor giftigem Müll und bauen das Vertrauen auf, das wir für medizinische Hilfe brauchen.',
-            img: '/images/IMG_4737.jpg',
-            stat: '3,7 Tonnen',
-            statLabel: 'Futter verteilt',
-          },
-          {
-            nr: '03',
-            title: 'Medizinische Versorgung',
-            desc: 'Schon kleine Verletzungen können ohne Hilfe tödlich enden. Jeder von uns kastrierte Hund erhält automatisch eine Parasitenbehandlung. Auf der Straße versorgen wir tiefe Wunden und stoppen lebensgefährlichen Madenbefall.',
-            img: '/images/IMG_0991.jpg',
-            stat: '100+',
-            statLabel: 'Hunde monatlich operiert',
-          },
-          {
-            nr: '04',
-            title: 'Rettungen',
-            desc: 'Wenn ein Hund angefahren, ausgesetzt oder in akuter Lebensgefahr ist, handeln wir sofort. Wir fokussieren uns auf den Süden Lomboks, holen Notfälle von der Straße und geben ihnen ein Zuhause auf Zeit.',
-            img: '/images/IMG_2543.jpg',
-            stat: '0 €',
-            statLabel: 'Verwaltungskosten',
-          },
-        ].map((item) => (
+        {pillars.map((item, i) => (
           <div class="card overflow-hidden flex flex-col md:flex-row">
             <div class="md:w-48 shrink-0 overflow-hidden">
-              <img src={item.img} alt={item.title} class="w-full h-48 md:h-full object-cover" loading="lazy" />
+              <img src={item.image} alt={item.title} class="w-full h-48 md:h-full object-cover" loading="lazy" />
             </div>
             <div class="p-6 flex flex-col justify-between">
               <div>
-                <p class="eyebrow mb-2">Säule {item.nr}</p>
+                <p class="eyebrow mb-2">Säule {String(i + 1).padStart(2, '0')}</p>
                 <h3 class="text-xl font-bold mb-3">{item.title}</h3>
                 <p class="text-white/60 text-sm leading-relaxed">{item.desc}</p>
               </div>
@@ -160,19 +157,19 @@ import ContactForm from '@/components/ContactForm.astro';
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
-          <p class="eyebrow mb-4">Auch sie brauchen uns</p>
-          <h2 class="text-4xl font-black mb-4">Die Straßenkatzen –<br />wir schauen nicht weg.</h2>
+          <p class="eyebrow mb-4">{catsEyebrow}</p>
+          <h2 class="text-4xl font-black mb-4"><Lines text={catsHeadline} /></h2>
           <p class="prose-dark mb-4">
-            Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.
+            {catsText1}
           </p>
           <p class="prose-dark mb-6">
-            In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!
+            {catsText2}
           </p>
-          <a href="/projekte/" class="btn-ghost">Projekt Wing NGO Sumatra</a>
+          <a href="/projekte/" class="btn-ghost">{catsLinkLabel}</a>
         </div>
         <div class="relative">
           <img
-            src="/images/IMG_5371.jpg"
+            src={catsImage}
             alt="Straßenkatzen auf Lombok"
             class="rounded-2xl w-full aspect-[4/3] object-cover"
             loading="lazy"
@@ -185,15 +182,15 @@ import ContactForm from '@/components/ContactForm.astro';
   <!-- Vision -->
   <section class="py-20 bg-forest">
     <div class="container-x text-center max-w-3xl mx-auto">
-      <p class="eyebrow mb-5">Unsere Vision</p>
-      <h2 class="section-heading mb-6">Größer als<br />wir selbst.</h2>
+      <p class="eyebrow mb-5">{visionEyebrow}</p>
+      <h2 class="section-heading mb-6"><Lines text={visionHeadline} /></h2>
       <p class="text-xl text-white/70 leading-relaxed mb-8">
-        Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.
+        {visionText1}
       </p>
       <p class="text-white/60 mb-10">
-        Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.
+        {visionText2}
       </p>
-      <a href="/helfen/" class="btn-primary btn-large">Teil der Lösung werden</a>
+      <a href="/helfen/" class="btn-primary btn-large">{visionButton}</a>
     </div>
   </section>
 

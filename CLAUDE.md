@@ -38,7 +38,7 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `
 | Route | File | Purpose |
 |---|---|---|
 | `/` | `src/pages/index.astro` | Home — hero, stats, about, projects, dogs, quote, FAQ |
-| `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (hardcoded copy) |
+| `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
 | `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
 | `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic) |
@@ -62,11 +62,17 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
 | `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
 | `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
-| `reader.singletons.homeContent.read()` | Hero text, founder quote, home FAQs | `content/pages/home.json` |
-| `reader.singletons.helpContent.read()` | Helfen FAQs + adoption FAQs | `content/pages/help.json` |
+| `reader.singletons.homeContent.read()` | Whole home page: hero, story, services, dogs teaser, quote, FAQs | `content/pages/home.json` |
+| `reader.singletons.missionContent.read()` | Whole mission page: hero, problems, quote, pillars, cats, vision | `content/pages/mission.json` |
+| `reader.singletons.helpContent.read()` | Whole helfen page: hero, donation tiers, ways, volunteer, adopt steps, FAQs | `content/pages/help.json` |
+| `reader.singletons.adoptionContent.read()` | Whole adoptieren page: hero, commitment, timeline, benefits, form intro | `content/pages/adoption.json` |
+| `reader.singletons.aboutContent.read()` | Über-uns page: hero, story chapters, team/reality headings, contact | `content/pages/about.json` |
+| `reader.singletons.projectsPage.read()` | Projekte page hero + outro (project entries stay in the collection) | `content/pages/projects.json` |
+| `reader.singletons.linktreeContent.read()` | Linktree tagline + link list | `content/pages/linktree.json` |
+| `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
-Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist.
+Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist. **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
 **Image field note**: Dog and project `image` fields use `fields.image({ directory: 'public/images', publicPath: '/images/' })`. JSON stores just the filename (e.g., `IMG_0991.jpeg`). The reader prepends `/images/` automatically. When migrating existing entries with `/images/filename` paths, strip the prefix.
 
@@ -98,7 +104,8 @@ tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 - `Header.astro` — fixed nav, mobile hamburger (`aria-expanded`), logo (h-16), PayPal CTA
 - `Footer.astro` — 4-col grid, social icons (Instagram, Facebook, PayPal, TikTok)
 - `StatsBand.astro` — reads `reader.singletons.settings` directly; use `<StatsBand />` without props
-- `CTABand.astro` — accepts `headline`, `sub`, `primary`, `secondary` props
+- `CTABand.astro` — accepts `headline`, `sub`, `primary`, `secondary` props; `headline`/`sub` default to `siteContent` CMS values
+- `Lines.astro` — renders a CMS string's `\n` as `<br/>`; used for all CMS-managed headings/paragraphs
 - `ProjectCard.astro` — project card with image + status badge
 - `DogCard.astro` — adoption card linking to `/adoptieren/[dog.id]/`
 - `FAQItem.astro` — `<details>/<summary>` accordion
@@ -110,14 +117,24 @@ tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 
 ### What Eileen can edit
 
+Eileen can now edit **essentially every visible text and most images** across the public pages. Each page has its own admin entry:
+
 | Section in admin | What changes |
 |---|---|
 | 🐾 Hunde | Add dogs, update stories, upload photos directly, mark as vermittelt |
 | 🏗️ Projekte | Update descriptions, impacts, upload photos |
 | ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
-| 🏠 Startseite – Texte & FAQ | Hero headline, hero subtext, founder quote, home FAQs |
-| 💝 Helfen-Seite & Adoptions-FAQ | All FAQ entries on helfen + adoptieren pages |
+| 🏠 Startseite | Hero, trust strip, story teaser, "Was wir tun" cards, dogs teaser, founder quote, FAQs |
+| 🎯 Mission-Seite | Hero, problem cards, quote, the 4 pillars, cats section, vision |
+| 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
+| 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |
+| 📖 Über-uns-Seite (Texte) | Hero, 4 story chapters, team/reality section copy, contact heading |
 | 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
+| 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
+| 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
+| 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
+
+**Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
 
 ### Env vars (all required in Vercel)
 
@@ -218,9 +235,10 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### CMS improvements (medium effort)
 
-- [ ] **Origin story chapters** (on Über uns page) — Currently hardcoded. Could be a Keystatic singleton with 4 `fields.array()` entries if Eileen wants to update them.
-- [ ] **Mission page pillars** — The 4 pillar cards on `/mission/` are hardcoded. Rarely changes but could be CMS-managed.
-- [ ] **Adoption form questions** — See evaluation below.
+- [x] **Origin story chapters** (on Über uns page) — now a `fields.array()` in `aboutContent`.
+- [x] **Mission page pillars** — the 4 pillar cards on `/mission/` are now in `missionContent`.
+- [x] **Full page-text CMS** — every public page (home, mission, helfen, adoptieren, ueber-uns, projekte, linktree) plus footer/CTA now reads its copy from Keystatic singletons with inline fallbacks.
+- [ ] **Adoption form questions** — See evaluation below. (Still the one deliberately-hardcoded text block.)
 
 ### Nice to have (low priority)
 

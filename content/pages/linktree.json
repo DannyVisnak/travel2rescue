@@ -1,0 +1,89 @@
+{
+  "tagline": "Gemeinsam Hunden ein besseres Leben schenken.",
+  "links": [
+    {
+      "label": "Jetzt spenden – PayPal",
+      "desc": "Direkte Hilfe für die Hunde auf Lombok",
+      "href": "https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA",
+      "icon": "heart",
+      "primary": true
+    },
+    {
+      "label": "Hund adoptieren",
+      "desc": "Alle Hunde & Adoptionsformular",
+      "href": "/adoptieren/",
+      "icon": "home",
+      "primary": false
+    },
+    {
+      "label": "Adoptionsformular ausfüllen",
+      "desc": "Finde dein perfektes Match",
+      "href": "/adoptieren/formular/",
+      "icon": "clipboard-list",
+      "primary": false
+    },
+    {
+      "label": "Instagram",
+      "desc": "@travel2rescue – tägliche Updates aus Lombok",
+      "href": "https://www.instagram.com/travel2rescue",
+      "icon": "camera",
+      "primary": false
+    },
+    {
+      "label": "TikTok",
+      "desc": "@travel2rescue – Videos aus dem Alltag",
+      "href": "https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1",
+      "icon": "music",
+      "primary": false
+    },
+    {
+      "label": "Facebook",
+      "desc": "Community & Neuigkeiten",
+      "href": "https://www.facebook.com/travel2rescue",
+      "icon": "users",
+      "primary": false
+    },
+    {
+      "label": "Banküberweisung",
+      "desc": "IBAN: DE83 7805 0000 0223 2368 37",
+      "href": "mailto:travel2rescue@gmail.com?subject=Spende%20per%20%C3%9Cberweisung",
+      "icon": "landmark",
+      "primary": false
+    },
+    {
+      "label": "Unsere Mission",
+      "desc": "50.000 Straßenhunde – was wir dagegen tun",
+      "href": "/mission/",
+      "icon": "paw-print",
+      "primary": false
+    },
+    {
+      "label": "Unsere Projekte",
+      "desc": "Hundehütten, Müllhaide, Wing NGO Sumatra",
+      "href": "/projekte/",
+      "icon": "hammer",
+      "primary": false
+    },
+    {
+      "label": "Volunteer werden",
+      "desc": "Komm nach Lombok und hilf aktiv vor Ort",
+      "href": "/helfen/#volunteer",
+      "icon": "hand-helping",
+      "primary": false
+    },
+    {
+      "label": "Über Fynn & Eileen",
+      "desc": "Wie alles begann",
+      "href": "/ueber-uns/",
+      "icon": "heart",
+      "primary": false
+    },
+    {
+      "label": "Kontakt",
+      "desc": "travel2rescue@gmail.com",
+      "href": "mailto:travel2rescue@gmail.com",
+      "icon": "mail",
+      "primary": false
+    }
+  ]
+}
