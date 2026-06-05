@@ -25,10 +25,12 @@ interface LinkItem {
 }
 
 const linktreeData = await reader.singletons.linktreeContent.read();
+const cmsSettings = await reader.singletons.settings.read();
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
 const tagline = linktreeData?.tagline ?? 'Gemeinsam Hunden ein besseres Leben schenken.';
 
 const defaultLinks: LinkItem[] = [
-  { label: 'Jetzt spenden – PayPal', desc: 'Direkte Hilfe für die Hunde auf Lombok', href: SITE.social.paypal, icon: 'heart', primary: true },
+  { label: 'Jetzt spenden – PayPal', desc: 'Direkte Hilfe für die Hunde auf Lombok', href: paypalUrl, icon: 'heart', primary: true },
   { label: 'Hund adoptieren', desc: 'Alle Hunde & Adoptionsformular', href: '/adoptieren/', icon: 'home' },
   { label: 'Adoptionsformular ausfüllen', desc: 'Finde dein perfektes Match', href: '/adoptieren/formular/', icon: 'clipboard-list' },
   { label: 'Instagram', desc: '@travel2rescue – tägliche Updates aus Lombok', href: SITE.social.instagram, icon: 'camera' },

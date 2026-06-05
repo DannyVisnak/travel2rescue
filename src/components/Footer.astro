@@ -3,7 +3,9 @@ import { SITE, NAV } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
 const site = await reader.singletons.siteContent.read();
+const cmsSettings = await reader.singletons.settings.read();
 const footerTagline = site?.footerTagline ?? 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
 ---
 
 <footer class="bg-gray-dark border-t border-white/5 pt-16 pb-8">
@@ -40,7 +42,7 @@ const footerTagline = site?.footerTagline ?? 'Tierschutz auf Lombok, Indonesien.
             </svg>
           </a>
           <a
-            href={SITE.social.paypal}
+            href={paypalUrl}
             target="_blank"
             rel="noopener noreferrer"
             class="w-9 h-9 rounded-full bg-white/5 hover:bg-amber-500/20 border border-white/10 flex items-center justify-center transition-colors"
