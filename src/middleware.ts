@@ -53,7 +53,9 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const password = (import.meta.env.SITE_PASSWORD as string | undefined) ?? '';
+  // Runtime env var read. `import.meta.env` would be Vite-replaced at build
+  // time with the build env's value (none), so the lock would never activate.
+  const password = (typeof process !== 'undefined' && process.env.SITE_PASSWORD) || '';
   if (!password) return next();
 
   const path = new URL(context.request.url).pathname;
