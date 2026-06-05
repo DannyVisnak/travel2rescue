@@ -6,24 +6,29 @@ import { defineMiddleware } from 'astro:middleware';
  * Activated by the SITE_PASSWORD env var (set it in Vercel). When unset, this
  * middleware is a no-op so production keeps behaving normally.
  *
- * Uses HTTP Basic Auth — the browser's native dialog — because it's the
- * fastest path to a working lock that survives reloads, works on every page
- * (incl. prerendered), and doesn't need a custom login UI we have to maintain.
+ * IMPORTANT — what this currently does and doesn't do:
  *
- * The username field can be anything; only the password is checked. We compare
- * in constant time so the response timing doesn't leak the password length.
+ * 1) Reads the password at RUNTIME via process.env (not import.meta.env),
+ *    so flipping SITE_PASSWORD in Vercel doesn't require a rebuild.
  *
- * NOTE: requires `edgeMiddleware: true` on the Vercel adapter (configured in
- * astro.config.mjs) so this runs for prerendered routes too — otherwise it
- * would only fire on dynamic routes and the static HTML would be served
- * directly from the CDN.
+ * 2) NEVER fires during prerendering (context.isPrerendered check). Otherwise
+ *    Astro would run this at build time and replace every prerendered page
+ *    with the 401 body, leaving the whole site stuck on "enter password" even
+ *    after the env var is removed.
+ *
+ * 3) Without `edgeMiddleware: true` on the Vercel adapter, this only runs for
+ *    DYNAMIC routes (API endpoints, /keystatic). The static HTML pages bypass
+ *    it. For a true sitewide lock covering prerendered pages, the right tool
+ *    is Vercel's Deployment Protection (dashboard → Settings → Deployment
+ *    Protection → Vercel Authentication), which is free on Hobby+.
+ *
+ * 4) The WWW-Authenticate realm is ASCII-only — HTTP header values can't
+ *    contain characters > 255, so an em dash in there crashes Response().
  */
 
-const REALM = 'travel2rescue — in Bearbeitung';
+const REALM = 'travel2rescue'; // ASCII only — Response() rejects bytes > 255
 
 // Paths that stay accessible even while the public site is locked.
-// Eileen must keep editing via the CMS, monitors must keep pinging health, and
-// browsers need icons + manifest for the auth dialog tab.
 const PUBLIC_PATH_PREFIXES = [
   '/keystatic',
   '/api/keystatic',
@@ -38,11 +43,6 @@ const PUBLIC_EXACT_PATHS = new Set([
   '/robots.txt',
 ]);
 
-function decodeBase64(s: string): string {
-  // atob is available in all Edge runtimes and modern Node.
-  return atob(s);
-}
-
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let mismatch = 0;
@@ -53,22 +53,28 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const password = (import.meta.env.SITE_PASSWORD as string | undefined) ?? '';
+  // Astro 5 runs middleware during prerendering. If we return a 401 here,
+  // that body becomes the prerendered HTML — every page on the site would
+  // then serve "enter password" even after SITE_PASSWORD is removed. Skip.
+  if (context.isPrerendered) return next();
+
+  // Runtime env var read. `import.meta.env` would be Vite-replaced at build
+  // time with the build env's value (usually empty), so the lock would never
+  // actually activate even when the var is set in Vercel.
+  const password = (typeof process !== 'undefined' && process.env.SITE_PASSWORD) || '';
   if (!password) return next();
 
   const path = new URL(context.request.url).pathname;
 
   if (PUBLIC_EXACT_PATHS.has(path)) return next();
   for (const prefix of PUBLIC_PATH_PREFIXES) {
-    if (path === prefix || path.startsWith(prefix + '/') || path.startsWith(prefix)) {
-      return next();
-    }
+    if (path.startsWith(prefix)) return next();
   }
 
-  const auth = context.request.headers.get('authorization') ?? '';
+  const auth = context.request.headers.get('authorization') || '';
   if (auth.startsWith('Basic ')) {
     try {
-      const decoded = decodeBase64(auth.slice(6));
+      const decoded = atob(auth.slice(6));
       const colonIdx = decoded.indexOf(':');
       const candidate = colonIdx === -1 ? decoded : decoded.slice(colonIdx + 1);
       if (timingSafeEqual(candidate, password)) return next();
