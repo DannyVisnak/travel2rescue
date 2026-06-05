@@ -89,20 +89,22 @@ const SECTIONS: Section[] = [
 ];
 
 export async function POST(context: APIContext): Promise<Response> {
+  const wantsJson = (context.request.headers.get('accept') ?? '').includes('application/json');
+
   if (!resend) {
     console.error('[adoption] RESEND_API_KEY not configured');
-    return json({ ok: false, error: 'Mailversand nicht konfiguriert.' }, 500);
+    return respond(context, wantsJson, false, 'Mailversand nicht konfiguriert.', 500);
   }
 
   let data: FormData;
   try {
     data = await context.request.formData();
   } catch {
-    return json({ ok: false, error: 'Ungültige Anfrage.' }, 400);
+    return respond(context, wantsJson, false, 'Ungültige Anfrage.', 400);
   }
 
   if (String(data.get('botcheck') ?? '').length > 0) {
-    return json({ ok: true });
+    return respond(context, wantsJson, true, undefined, 200);
   }
 
   const name = String(data.get('name') ?? '').trim();
@@ -110,7 +112,7 @@ export async function POST(context: APIContext): Promise<Response> {
   const hund = String(data.get('hund') ?? '').trim();
 
   if (!name || !telefon || !hund) {
-    return json({ ok: false, error: 'Pflichtfelder fehlen.' }, 400);
+    return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400);
   }
 
   const subject = `Adoptionsanfrage – ${name} für ${hund}`;
@@ -125,12 +127,12 @@ export async function POST(context: APIContext): Promise<Response> {
     });
     if (error) {
       console.error('[adoption] resend error', error);
-      return json({ ok: false, error: 'Versand fehlgeschlagen.' }, 502);
+      return respond(context, wantsJson, false, 'Versand fehlgeschlagen.', 502);
     }
-    return json({ ok: true });
+    return respond(context, wantsJson, true, undefined, 200);
   } catch (err) {
     console.error('[adoption] unexpected error', err);
-    return json({ ok: false, error: 'Unerwarteter Fehler.' }, 500);
+    return respond(context, wantsJson, false, 'Unerwarteter Fehler.', 500);
   }
 }
 
@@ -139,6 +141,23 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
+}
+
+function respond(
+  context: APIContext,
+  wantsJson: boolean,
+  ok: boolean,
+  error: string | undefined,
+  status: number,
+): Response {
+  if (wantsJson) return json(ok ? { ok } : { ok, error }, status);
+  if (ok) {
+    return new Response(null, { status: 303, headers: { location: '/danke/?typ=adoption' } });
+  }
+  const referer = context.request.headers.get('referer');
+  const back = referer ? new URL(referer) : new URL('/adoptieren/formular/', context.url);
+  back.searchParams.set('error', '1');
+  return new Response(null, { status: 303, headers: { location: back.pathname + back.search } });
 }
 
 function renderAdoptionEmail(data: FormData, name: string, hund: string): string {

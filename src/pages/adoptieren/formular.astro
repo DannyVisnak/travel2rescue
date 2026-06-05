@@ -383,7 +383,11 @@ const dogNames = dogEntries.map(({ entry }) => entry.name);
     const data = new FormData(form);
     let ok = false;
     try {
-      const res = await fetch('/api/adoption', { method: 'POST', body: data });
+      const res = await fetch('/api/adoption', {
+        method: 'POST',
+        body: data,
+        headers: { accept: 'application/json' },
+      });
       const json = await res.json();
       ok = res.ok && json.ok === true;
     } catch {

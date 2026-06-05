@@ -25,7 +25,10 @@ export default defineConfig({
     ],
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      // Keep noindex / utility pages out of the sitemap.
+      filter: (page) => !/\/danke\/?$|\/404\/?$/.test(page),
+    }),
     react(),
     keystatic(),
   ],

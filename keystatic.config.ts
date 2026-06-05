@@ -316,6 +316,50 @@ export default config({
       },
     }),
 
+    patenschaftContent: singleton({
+      label: '🤝 Patenschaft-Seite',
+      path: 'content/pages/patenschaft',
+      format: { data: 'json' },
+      schema: {
+        heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
+        heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
+        heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
+        heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
+        heroImage: sectionImage('Hero – Hintergrundbild'),
+
+        tiersEyebrow: fields.text({ label: 'Pakete – kleine Zeile' }),
+        tiersHeadline: fields.text({ label: 'Pakete – Überschrift', multiline: true }),
+        tiers: fields.array(
+          fields.object({
+            amount: fields.integer({ label: 'Betrag in € / Monat' }),
+            title: fields.text({ label: 'Bezeichnung, z.B. Kleine Pate' }),
+            impact: fields.text({ label: 'Was die Patenschaft bewirkt', multiline: true }),
+          }),
+          {
+            label: 'Patenschafts-Pakete',
+            itemLabel: (props) => (props.fields.amount.value ? `€${props.fields.amount.value} – ${props.fields.title.value ?? ''}` : 'Paket'),
+          },
+        ),
+
+        benefitsEyebrow: fields.text({ label: 'Vorteile – kleine Zeile' }),
+        benefitsHeadline: fields.text({ label: 'Vorteile – Überschrift', multiline: true }),
+        benefits: fields.array(
+          fields.object({
+            title: fields.text({ label: 'Titel' }),
+            desc: fields.text({ label: 'Beschreibung', multiline: true }),
+          }),
+          {
+            label: 'Vorteile-Punkte',
+            itemLabel: (props) => props.fields.title.value || 'Punkt',
+          },
+        ),
+
+        formEyebrow: fields.text({ label: 'Formular – kleine Zeile' }),
+        formHeadline: fields.text({ label: 'Formular – Überschrift' }),
+        formSub: fields.text({ label: 'Formular – Untertext', multiline: true }),
+      },
+    }),
+
     aboutContent: singleton({
       label: '📖 Über-uns-Seite (Texte)',
       path: 'content/pages/about',
@@ -514,6 +558,44 @@ export default config({
         tag: fields.text({
           label: 'Status-Tag (optional)',
           description: 'z.B. Sucht Zuhause, Welpe, Aktiver Hund, Vermittelt',
+        }),
+      },
+    }),
+
+    news: collection({
+      label: '📣 Aktuelles (News)',
+      slugField: 'title',
+      path: 'content/news/*',
+      format: { data: 'json' },
+      schema: {
+        title: fields.slug({
+          name: { label: 'Titel' },
+          slug: { label: 'URL-Kürzel', description: 'Wird automatisch generiert' },
+        }),
+        date: fields.date({
+          label: 'Datum',
+          description: 'Bestimmt die Sortierung; neueste oben.',
+        }),
+        excerpt: fields.text({
+          label: 'Anriss (1–2 Sätze)',
+          multiline: true,
+          description: 'Wird in der Übersicht und im Teaser angezeigt.',
+        }),
+        body: fields.text({
+          label: 'Text',
+          multiline: true,
+          description: 'Vollständiger Artikeltext. Leerzeilen werden zu Absätzen.',
+        }),
+        image: fields.image({
+          label: 'Titelbild',
+          directory: 'public/images',
+          publicPath: '/images/',
+          description: 'Optionales Foto, das oben im Artikel und in der Übersicht erscheint.',
+        }),
+        draft: fields.checkbox({
+          label: 'Entwurf (noch nicht öffentlich)',
+          defaultValue: false,
+          description: 'Solange aktiv, erscheint der Artikel nicht auf der öffentlichen Seite.',
         }),
       },
     }),

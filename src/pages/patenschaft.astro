@@ -1,0 +1,135 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTABand from '@/components/CTABand.astro';
+import ContactForm from '@/components/ContactForm.astro';
+import Lines from '@/components/Lines.astro';
+import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
+import { SITE } from '@/data/site';
+
+const p = await reader.singletons.patenschaftContent.read();
+const cmsSettings = await reader.singletons.settings.read();
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+
+const heroEyebrow = p?.heroEyebrow ?? 'Patenschaft';
+const heroTitle = p?.heroTitle ?? 'Werde Pate.';
+const heroTitleAccent = p?.heroTitleAccent ?? 'Trag mit, jeden Monat.';
+const heroSub = p?.heroSub ?? 'Eine Patenschaft bedeutet: Du spendest monatlich einen festen Betrag und stehst damit dauerhaft an unserer Seite. Planbar für uns, persönlich für dich.';
+const heroImage = img(p?.heroImage, '/images/IMG_2820.jpg');
+
+const tiersEyebrow = p?.tiersEyebrow ?? 'Drei Wege';
+const tiersHeadline = p?.tiersHeadline ?? 'So sieht eine\nPatenschaft aus.';
+const defaultTiers = [
+  { amount: 10, title: 'Kleine Pate', impact: 'Ein Monat Grundversorgung für einen Hund: Futter, Wasser, Basis-Medikamente.' },
+  { amount: 25, title: 'Pate', impact: 'Ein Monat Komplettversorgung inkl. Tierarzt-Check und Kastrationsanteil.' },
+  { amount: 50, title: 'Große Pate', impact: 'Ein Monat Versorgung für eine ganze kleine Gruppe – inkl. medizinischer Notfälle.' },
+];
+const tiers = p?.tiers?.length ? p.tiers : defaultTiers;
+
+const benefitsEyebrow = p?.benefitsEyebrow ?? 'Was du bekommst';
+const benefitsHeadline = p?.benefitsHeadline ?? 'Mehr als eine Quittung.';
+const defaultBenefits = [
+  { title: 'Persönliche Updates', desc: 'Regelmäßige Nachrichten von Fynn & Eileen, exklusive Fotos und Videos aus dem Alltag auf Lombok.' },
+  { title: 'Volle Transparenz', desc: 'Du siehst direkt, was deine Patenschaft bewirkt – welche Hunde versorgt, welche Notfälle behandelt wurden.' },
+  { title: 'Steuerlich absetzbar', desc: 'Travel2Rescue e.V. ist gemeinnützig. Auf Wunsch stellen wir dir jährlich eine Spendenbescheinigung aus.' },
+  { title: 'Jederzeit kündbar', desc: 'Keine Mindestlaufzeit. Du kannst deine Patenschaft jederzeit pausieren oder beenden – formlos per Mail.' },
+];
+const benefits = p?.benefits?.length ? p.benefits : defaultBenefits;
+
+const formEyebrow = p?.formEyebrow ?? 'Mach mit';
+const formHeadline = p?.formHeadline ?? 'Werde Pate.';
+const formSub = p?.formSub ?? 'Schreib uns, welcher Betrag zu dir passt – wir richten alles weitere persönlich mit dir ein.';
+---
+
+<BaseLayout
+  title="Patenschaft"
+  description="Werde Pate bei Travel2Rescue e.V. – monatlich spenden, dauerhaft helfen. Mit Updates aus Lombok, voller Transparenz und Spendenbescheinigung."
+>
+  <!-- Hero -->
+  <section class="relative py-24 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src={heroImage} alt="Patenschaft Travel2Rescue" class="w-full h-full object-cover" loading="eager" />
+      <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/40" />
+    </div>
+    <div class="container-x relative z-10 max-w-2xl">
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
+      <h1 class="text-5xl md:text-6xl font-black mb-6">
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500">{heroTitleAccent}</span>
+      </h1>
+      <p class="text-xl text-white/70 leading-relaxed mb-8">{heroSub}</p>
+      <div class="flex flex-wrap gap-3">
+        <a href="#mach-mit" class="btn-primary btn-large">Pate werden</a>
+        <a href={paypalUrl} target="_blank" rel="noopener noreferrer" class="btn-ghost btn-large">Einmalig spenden</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tiers -->
+  <section class="py-20 bg-black">
+    <div class="container-x">
+      <div class="text-center mb-14 max-w-2xl mx-auto">
+        <p class="eyebrow mb-3">{tiersEyebrow}</p>
+        <h2 class="section-heading"><Lines text={tiersHeadline} /></h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+        {tiers.map((tier) => (
+          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 hover:border-amber-500/30 transition-colors p-7 flex flex-col text-center">
+            <div class="font-display text-5xl md:text-6xl font-black text-amber-500 leading-none mb-3 tracking-tight">
+              €{tier.amount}
+            </div>
+            <p class="text-xs text-amber-500/70 uppercase tracking-widest mb-4">/ Monat</p>
+            <h3 class="text-xl font-bold mb-3">{tier.title}</h3>
+            <p class="text-white/70 text-sm leading-snug flex-1">{tier.impact}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Benefits -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x max-w-4xl mx-auto">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">{benefitsEyebrow}</p>
+        <h2 class="text-3xl md:text-4xl font-black"><Lines text={benefitsHeadline} /></h2>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {benefits.map((b) => (
+          <div class="bg-gray-mid rounded-2xl p-6 border border-white/5">
+            <div class="flex items-start gap-4">
+              <span class="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-full bg-amber-500/15 text-amber-400">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              </span>
+              <div>
+                <h3 class="font-bold mb-2">{b.title}</h3>
+                <p class="text-white/65 text-sm leading-relaxed">{b.desc}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section id="mach-mit" class="py-20 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <p class="eyebrow mb-3">{formEyebrow}</p>
+        <h2 class="text-3xl font-black mb-4">{formHeadline}</h2>
+        <p class="text-white/60">{formSub}</p>
+      </div>
+      <ContactForm subject="Patenschaft – Anfrage" />
+    </div>
+  </section>
+
+  <CTABand
+    headline="Lieber einmalig spenden?"
+    sub="Auch eine einmalige Spende rettet Leben. Sofort. Heute."
+    primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
+    secondary={{ label: 'Hund adoptieren', href: '/adoptieren/' }}
+  />
+</BaseLayout>
