@@ -3,7 +3,11 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import { reader } from '@/lib/keystatic';
 
 const dogEntries = await reader.collections.dogs.all();
-const dogNames = dogEntries.map(({ entry }) => entry.name);
+// Carry { slug, name } so the client script can match by either.
+const dogIndex = dogEntries.map(({ slug, entry }) => ({ slug, name: entry.name }));
+const dogNames = dogIndex.map((d) => d.name);
+// SSR-aware: only true when the page is rendered dynamically. Static (prerender)
+// builds always show no error; the inline error path runs client-side too.
 const showError = Astro.url.searchParams.get('error') === '1';
 ---
 
@@ -379,6 +383,29 @@ const showError = Astro.url.searchParams.get('error') === '1';
 <script>
   const form = document.getElementById('adoption-form') as HTMLFormElement | null;
   const result = document.getElementById('form-result');
+
+  // If the no-JS fallback redirected here with ?error=1, surface the error.
+  if (result && new URLSearchParams(window.location.search).get('error') === '1') {
+    result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
+    result.classList.remove('hidden');
+    result.classList.add('text-red-400');
+  }
+
+  // Pre-select a dog when the user arrived via ?hund=<slug-or-name>. Match
+  // first by exact radio value (the dog's name) then by case-insensitive
+  // contains, so /adoptieren/flummi/'s slug also resolves to "Flummi 🎾".
+  if (form) {
+    const params = new URLSearchParams(window.location.search);
+    const preselect = (params.get('hund') ?? '').trim().toLowerCase();
+    if (preselect) {
+      const radios = form.querySelectorAll<HTMLInputElement>('input[name="hund"]');
+      const match = Array.from(radios).find((r) => {
+        const v = r.value.toLowerCase();
+        return v === preselect || v.includes(preselect);
+      });
+      if (match) match.checked = true;
+    }
+  }
 
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
