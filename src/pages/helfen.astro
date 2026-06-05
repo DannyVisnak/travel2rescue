@@ -326,7 +326,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   </section>
 
   <!-- Adoption -->
-  <section class="py-20 bg-forest">
+  <section class="py-20 bg-beige">
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
@@ -334,12 +334,12 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         </div>
         <div>
           <p class="eyebrow mb-4">{adoptStepsEyebrow}</p>
-          <h2 class="text-4xl font-black mb-6"><Lines text={adoptStepsHeadline} /><br /><span class="text-amber-500">{adoptStepsAccent}</span></h2>
+          <h2 class="text-4xl font-black mb-6 text-black"><Lines text={adoptStepsHeadline} /><br /><span class="text-amber-500">{adoptStepsAccent}</span></h2>
           <ol class="space-y-4 mb-8">
             {adoptSteps.map((step, i) => (
               <li class="flex gap-4 items-start">
                 <span class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
-                <span class="text-white/80">{step}</span>
+                <span class="text-black/80">{step}</span>
               </li>
             ))}
           </ol>
@@ -363,11 +363,11 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   </section>
 
   <!-- Kontakt -->
-  <section id="kontakt" class="py-20 bg-black">
+  <section id="kontakt" class="py-20 bg-beige">
     <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-10">
         <p class="eyebrow mb-3">Kontakt</p>
-        <h2 class="text-3xl font-black mb-4">Noch Fragen?<br /><span class="text-amber-500">Schreib uns.</span></h2>
+        <h2 class="text-3xl font-black mb-4 text-black">Noch Fragen?<br /><span class="text-amber-500">Schreib uns.</span></h2>
       </div>
       <ContactForm subject="Helfen – Anfrage" />
     </div>

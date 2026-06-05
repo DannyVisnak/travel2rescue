@@ -5,8 +5,8 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
 <header class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
   <div class="container-x">
     <div class="flex items-center justify-between h-20">
-      <a href="/" class="flex items-center gap-2 shrink-0">
-        <img src="/logo.avif" alt={SITE.name} class="h-16 w-auto" loading="eager" />
+      <a href="/" class="flex items-center shrink-0 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-black rounded" aria-label={SITE.name}>
+        <span class="font-display font-extrabold text-2xl md:text-3xl tracking-tight text-amber-500 lowercase leading-none">travel2rescue</span>
       </a>
 
       <nav aria-label="Hauptnavigation" class="hidden md:flex items-center gap-6">
