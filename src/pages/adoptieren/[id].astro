@@ -5,6 +5,9 @@ import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 
+const cmsSettings = await reader.singletons.settings.read();
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+
 export const prerender = true;
 
 export async function getStaticPaths() {
@@ -177,7 +180,7 @@ const dogJsonLd = {
   <CTABand
     headline="Noch kein Hund, aber helfen?"
     sub="Spende rettet das Leben der Hunde, bis sie ihr Zuhause finden."
-    primary={{ label: 'Jetzt spenden', href: 'https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA' }}
+    primary={{ label: 'Jetzt spenden', href: paypalUrl }}
     secondary={{ label: 'Alle Hunde ansehen', href: '/adoptieren/' }}
   />
 
