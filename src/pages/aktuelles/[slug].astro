@@ -5,28 +5,22 @@ import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const entries = await reader.collections.news.all();
-  return entries
-    .filter(({ entry }) => !entry.draft)
-    .map(({ slug, entry }) => ({
-      params: { slug },
-      props: {
-        post: {
-          slug,
-          title: entry.title,
-          date: entry.date,
-          excerpt: entry.excerpt,
-          body: entry.body,
-          image: entry.image,
-        },
-      },
-    }));
+// On-demand SSR (no prerender) so middleware can gate this page when
+// SITE_PASSWORD is set. Slug is looked up via Astro.params at request time.
+const { slug } = Astro.params as { slug: string };
+const entry = slug ? await reader.collections.news.read(slug) : null;
+if (!entry || entry.draft) {
+  return Astro.redirect('/aktuelles/');
 }
 
-const { post } = Astro.props;
+const post = {
+  slug,
+  title: entry.title,
+  date: entry.date,
+  excerpt: entry.excerpt,
+  body: entry.body,
+  image: entry.image,
+};
 const heroImage = post.image ? img(post.image) : '/og-image.png';
 
 function formatDate(d?: string | null) {
