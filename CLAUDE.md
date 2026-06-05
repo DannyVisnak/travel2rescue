@@ -37,17 +37,26 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/pages/index.astro` | Home — hero, stats, about, projects, dogs, quote, FAQ |
+| `/` | `src/pages/index.astro` | Home — hero, stats, about, services, dogs, quote, FAQ |
 | `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
 | `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
-| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic) |
-| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → Web3Forms |
+| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic, prerendered, emits Article JSON-LD) |
+| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → POSTs to `/api/adoption` (Resend) |
 | `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
+| `/patenschaft/` | `src/pages/patenschaft.astro` | Monthly sponsorship landing (tiers + benefits + form) |
+| `/aktuelles/` | `src/pages/aktuelles/index.astro` | News/blog index (reads `news` collection, filters drafts) |
+| `/aktuelles/[slug]/` | `src/pages/aktuelles/[slug].astro` | News article (prerendered, NewsArticle JSON-LD) |
+| `/aktuelles/feed.xml` | `src/pages/aktuelles/feed.xml.ts` | RSS feed (linked from `<head>`) |
 | `/ueber-uns/` | `src/pages/ueber-uns.astro` | Team bios (reads Keystatic) + origin story |
 | `/linktree/` | `src/pages/linktree.astro` | Social link hub (Instagram traffic) |
+| `/danke/` | `src/pages/danke.astro` | Thank-you page (noindex, `?typ=kontakt|adoption` switches copy) |
+| `/404` | `src/pages/404.astro` | Branded 404 (noindex) |
 | `/impressum/` | `src/pages/impressum.astro` | Legal — keep verbatim |
 | `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy — keep verbatim |
+| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits |
+| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same content-negotiation pattern) |
+| `/api/keystatic/[...params]` | `src/pages/api/keystatic/[...params].ts` | Keystatic auth callbacks (overrides the auto-injected route to fix Astro cookie handling) |
 
 ## Data Layer
 
@@ -61,6 +70,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 |---|---|---|
 | `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
 | `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
+| `reader.collections.news.all()` | News articles (supports `draft` flag, sorted by `date` desc) | `content/news/*.json` |
 | `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
 | `reader.singletons.homeContent.read()` | Whole home page: hero, story, services, dogs teaser, quote, FAQs | `content/pages/home.json` |
 | `reader.singletons.missionContent.read()` | Whole mission page: hero, problems, quote, pillars, cats, vision | `content/pages/mission.json` |
@@ -69,6 +79,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.singletons.aboutContent.read()` | Über-uns page: hero, story chapters, team/reality headings, contact | `content/pages/about.json` |
 | `reader.singletons.projectsPage.read()` | Projekte page hero + outro (project entries stay in the collection) | `content/pages/projects.json` |
 | `reader.singletons.linktreeContent.read()` | Linktree tagline + link list | `content/pages/linktree.json` |
+| `reader.singletons.patenschaftContent.read()` | Patenschaft page: hero, tiers, benefits, form intro | `content/pages/patenschaft.json` |
 | `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
@@ -132,18 +143,25 @@ Eileen can now edit **essentially every visible text and most images** across th
 | 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
 | 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
 | 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
+| 🤝 Patenschaft-Seite | Tiers + benefits + form copy for the monthly-sponsorship page |
+| 📣 Aktuelles (News) | Create, edit, draft news articles (with cover image + datum) |
 | 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
 
 **Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
 
-### Env vars (all required in Vercel)
+### Env vars
 
-| Variable | Purpose | Notes |
-|---|---|---|
-| `KEYSTATIC_GITHUB_CLIENT_ID` | GitHub **App** client ID | From the App settings page (`github.com/settings/apps/<slug>`) |
-| `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub App client secret | Generated under "Client secrets" on the App settings page; rotate if leaked |
-| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | The App's URL slug | Used by the Keystatic admin UI to render the install button |
-| `KEYSTATIC_SECRET` | Session-cookie signing secret (≥32 chars) | Generate: `openssl rand -base64 32`. Internal only — does not match anything external. |
+| Variable | Required? | Purpose | Notes |
+|---|---|---|---|
+| `KEYSTATIC_GITHUB_CLIENT_ID` | yes (CMS) | GitHub **App** client ID | From the App settings page (`github.com/settings/apps/<slug>`) |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | yes (CMS) | GitHub App client secret | Generated under "Client secrets" on the App settings page; rotate if leaked |
+| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | yes (CMS) | The App's URL slug | Used by the Keystatic admin UI to render the install button |
+| `KEYSTATIC_SECRET` | yes (CMS) | Session-cookie signing secret (≥32 chars) | Generate: `openssl rand -base64 32`. Internal only — does not match anything external. |
+| `RESEND_API_KEY` | yes (forms) | Resend API key | From <https://resend.com>; without it both forms return 500 |
+| `RESEND_FROM` | no | Sender address | Default: `Travel2Rescue <kontakt@travel2rescue.de>` |
+| `RESEND_TO` | no | Recipient address | Default: `travel2rescue@gmail.com` |
+| `PUBLIC_PLAUSIBLE_DOMAIN` | no | Plausible analytics domain | When set, `BaseLayout` emits the privacy-friendly Plausible `<script>` |
+| `PUBLIC_PLAUSIBLE_SRC` | no | Plausible script src override | For self-hosted instances; defaults to `https://plausible.io/js/script.js` |
 
 ### GitHub App (NOT a classic OAuth App)
 
