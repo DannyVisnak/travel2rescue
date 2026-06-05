@@ -56,10 +56,25 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
 <script>
   const btn = document.getElementById('mobile-menu-btn') as HTMLButtonElement | null;
   const menu = document.getElementById('mobile-menu');
-  btn?.addEventListener('click', () => {
-    const isOpen = !menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden');
-    btn.setAttribute('aria-expanded', String(!isOpen));
-    btn.setAttribute('aria-label', isOpen ? 'Menü öffnen' : 'Menü schließen');
-  });
+  if (btn && menu) {
+    function setOpen(open: boolean) {
+      menu!.classList.toggle('hidden', !open);
+      btn!.setAttribute('aria-expanded', String(open));
+      btn!.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+    }
+    btn.addEventListener('click', () => {
+      setOpen(menu.classList.contains('hidden'));
+    });
+    // Close the panel when the user activates a link inside it. Without this,
+    // hash-only navigations (#kontakt etc.) leave the overlay covering the
+    // section the user just jumped to.
+    menu.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) setOpen(false);
+    });
+    // Esc closes the menu.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) setOpen(false);
+    });
+  }
 </script>
