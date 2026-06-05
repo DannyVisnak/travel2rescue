@@ -38,11 +38,6 @@ const PUBLIC_EXACT_PATHS = new Set([
   '/robots.txt',
 ]);
 
-function decodeBase64(s: string): string {
-  // atob is available in all Edge runtimes and modern Node.
-  return atob(s);
-}
-
 function timingSafeEqual(a: string, b: string): boolean {
   if (a.length !== b.length) return false;
   let mismatch = 0;
@@ -53,22 +48,22 @@ function timingSafeEqual(a: string, b: string): boolean {
 }
 
 export const onRequest = defineMiddleware(async (context, next) => {
-  const password = (import.meta.env.SITE_PASSWORD as string | undefined) ?? '';
+  // Runtime env var read. `import.meta.env` would be Vite-replaced at build
+  // time with the build env's value (none), so the lock would never activate.
+  const password = (typeof process !== 'undefined' && process.env.SITE_PASSWORD) || '';
   if (!password) return next();
 
   const path = new URL(context.request.url).pathname;
 
   if (PUBLIC_EXACT_PATHS.has(path)) return next();
   for (const prefix of PUBLIC_PATH_PREFIXES) {
-    if (path === prefix || path.startsWith(prefix + '/') || path.startsWith(prefix)) {
-      return next();
-    }
+    if (path.startsWith(prefix)) return next();
   }
 
-  const auth = context.request.headers.get('authorization') ?? '';
+  const auth = context.request.headers.get('authorization') || '';
   if (auth.startsWith('Basic ')) {
     try {
-      const decoded = decodeBase64(auth.slice(6));
+      const decoded = atob(auth.slice(6));
       const colonIdx = decoded.indexOf(':');
       const candidate = colonIdx === -1 ? decoded : decoded.slice(colonIdx + 1);
       if (timingSafeEqual(candidate, password)) return next();
