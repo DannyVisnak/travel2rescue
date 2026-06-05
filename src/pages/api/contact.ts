@@ -4,20 +4,26 @@ import { resend, MAIL_FROM, MAIL_TO, escapeHtml, isValidEmail } from '@/lib/emai
 export const prerender = false;
 
 export async function POST(context: APIContext): Promise<Response> {
+  // Browsers that submit the form natively (JS disabled) don't send
+  // Accept: application/json — for those we redirect to /danke/ on success
+  // and back to the page with ?error=1 on failure, so users never see raw
+  // JSON. Fetch callers always set Accept and get JSON.
+  const wantsJson = (context.request.headers.get('accept') ?? '').includes('application/json');
+
   if (!resend) {
     console.error('[contact] RESEND_API_KEY not configured');
-    return json({ ok: false, error: 'Mailversand nicht konfiguriert.' }, 500);
+    return respond(context, wantsJson, false, 'Mailversand nicht konfiguriert.', 500, 'kontakt');
   }
 
   let data: FormData;
   try {
     data = await context.request.formData();
   } catch {
-    return json({ ok: false, error: 'Ungültige Anfrage.' }, 400);
+    return respond(context, wantsJson, false, 'Ungültige Anfrage.', 400, 'kontakt');
   }
 
   if (String(data.get('botcheck') ?? '').length > 0) {
-    return json({ ok: true });
+    return respond(context, wantsJson, true, undefined, 200, 'kontakt');
   }
 
   const vorname = String(data.get('vorname') ?? '').trim();
@@ -29,10 +35,10 @@ export async function POST(context: APIContext): Promise<Response> {
   const subject = String(data.get('subject') ?? 'Anfrage über travel2rescue.de').trim();
 
   if (!vorname || !email || !nachricht) {
-    return json({ ok: false, error: 'Pflichtfelder fehlen.' }, 400);
+    return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400, 'kontakt');
   }
   if (!isValidEmail(email)) {
-    return json({ ok: false, error: 'Ungültige E-Mail-Adresse.' }, 400);
+    return respond(context, wantsJson, false, 'Ungültige E-Mail-Adresse.', 400, 'kontakt');
   }
 
   const fullName = [vorname, nachname].filter(Boolean).join(' ');
@@ -48,12 +54,12 @@ export async function POST(context: APIContext): Promise<Response> {
     });
     if (error) {
       console.error('[contact] resend error', error);
-      return json({ ok: false, error: 'Versand fehlgeschlagen.' }, 502);
+      return respond(context, wantsJson, false, 'Versand fehlgeschlagen.', 502, 'kontakt');
     }
-    return json({ ok: true });
+    return respond(context, wantsJson, true, undefined, 200, 'kontakt');
   } catch (err) {
     console.error('[contact] unexpected error', err);
-    return json({ ok: false, error: 'Unerwarteter Fehler.' }, 500);
+    return respond(context, wantsJson, false, 'Unerwarteter Fehler.', 500, 'kontakt');
   }
 }
 
@@ -62,6 +68,24 @@ function json(body: unknown, status = 200): Response {
     status,
     headers: { 'content-type': 'application/json; charset=utf-8' },
   });
+}
+
+function respond(
+  context: APIContext,
+  wantsJson: boolean,
+  ok: boolean,
+  error: string | undefined,
+  status: number,
+  typ: 'kontakt' | 'adoption',
+): Response {
+  if (wantsJson) return json(ok ? { ok } : { ok, error }, status);
+  if (ok) {
+    return new Response(null, { status: 303, headers: { location: `/danke/?typ=${typ}` } });
+  }
+  const referer = context.request.headers.get('referer');
+  const back = referer ? new URL(referer) : new URL('/', context.url);
+  back.searchParams.set('error', error ? '1' : '1');
+  return new Response(null, { status: 303, headers: { location: back.pathname + back.search } });
 }
 
 interface ContactFields {

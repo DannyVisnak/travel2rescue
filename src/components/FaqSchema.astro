@@ -6,7 +6,8 @@ interface FaqEntry {
   answer: string;
 }
 interface Props {
-  faqs: FaqEntry[];
+  // Accept readonly arrays (Keystatic readers return readonly arrays).
+  faqs: ReadonlyArray<FaqEntry>;
 }
 const { faqs } = Astro.props;
 const mainEntity = (faqs ?? [])

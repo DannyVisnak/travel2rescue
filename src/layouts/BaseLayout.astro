@@ -72,6 +72,14 @@ const BREADCRUMB_LABELS: Record<string, string> = {
   impressum: 'Impressum',
   datenschutz: 'Datenschutz',
 };
+// Privacy-friendly analytics: only render the Plausible script if the user
+// configured PUBLIC_PLAUSIBLE_DOMAIN. Plausible doesn't use cookies and is
+// GDPR-friendly (no banner required). Self-hosted instances override via
+// PUBLIC_PLAUSIBLE_SRC.
+const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+const plausibleSrc =
+  import.meta.env.PUBLIC_PLAUSIBLE_SRC ?? 'https://plausible.io/js/script.js';
+
 const segments = Astro.url.pathname.split('/').filter(Boolean);
 const breadcrumbJsonLd = segments.length
   ? {
@@ -140,6 +148,10 @@ const breadcrumbJsonLd = segments.length
     <script type="application/ld+json" set:html={JSON.stringify(orgJsonLd)} />
     <script type="application/ld+json" set:html={JSON.stringify(websiteJsonLd)} />
     {breadcrumbJsonLd && <script type="application/ld+json" set:html={JSON.stringify(breadcrumbJsonLd)} />}
+
+    {plausibleDomain && (
+      <script defer data-domain={plausibleDomain} src={plausibleSrc}></script>
+    )}
   </head>
   <body>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-black focus:font-bold focus:rounded-lg">
