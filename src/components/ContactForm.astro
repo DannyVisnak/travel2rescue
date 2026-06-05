@@ -85,6 +85,14 @@ const showError = Astro.url.searchParams.get('error') === '1';
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const result = document.getElementById('form-result');
 
+  // If the no-JS fallback redirected here with ?error=1, show the message
+  // even when the page itself is prerendered (so Astro.url couldn't see it).
+  if (result && new URLSearchParams(window.location.search).get('error') === '1') {
+    result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
+    result.classList.remove('hidden');
+    result.classList.add('text-red-400');
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!result) return;

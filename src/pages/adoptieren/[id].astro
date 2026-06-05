@@ -79,7 +79,7 @@ const dogJsonLd = {
       <h1 class="text-5xl md:text-6xl font-black mb-4">{dog.name}</h1>
       <p class="text-lg text-white/70 mb-2">{dog.age} · {dog.breed}</p>
       <p class="text-amber-400 font-semibold mb-8">{dog.character}</p>
-      <a href="/adoptieren/formular/" class="btn-primary btn-large">
+      <a href={`/adoptieren/formular/?hund=${dog.id}`} class="btn-primary btn-large">
         Adoptionsanfrage für {dog.name}
       </a>
     </div>
@@ -168,7 +168,7 @@ const dogJsonLd = {
         Sobald du das Formular ausgefüllt hast, meldet sich Eileen per WhatsApp bei dir.
         Kein Tribunal – ein echtes Gespräch.
       </p>
-      <a href="/adoptieren/formular/" class="btn-primary btn-large">
+      <a href={`/adoptieren/formular/?hund=${dog.id}`} class="btn-primary btn-large">
         Jetzt Formular ausfüllen
       </a>
     </div>
