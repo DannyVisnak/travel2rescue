@@ -1,0 +1,5 @@
+Contact: mailto:kontakt@visnakovs.de
+Contact: mailto:travel2rescue@gmail.com
+Preferred-Languages: de, en
+Canonical: https://www.travel2rescue.de/.well-known/security.txt
+Expires: 2027-06-05T00:00:00.000Z
