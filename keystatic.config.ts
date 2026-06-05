@@ -26,9 +26,11 @@ export default config({
     ? { kind: 'github', repo: { owner: 'DannyVisnak', name: 'travel2rescue' } }
     : { kind: 'local' },
 
-  url: process.env.NODE_ENV === 'production'
+  // `url` isn't in the public Keystatic config type but is read at runtime
+  // by the admin UI to build absolute links; cast keeps type checking quiet.
+  ...({ url: process.env.NODE_ENV === 'production'
     ? 'https://travel2rescue.de'
-    : 'http://localhost:4321',
+    : 'http://localhost:4321' } as { url: string }),
 
   ui: {
     brand: { name: 'Travel2Rescue Admin' },

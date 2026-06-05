@@ -1,6 +1,7 @@
 import { makeGenericAPIRouteHandler } from '@keystatic/core/api/generic';
+// @ts-expect-error — no type definitions shipped
 import { parseString } from 'set-cookie-parser';
-// @ts-ignore — virtual module registered by the Keystatic Vite plugin
+// @ts-expect-error — virtual module registered by the Keystatic Vite plugin
 import config from 'virtual:keystatic-config';
 import type { APIContext } from 'astro';
 
@@ -75,7 +76,7 @@ export async function ALL(context: APIContext): Promise<Response> {
       for (const [k, v] of (headers as Headers).entries()) {
         headersMap.set(k.toLowerCase(), [v]);
       }
-      if ('getSetCookie' in headers && typeof (headers as any).getSetCookie === 'function') {
+      if (headers && 'getSetCookie' in (headers as object) && typeof (headers as any).getSetCookie === 'function') {
         const sc = (headers as any).getSetCookie() as string[];
         if (sc?.length) headersMap.set('set-cookie', sc);
       }
@@ -105,6 +106,8 @@ export async function ALL(context: APIContext): Promise<Response> {
 
   return new Response(body as any, {
     status,
-    headers: [...headersMap.entries()].flatMap(([k, vals]) => vals.map(v => [k, v])),
+    headers: [...headersMap.entries()].flatMap(
+      ([k, vals]) => vals.map<[string, string]>((v) => [k, v]),
+    ),
   });
 }

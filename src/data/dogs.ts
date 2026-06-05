@@ -5,7 +5,9 @@ export interface Dog {
   breed: string;
   character: string;
   story: string;
-  image: string;
+  // Keystatic image fields are optional, so the bare filename can be null;
+  // always pipe through src/lib/img.ts before rendering.
+  image: string | null;
   available: boolean;
   tag?: string;
 }
