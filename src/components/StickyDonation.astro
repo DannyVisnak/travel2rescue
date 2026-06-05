@@ -1,20 +1,20 @@
 ---
-// Wire into BaseLayout.astro via another agent
-//
 // Persistent floating donation CTA. Renders as a fixed bottom-right pill on
-// every page EXCEPT /helfen/* (the dedicated help page already pushes the
-// donation flow throughout its sections, so the FAB would be redundant
-// there).
+// every page EXCEPT pages that already foreground their own donation/CTA
+// (/helfen, /patenschaft, /danke), and admin/utility pages (/keystatic,
+// /linktree, /404).
 import { SITE } from '@/data/site';
+import { reader } from '@/lib/keystatic';
 
-const paypalUrl = SITE.social.paypal;
+const cms = await reader.singletons.settings.read();
+const paypalUrl = cms?.paypalUrl ?? SITE.social.paypal;
 
-// Hide on the helfen page (and any nested helfen routes).
 const pathname = Astro.url.pathname;
-const hideOnHelfen = pathname.startsWith('/helfen');
+const HIDE_PREFIXES = ['/helfen', '/patenschaft', '/danke', '/keystatic', '/linktree', '/404'];
+const hide = HIDE_PREFIXES.some((p) => pathname.startsWith(p));
 ---
 
-{!hideOnHelfen && (
+{!hide && (
   <a
     href={paypalUrl}
     target="_blank"
