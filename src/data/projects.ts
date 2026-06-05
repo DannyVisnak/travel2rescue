@@ -6,6 +6,7 @@ export interface Project {
   location: string;
   description: string;
   impact: string;
-  image: string;
+  // Keystatic image field is optional, so pipe through src/lib/img.ts.
+  image: string | null;
   status: 'aktiv' | 'abgeschlossen' | 'geplant';
 }

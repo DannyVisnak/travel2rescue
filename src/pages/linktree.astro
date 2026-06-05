@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import { SITE } from '@/data/site';
+import { reader } from '@/lib/keystatic';
 
 type IconName =
   | 'heart'
@@ -23,81 +24,35 @@ interface LinkItem {
   primary?: boolean;
 }
 
-const links: LinkItem[] = [
-  {
-    label: 'Jetzt spenden – PayPal',
-    desc: 'Direkte Hilfe für die Hunde auf Lombok',
-    href: SITE.social.paypal,
-    icon: 'heart',
-    primary: true,
-  },
-  {
-    label: 'Hund adoptieren',
-    desc: 'Alle Hunde & Adoptionsformular',
-    href: '/adoptieren/',
-    icon: 'home',
-  },
-  {
-    label: 'Adoptionsformular ausfüllen',
-    desc: 'Finde dein perfektes Match',
-    href: '/adoptieren/formular/',
-    icon: 'clipboard-list',
-  },
-  {
-    label: 'Instagram',
-    desc: '@travel2rescue – tägliche Updates aus Lombok',
-    href: SITE.social.instagram,
-    icon: 'camera',
-  },
-  {
-    label: 'TikTok',
-    desc: '@travel2rescue – Videos aus dem Alltag',
-    href: SITE.social.tiktok,
-    icon: 'music',
-  },
-  {
-    label: 'Facebook',
-    desc: 'Community & Neuigkeiten',
-    href: SITE.social.facebook,
-    icon: 'users',
-  },
-  {
-    label: 'Banküberweisung',
-    desc: `IBAN: ${SITE.bankverbindung.iban}`,
-    href: `mailto:${SITE.email}?subject=Spende%20per%20%C3%9Cberweisung`,
-    icon: 'landmark',
-  },
-  {
-    label: 'Unsere Mission',
-    desc: '50.000 Straßenhunde – was wir dagegen tun',
-    href: '/mission/',
-    icon: 'paw-print',
-  },
-  {
-    label: 'Unsere Projekte',
-    desc: 'Hundehütten, Müllhaide, Wing NGO Sumatra',
-    href: '/projekte/',
-    icon: 'hammer',
-  },
-  {
-    label: 'Volunteer werden',
-    desc: 'Komm nach Lombok und hilf aktiv vor Ort',
-    href: '/helfen/#volunteer',
-    icon: 'hand-helping',
-  },
-  {
-    label: 'Über Fynn & Eileen',
-    desc: 'Wie alles begann',
-    href: '/ueber-uns/',
-    icon: 'heart',
-  },
-  {
-    label: 'Kontakt',
-    desc: SITE.email,
-    href: `mailto:${SITE.email}`,
-    icon: 'mail',
-  },
+const linktreeData = await reader.singletons.linktreeContent.read();
+const cmsSettings = await reader.singletons.settings.read();
+const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+const tagline = linktreeData?.tagline ?? 'Gemeinsam Hunden ein besseres Leben schenken.';
+
+const defaultLinks: LinkItem[] = [
+  { label: 'Jetzt spenden – PayPal', desc: 'Direkte Hilfe für die Hunde auf Lombok', href: paypalUrl, icon: 'heart', primary: true },
+  { label: 'Hund adoptieren', desc: 'Alle Hunde & Adoptionsformular', href: '/adoptieren/', icon: 'home' },
+  { label: 'Adoptionsformular ausfüllen', desc: 'Finde dein perfektes Match', href: '/adoptieren/formular/', icon: 'clipboard-list' },
+  { label: 'Instagram', desc: '@travel2rescue – tägliche Updates aus Lombok', href: SITE.social.instagram, icon: 'camera' },
+  { label: 'TikTok', desc: '@travel2rescue – Videos aus dem Alltag', href: SITE.social.tiktok, icon: 'music' },
+  { label: 'Facebook', desc: 'Community & Neuigkeiten', href: SITE.social.facebook, icon: 'users' },
+  { label: 'Banküberweisung', desc: `IBAN: ${SITE.bankverbindung.iban}`, href: `mailto:${SITE.email}?subject=Spende%20per%20%C3%9Cberweisung`, icon: 'landmark' },
+  { label: 'Unsere Mission', desc: '50.000 Straßenhunde – was wir dagegen tun', href: '/mission/', icon: 'paw-print' },
+  { label: 'Unsere Projekte', desc: 'Hundehütten, Müllhaide, Wing NGO Sumatra', href: '/projekte/', icon: 'hammer' },
+  { label: 'Volunteer werden', desc: 'Komm nach Lombok und hilf aktiv vor Ort', href: '/helfen/#volunteer', icon: 'hand-helping' },
+  { label: 'Über Fynn & Eileen', desc: 'Wie alles begann', href: '/ueber-uns/', icon: 'heart' },
+  { label: 'Kontakt', desc: SITE.email, href: `mailto:${SITE.email}`, icon: 'mail' },
 ];
+
+const links: LinkItem[] = linktreeData?.links?.length
+  ? linktreeData.links.map((l) => ({
+      label: l.label,
+      desc: l.desc,
+      href: l.href,
+      icon: l.icon as IconName,
+      primary: l.primary,
+    }))
+  : defaultLinks;
 ---
 
 <BaseLayout
@@ -118,7 +73,7 @@ const links: LinkItem[] = [
           />
         </div>
         <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-3" loading="eager" />
-        <p class="font-serif text-white/75 text-base italic">Gemeinsam Hunden ein besseres Leben schenken.</p>
+        <p class="font-serif text-white/75 text-base italic">{tagline}</p>
         <p class="text-white/40 text-xs mt-2">{SITE.location}</p>
       </div>
 

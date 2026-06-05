@@ -3,6 +3,9 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import Lines from '@/components/Lines.astro';
+import FaqSchema from '@/components/FaqSchema.astro';
+import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
@@ -10,13 +13,69 @@ const helpData = await reader.singletons.helpContent.read();
 const cmsSettings = await reader.singletons.settings.read();
 const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
 
-const donationTiers = [
-  { amount: 10, impact: 'Eine Woche Futter für 5 Hunde' },
-  { amount: 25, impact: 'Eine Kastration: ein Hund weniger, der leidet' },
-  { amount: 50, impact: 'Notfall-OP für einen verletzten Welpen' },
-  { amount: 100, impact: 'Wöchentliche Versorgung einer Pflegestelle' },
-];
+const heroEyebrow = helpData?.heroEyebrow ?? 'Jetzt helfen';
+const heroTitle = helpData?.heroTitle ?? 'Deine Hilfe';
+const heroTitleAccent = helpData?.heroTitleAccent ?? 'rettet Leben.';
+const heroSub = helpData?.heroSub ?? 'Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.';
+const heroImage = img(helpData?.heroImage, '/images/IMG_4737.jpg');
 
+const tiersEyebrow = helpData?.tiersEyebrow ?? 'Konkrete Wirkung';
+const tiersHeadline = helpData?.tiersHeadline ?? 'Was deine Spende\nkonkret bewirkt.';
+const tiersSub = helpData?.tiersSub ?? 'Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:';
+const donationTiers = helpData?.donationTiers?.length
+  ? helpData.donationTiers
+  : [
+      { amount: 10, impact: 'Eine Woche Futter für 5 Hunde' },
+      { amount: 25, impact: 'Eine Kastration: ein Hund weniger, der leidet' },
+      { amount: 50, impact: 'Notfall-OP für einen verletzten Welpen' },
+      { amount: 100, impact: 'Wöchentliche Versorgung einer Pflegestelle' },
+    ];
+
+const waysEyebrow = helpData?.waysEyebrow ?? 'Wie du helfen kannst';
+const waysHeadline = helpData?.waysHeadline ?? 'Drei Wege.\nEin Ziel.';
+const WAY_META = [
+  { id: 'spenden', iconKey: 'heart', image: '/images/IMG_2977.jpg' },
+  { id: 'adoption', iconKey: 'home', image: '/images/IMG_9452.jpg' },
+  { id: 'volunteer', iconKey: 'hand-helping', image: '/images/fynn eileen walking.jpeg' },
+];
+const defaultWays = [
+  { label: '01 · Spenden', title: 'Deine Spende rettet Leben', desc: 'Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.' },
+  { label: '02 · Adoptieren', title: 'Gib einem Hund ein Zuhause', desc: 'Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.' },
+  { label: '03 · Volunteer', title: 'Hilf aktiv vor Ort', desc: 'Komm nach Lombok und werde Teil unseres Teams: füttern, versorgen, streicheln – jede helfende Hand zählt.' },
+];
+const waysSource = helpData?.ways?.length ? helpData.ways : defaultWays;
+const ways = waysSource.map((w, i) => ({
+  ...w,
+  id: WAY_META[i]?.id ?? `way-${i}`,
+  iconKey: WAY_META[i]?.iconKey ?? 'heart',
+  image: img((w as any).image, WAY_META[i]?.image ?? '/images/IMG_2977.jpg'),
+}));
+
+const volunteerEyebrow = helpData?.volunteerEyebrow ?? 'Freiwilligenarbeit';
+const volunteerHeadline = helpData?.volunteerHeadline ?? 'Komm vorbei und\nunterstütz uns.';
+const volunteerText = helpData?.volunteerText ?? 'Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.';
+const VOLUNTEER_ICONS = ['bone', 'paw', 'hammer', 'heart-handshake'];
+const volunteerLabels = helpData?.volunteerTasks?.length
+  ? helpData.volunteerTasks
+  : ['Futter verteilen', 'Gassi gehen', 'Bauprojekte', 'Kuscheln'];
+const volunteerTasks = volunteerLabels.map((label, i) => ({ label, iconKey: VOLUNTEER_ICONS[i] ?? 'paw' }));
+const volunteerImage = img(helpData?.volunteerImage, '/images/IMG_2820.jpg');
+
+const adoptStepsEyebrow = helpData?.adoptStepsEyebrow ?? 'Adoption';
+const adoptStepsHeadline = helpData?.adoptStepsHeadline ?? 'Der Weg zur';
+const adoptStepsAccent = helpData?.adoptStepsAccent ?? 'Adoption.';
+const adoptSteps = helpData?.adoptSteps?.length
+  ? helpData.adoptSteps
+  : [
+      'Hund aus unseren Profilen auswählen',
+      'Adoptionsformular ausfüllen',
+      'Videocall mit Eileen',
+      'Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)',
+    ];
+const adoptStepsImage = img(helpData?.adoptStepsImage, '/images/IMG_9452.jpg');
+
+const faqEyebrow = helpData?.faqEyebrow ?? 'Häufige Fragen';
+const faqHeadline = helpData?.faqHeadline ?? 'FAQ';
 const fallbackFaqs = [
   { question: 'Wie kann ich spenden?', answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.' },
   { question: 'Welche Tiere stehen zur Adoption?', answer: 'Aktuell haben wir mehrere Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.' },
@@ -34,17 +93,17 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/IMG_4737.jpg" alt="Fütterungsaktion auf Lombok" class="w-full h-full object-cover" loading="eager" />
+      <img src={heroImage} alt="Fütterungsaktion auf Lombok" class="w-full h-full object-cover" width="1170" height="1560" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/50" />
     </div>
     <div class="container-x relative z-10 max-w-3xl">
-      <p class="eyebrow mb-5">Jetzt helfen</p>
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="text-5xl md:text-7xl font-black mb-6">
-        Deine Hilfe<br />
-        <span class="text-amber-500">rettet Leben.</span>
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500">{heroTitleAccent}</span>
       </h1>
       <p class="text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
-        Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.
+        {heroSub}
       </p>
       <div class="flex flex-wrap gap-4">
         <a href="#spenden" class="btn-primary btn-large">Jetzt spenden</a>
@@ -57,10 +116,10 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <section class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-12 max-w-2xl mx-auto">
-        <p class="eyebrow mb-3">Konkrete Wirkung</p>
-        <h2 class="section-heading">Was deine Spende<br /><span class="text-amber-500">konkret bewirkt.</span></h2>
+        <p class="eyebrow mb-3">{tiersEyebrow}</p>
+        <h2 class="section-heading"><Lines text={tiersHeadline} /></h2>
         <p class="mt-5 text-white/70 leading-relaxed">
-          Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:
+          {tiersSub}
         </p>
       </div>
 
@@ -113,39 +172,14 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <section class="py-20 bg-black">
     <div class="container-x">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Wie du helfen kannst</p>
-        <h2 class="section-heading">Drei Wege.<br /><span class="text-amber-500">Ein Ziel.</span></h2>
+        <p class="eyebrow mb-3">{waysEyebrow}</p>
+        <h2 class="section-heading"><Lines text={waysHeadline} /></h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {[
-          {
-            id: 'spenden',
-            iconKey: 'heart',
-            label: '01 · Spenden',
-            title: 'Deine Spende rettet Leben',
-            desc: 'Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.',
-            img: '/images/IMG_2977.jpg',
-          },
-          {
-            id: 'adoption',
-            iconKey: 'home',
-            label: '02 · Adoptieren',
-            title: 'Gib einem Hund ein Zuhause',
-            desc: 'Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.',
-            img: '/images/IMG_9452.jpg',
-          },
-          {
-            id: 'volunteer',
-            iconKey: 'hand-helping',
-            label: '03 · Volunteer',
-            title: 'Hilf aktiv vor Ort',
-            desc: 'Komm nach Lombok und werde Teil unseres Teams: füttern, versorgen, streicheln – jede helfende Hand zählt.',
-            img: '/images/fynn eileen walking.jpeg',
-          },
-        ].map((item) => (
+        {ways.map((item) => (
           <div id={item.id} class="card overflow-hidden flex flex-col">
             <div class="aspect-video overflow-hidden">
-              <img src={item.img} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
+              <img src={item.image} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
             </div>
             <div class="p-6 flex flex-col flex-1">
               <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-500/10 text-amber-500 mb-4">
@@ -234,18 +268,13 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
-          <p class="eyebrow mb-4">Freiwilligenarbeit</p>
-          <h2 class="text-4xl font-black mb-6">Komm vorbei und<br /><span class="text-amber-500">unterstütz uns.</span></h2>
+          <p class="eyebrow mb-4">{volunteerEyebrow}</p>
+          <h2 class="text-4xl font-black mb-6"><Lines text={volunteerHeadline} /></h2>
           <p class="prose-dark mb-6">
-            Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.
+            {volunteerText}
           </p>
           <div class="grid grid-cols-2 gap-4 mb-8">
-            {[
-              { iconKey: 'bone', label: 'Futter verteilen' },
-              { iconKey: 'paw', label: 'Gassi gehen' },
-              { iconKey: 'hammer', label: 'Bauprojekte' },
-              { iconKey: 'heart-handshake', label: 'Kuscheln' },
-            ].map((item) => (
+            {volunteerTasks.map((item) => (
               <div class="bg-gray-dark rounded-xl p-4 flex items-center gap-3 border border-white/5">
                 <span class="text-amber-500 shrink-0">
                   {item.iconKey === 'bone' && (
@@ -286,7 +315,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         </div>
         <div>
           <img
-            src="/images/IMG_2820.jpg"
+            src={volunteerImage}
             alt="Volunteer bei Travel2Rescue"
             class="rounded-2xl w-full aspect-[4/3] object-cover"
             loading="lazy"
@@ -301,18 +330,13 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
-          <img src="/images/IMG_9452.jpg" alt="Hund zur Adoption" class="rounded-2xl w-full aspect-[4/3] object-cover" loading="lazy" />
+          <img src={adoptStepsImage} alt="Hund zur Adoption" class="rounded-2xl w-full aspect-[4/3] object-cover" loading="lazy" />
         </div>
         <div>
-          <p class="eyebrow mb-4">Adoption</p>
-          <h2 class="text-4xl font-black mb-6">Der Weg zur<br /><span class="text-amber-500">Adoption.</span></h2>
+          <p class="eyebrow mb-4">{adoptStepsEyebrow}</p>
+          <h2 class="text-4xl font-black mb-6"><Lines text={adoptStepsHeadline} /><br /><span class="text-amber-500">{adoptStepsAccent}</span></h2>
           <ol class="space-y-4 mb-8">
-            {[
-              'Hund aus unseren Profilen auswählen',
-              'Adoptionsformular ausfüllen',
-              'Videocall mit Eileen',
-              'Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)',
-            ].map((step, i) => (
+            {adoptSteps.map((step, i) => (
               <li class="flex gap-4 items-start">
                 <span class="w-8 h-8 rounded-full bg-amber-500 text-black text-sm font-black flex items-center justify-center shrink-0 mt-0.5">{i + 1}</span>
                 <span class="text-white/80">{step}</span>
@@ -329,8 +353,8 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <section class="py-20 bg-gray-dark">
     <div class="container-x max-w-3xl mx-auto">
       <div class="text-center mb-12">
-        <p class="eyebrow mb-3">Häufige Fragen</p>
-        <h2 class="section-heading">FAQ</h2>
+        <p class="eyebrow mb-3">{faqEyebrow}</p>
+        <h2 class="section-heading">{faqHeadline}</h2>
       </div>
       {faqs.map((faq) => (
         <FAQItem question={faq.question} answer={faq.answer} />
@@ -348,4 +372,6 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
       <ContactForm subject="Helfen – Anfrage" />
     </div>
   </section>
+
+  <FaqSchema faqs={faqs} />
 </BaseLayout>

@@ -1,0 +1,43 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { NAV } from '@/data/site';
+---
+
+<BaseLayout
+  title="Seite nicht gefunden"
+  description="Diese Seite existiert leider nicht. Finde zurück zu den Hunden von Travel2Rescue e.V."
+  noIndex={true}
+>
+  <section class="relative min-h-[80vh] flex items-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img
+        src="/images/IMG_0991.jpg"
+        alt=""
+        class="w-full h-full object-cover"
+        loading="eager"
+      />
+      <div class="absolute inset-0 bg-black/80" />
+    </div>
+
+    <div class="container-x relative z-10 text-center max-w-2xl mx-auto py-20">
+      <p class="eyebrow mb-5">Fehler 404</p>
+      <h1 class="font-serif text-6xl md:text-8xl font-semibold leading-none tracking-tight mb-6">
+        Hier ist nur<br /><span class="text-amber-500 italic">ein leerer Napf.</span>
+      </h1>
+      <p class="text-lg text-white/70 leading-relaxed mb-10 max-w-lg mx-auto">
+        Diese Seite konnten wir nicht aufstöbern. Vielleicht wurde sie verschoben –
+        oder der Link hat sich verlaufen. Lass uns dich zurück nach Hause bringen.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <a href="/" class="btn-primary btn-large">Zur Startseite</a>
+        <a href="/adoptieren/" class="btn-ghost btn-large">Hunde ansehen</a>
+      </div>
+
+      <nav aria-label="Seitenübersicht" class="mt-12 flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm text-white/50">
+        {NAV.map((item) => (
+          <a href={item.href} class="hover:text-amber-400 transition-colors">{item.label}</a>
+        ))}
+      </nav>
+    </div>
+  </section>
+</BaseLayout>

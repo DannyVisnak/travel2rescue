@@ -2,12 +2,26 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTABand from '@/components/CTABand.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
+import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const projectEntries = await reader.collections.projects.all();
 const PROJECTS = projectEntries
   .map(({ slug, entry }) => ({ id: slug, ...entry }))
   .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0));
+
+const p = await reader.singletons.projectsPage.read();
+const heroEyebrow = p?.heroEyebrow ?? 'Aktive Projekte';
+const heroTitle = p?.heroTitle ?? 'Hier passiert';
+const heroTitleAccent = p?.heroTitleAccent ?? 'die Arbeit.';
+const heroSub = p?.heroSub ?? 'Drei konkrete Projekte. Drei Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
+const heroImage = img(p?.heroImage, '/images/IMG_2820.jpg');
+
+const outroEyebrow = p?.outroEyebrow ?? 'Mehr kommt';
+const outroHeadline = p?.outroHeadline ?? 'Jede Spende ermöglicht\ndas nächste Projekt.';
+const outroText = p?.outroText ?? 'Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.';
+const outroButton = p?.outroButton ?? 'Projekte unterstützen';
 ---
 
 <BaseLayout
@@ -17,17 +31,17 @@ const PROJECTS = projectEntries
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/IMG_2820.jpg" alt="Hundehütten Projekt" class="w-full h-full object-cover" loading="eager" />
+      <img src={heroImage} alt="Hundehütten Projekt" class="w-full h-full object-cover" width="1200" height="1600" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-black/70" />
     </div>
     <div class="container-x relative z-10 text-center max-w-3xl mx-auto">
-      <p class="eyebrow mb-5">Aktive Projekte</p>
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold leading-[1.05] tracking-tight mb-6">
-        Hier passiert<br />
-        <span class="text-amber-500 italic">die Arbeit.</span>
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500 italic">{heroTitleAccent}</span>
       </h1>
       <p class="text-xl text-white/70">
-        Drei konkrete Projekte. Drei Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.
+        {heroSub}
       </p>
     </div>
   </section>
@@ -47,7 +61,7 @@ const PROJECTS = projectEntries
           <div id={project.id} class={`grid grid-cols-1 lg:grid-cols-2 gap-12 items-center ${i % 2 === 1 ? 'lg:flex-row-reverse' : ''}`}>
             <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
               <img
-                src={project.image}
+                src={img(project.image)}
                 alt={project.title}
                 class="rounded-2xl w-full aspect-[4/3] object-cover"
                 loading="lazy"
@@ -72,10 +86,10 @@ const PROJECTS = projectEntries
   <!-- Mehr Projekte kommen -->
   <section class="py-16 bg-gray-dark border-y border-white/5">
     <div class="container-x text-center max-w-2xl mx-auto">
-      <p class="eyebrow mb-4">Mehr kommt</p>
-      <h2 class="text-3xl font-black mb-4">Jede Spende ermöglicht<br />das nächste Projekt.</h2>
-      <p class="text-white/60 mb-8">Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.</p>
-      <a href="/helfen/" class="btn-primary btn-large">Projekte unterstützen</a>
+      <p class="eyebrow mb-4">{outroEyebrow}</p>
+      <h2 class="text-3xl font-black mb-4"><Lines text={outroHeadline} /></h2>
+      <p class="text-white/60 mb-8">{outroText}</p>
+      <a href="/helfen/" class="btn-primary btn-large">{outroButton}</a>
     </div>
   </section>
 

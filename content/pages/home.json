@@ -1,7 +1,48 @@
 {
-  "heroHeadline": "50.000\nStraßenhunde.\nNur wir sehen hin.",
+  "heroEyebrow": "Travel2Rescue e.V. · Kuta, Lombok",
+  "heroTitleTop": "50.000",
+  "heroTitleAccent": "Straßenhunde.",
+  "heroTitleBottom": "Nur wir sehen hin.",
   "heroSub": "Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.",
+  "heroImage": "new_hero.jpeg",
+  "trustItems": [
+    "e.V. seit 2023",
+    "Vereinsregister Hof",
+    "100% Tierschutz",
+    "Steuerlich absetzbar"
+  ],
+  "storyEyebrow": "Unsere Geschichte",
+  "storyHeadline": "Aus Mitleid wurde Verantwortung.",
+  "storyText1": "Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.",
+  "storyText2": "Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.",
+  "storyImage": null,
+  "storyPostcard": "Lombok, März 2023 — der eine Welpe, der alles veränderte.",
+  "servicesEyebrow": "Was wir konkret tun",
+  "servicesHeadline": "Direkt helfen. Nachhaltig verändern.",
+  "services": [
+    {
+      "title": "Rettung",
+      "desc": "Ausgesetzt, angefahren, dem Tod nah – wir nehmen uns den Hunden an, die ohne uns keine Chance hätten."
+    },
+    {
+      "title": "Medizinische Versorgung",
+      "desc": "Operationen, Wundversorgung, Parasitenbehandlung – wir bezahlen die Not-OP, die über Leben und Tod entscheidet."
+    },
+    {
+      "title": "Kastration",
+      "desc": "Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel."
+    },
+    {
+      "title": "Fütterung",
+      "desc": "Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe."
+    }
+  ],
+  "dogsEyebrow": "Zur Adoption freigegeben",
+  "dogsHeadline": "Sie warten auf dich.",
+  "dogsSub": "Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.",
   "founderQuote": "Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.",
+  "faqEyebrow": "Häufige Fragen",
+  "faqHeadline": "FAQ",
   "homeFaqs": [
     {
       "question": "Kann ich mal vorbeikommen und die Hunde streicheln?",

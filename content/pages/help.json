@@ -1,4 +1,62 @@
 {
+  "heroEyebrow": "Jetzt helfen",
+  "heroTitle": "Deine Hilfe",
+  "heroTitleAccent": "rettet Leben.",
+  "heroSub": "Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.",
+  "heroImage": "IMG_4737.jpg",
+  "tiersEyebrow": "Konkrete Wirkung",
+  "tiersHeadline": "Was deine Spende\nkonkret bewirkt.",
+  "tiersSub": "Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:",
+  "donationTiers": [
+    { "amount": 10, "impact": "Eine Woche Futter für 5 Hunde" },
+    { "amount": 25, "impact": "Eine Kastration: ein Hund weniger, der leidet" },
+    { "amount": 50, "impact": "Notfall-OP für einen verletzten Welpen" },
+    { "amount": 100, "impact": "Wöchentliche Versorgung einer Pflegestelle" }
+  ],
+  "waysEyebrow": "Wie du helfen kannst",
+  "waysHeadline": "Drei Wege.\nEin Ziel.",
+  "ways": [
+    {
+      "label": "01 · Spenden",
+      "title": "Deine Spende rettet Leben",
+      "desc": "Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.",
+      "image": "IMG_2977.jpg"
+    },
+    {
+      "label": "02 · Adoptieren",
+      "title": "Gib einem Hund ein Zuhause",
+      "desc": "Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.",
+      "image": "IMG_9452.jpg"
+    },
+    {
+      "label": "03 · Volunteer",
+      "title": "Hilf aktiv vor Ort",
+      "desc": "Komm nach Lombok und werde Teil unseres Teams: füttern, versorgen, streicheln – jede helfende Hand zählt.",
+      "image": null
+    }
+  ],
+  "volunteerEyebrow": "Freiwilligenarbeit",
+  "volunteerHeadline": "Komm vorbei und\nunterstütz uns.",
+  "volunteerText": "Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.",
+  "volunteerTasks": [
+    "Futter verteilen",
+    "Gassi gehen",
+    "Bauprojekte",
+    "Kuscheln"
+  ],
+  "volunteerImage": "IMG_2820.jpg",
+  "adoptStepsEyebrow": "Adoption",
+  "adoptStepsHeadline": "Der Weg zur",
+  "adoptStepsAccent": "Adoption.",
+  "adoptSteps": [
+    "Hund aus unseren Profilen auswählen",
+    "Adoptionsformular ausfüllen",
+    "Videocall mit Eileen",
+    "Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)"
+  ],
+  "adoptStepsImage": "IMG_9452.jpg",
+  "faqEyebrow": "Häufige Fragen",
+  "faqHeadline": "FAQ",
   "helpFaqs": [
     {
       "question": "Wie kann ich spenden?",
@@ -14,7 +72,7 @@
     },
     {
       "question": "Kann ich eine Patenschaft übernehmen?",
-      "answer": "Ja! Eine Patenschaft bedeutet, dass du monatlich einen Betrag spendest, der einem bestimmten Hund oder unserem allgemeinen Betrieb zugute kommt. Schreib uns an."
+      "answer": "Ja! Eine Patenschaft bedeutet, dass du monatlich einen festen Betrag spendest und damit dauerhaft an unserer Seite stehst – planbar für uns, persönlich für dich. Auf unserer Patenschaft-Seite (/patenschaft/) findest du alle Pakete und ein Formular."
     },
     {
       "question": "Wie wird meine Spende verwendet?",

@@ -1,28 +1,53 @@
 ---
+import { reader } from '@/lib/keystatic';
+import { img as resolveImg } from '@/lib/img';
+
 interface Adopted {
   name: string;
-  // optional image path; falls back to gradient avatar with initial
-  image?: string;
-  gradient?: string; // tailwind gradient classes, e.g. "from-amber-500/30 to-rose-500/20"
+  image?: string | null;
+  gradient?: string;
 }
 
 interface Props {
+  // Floor for the headline count — actual count is max(prop, CMS-vermittelt).
   count?: number;
+  // Explicit override (e.g. for a different page); otherwise we read from CMS.
   adopted?: Adopted[];
 }
 
-const fallback: Adopted[] = [
-  { name: 'Bella',  gradient: 'from-amber-500/40 to-rose-400/20' },
-  { name: 'Charlie', gradient: 'from-emerald-500/30 to-amber-500/20' },
-  { name: 'Luna',   gradient: 'from-sky-500/30 to-indigo-500/20' },
-  { name: 'Max',    gradient: 'from-amber-500/40 to-orange-500/20' },
-  { name: 'Mila',   gradient: 'from-fuchsia-500/30 to-amber-500/20' },
-  { name: 'Toby',   gradient: 'from-teal-500/30 to-amber-400/20' },
-  { name: 'Nala',   gradient: 'from-rose-500/30 to-amber-500/20' },
-  { name: 'Bruno',  gradient: 'from-lime-500/30 to-emerald-500/20' },
+const GRADIENTS = [
+  'from-amber-500/40 to-rose-400/20',
+  'from-emerald-500/30 to-amber-500/20',
+  'from-sky-500/30 to-indigo-500/20',
+  'from-amber-500/40 to-orange-500/20',
+  'from-fuchsia-500/30 to-amber-500/20',
+  'from-teal-500/30 to-amber-400/20',
+  'from-rose-500/30 to-amber-500/20',
+  'from-lime-500/30 to-emerald-500/20',
 ];
 
-const { count = 25, adopted = fallback } = Astro.props as Props;
+const { count: baseCount = 25, adopted: explicit } = Astro.props as Props;
+
+let adopted: Adopted[];
+let count = baseCount;
+if (explicit) {
+  adopted = explicit;
+} else {
+  // Pull adopted dogs from the Keystatic collection: any dog whose
+  // "Verfügbar zur Adoption" checkbox is unchecked (or tag includes "vermittelt").
+  const entries = await reader.collections.dogs.all();
+  const adoptedEntries = entries.filter(({ entry }) =>
+    !entry.available || /vermittelt/i.test(entry.tag ?? ''),
+  );
+  adopted = adoptedEntries.map(({ entry }, i) => ({
+    name: entry.name,
+    image: entry.image,
+    gradient: GRADIENTS[i % GRADIENTS.length],
+  }));
+  // Headline count never decreases below the prop floor (so the lifetime
+  // total can outpace what's currently marked vermittelt in the CMS).
+  count = Math.max(baseCount, adoptedEntries.length);
+}
 ---
 
 <section class="py-20 bg-black">
@@ -48,7 +73,7 @@ const { count = 25, adopted = fallback } = Astro.props as Props;
             <li class="flex flex-col items-center text-center">
               <div class={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-2 ring-amber-500/20 ring-offset-2 ring-offset-black bg-gradient-to-br ${dog.gradient ?? 'from-amber-500/30 to-rose-400/20'} flex items-center justify-center`}>
                 {dog.image ? (
-                  <img src={dog.image} alt={`${dog.name} – vermittelt`} class="w-full h-full object-cover" loading="lazy" />
+                  <img src={resolveImg(dog.image)} alt={`${dog.name} – vermittelt`} class="w-full h-full object-cover" loading="lazy" />
                 ) : (
                   <span class="font-serif italic text-3xl text-cream/90 select-none">
                     {dog.name.charAt(0)}

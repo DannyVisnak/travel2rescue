@@ -6,7 +6,10 @@ import keystatic from '@keystatic/astro';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  adapter: vercel(),
+  // edgeMiddleware: true ensures src/middleware.ts runs at the edge for ALL
+  // routes including prerendered ones — required for the SITE_PASSWORD lock
+  // to cover static pages, not just dynamic ones.
+  adapter: vercel({ edgeMiddleware: true }),
   site: 'https://www.travel2rescue.de',
   trailingSlash: 'always',
   build: {
@@ -25,7 +28,10 @@ export default defineConfig({
     ],
   },
   integrations: [
-    sitemap(),
+    sitemap({
+      // Keep noindex / utility pages out of the sitemap.
+      filter: (page) => !/\/danke\/?$|\/404\/?$/.test(page),
+    }),
     react(),
     keystatic(),
   ],

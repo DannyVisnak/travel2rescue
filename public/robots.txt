@@ -1,0 +1,36 @@
+User-agent: *
+Allow: /
+
+# Keep the CMS admin and form/API endpoints out of search results
+Disallow: /keystatic/
+Disallow: /api/
+
+# Opt out of generative-AI training crawlers (content stays in regular
+# search). The vereinsregister-protected name and photos are personal/
+# editorial work and should not be slurped without consent.
+User-agent: GPTBot
+Disallow: /
+User-agent: ChatGPT-User
+Disallow: /
+User-agent: OAI-SearchBot
+Disallow: /
+User-agent: Google-Extended
+Disallow: /
+User-agent: ClaudeBot
+Disallow: /
+User-agent: anthropic-ai
+Disallow: /
+User-agent: PerplexityBot
+Disallow: /
+User-agent: CCBot
+Disallow: /
+User-agent: Bytespider
+Disallow: /
+User-agent: Amazonbot
+Disallow: /
+User-agent: Applebot-Extended
+Disallow: /
+User-agent: meta-externalagent
+Disallow: /
+
+Sitemap: https://www.travel2rescue.de/sitemap-index.xml

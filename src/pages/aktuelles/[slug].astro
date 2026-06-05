@@ -1,0 +1,101 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import CTABand from '@/components/CTABand.astro';
+import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
+import { SITE } from '@/data/site';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const entries = await reader.collections.news.all();
+  return entries
+    .filter(({ entry }) => !entry.draft)
+    .map(({ slug, entry }) => ({
+      params: { slug },
+      props: {
+        post: {
+          slug,
+          title: entry.title,
+          date: entry.date,
+          excerpt: entry.excerpt,
+          body: entry.body,
+          image: entry.image,
+        },
+      },
+    }));
+}
+
+const { post } = Astro.props;
+const heroImage = post.image ? img(post.image) : '/og-image.png';
+
+function formatDate(d?: string | null) {
+  if (!d) return '';
+  return new Date(d).toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+const paragraphs = (post.body ?? '').split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+
+const articleJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: post.title,
+  description: post.excerpt ?? '',
+  image: post.image ? `${SITE.url}${img(post.image)}` : `${SITE.url}/og-image.png`,
+  datePublished: post.date,
+  inLanguage: 'de-DE',
+  author: { '@type': 'NGO', name: SITE.name, url: SITE.url },
+  publisher: {
+    '@type': 'NGO',
+    name: SITE.name,
+    logo: { '@type': 'ImageObject', url: `${SITE.url}/og-image.png` },
+  },
+  mainEntityOfPage: `${SITE.url}/aktuelles/${post.slug}/`,
+};
+---
+
+<BaseLayout
+  title={post.title}
+  description={post.excerpt ?? `${post.title} – Aktuelles von Travel2Rescue e.V.`}
+  ogImage={post.image ? img(post.image) : undefined}
+  ogType="article"
+>
+  <article>
+    <!-- Hero -->
+    <section class="relative py-24 overflow-hidden">
+      <div class="absolute inset-0">
+        <img src={heroImage} alt="" class="w-full h-full object-cover" loading="eager" />
+        <div class="absolute inset-0 bg-gradient-to-b from-black/85 via-black/80 to-black" />
+      </div>
+      <div class="container-x relative z-10 max-w-3xl mx-auto">
+        <a href="/aktuelles/" class="inline-flex items-center gap-2 text-white/50 hover:text-white text-sm mb-6 transition-colors">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+          </svg>
+          Alle Beiträge
+        </a>
+        <p class="eyebrow mb-5">{formatDate(post.date)}</p>
+        <h1 class="font-serif text-4xl md:text-6xl font-semibold leading-[1.1] tracking-tight">
+          {post.title}
+        </h1>
+        {post.excerpt && (
+          <p class="mt-6 text-xl text-white/70 leading-relaxed">{post.excerpt}</p>
+        )}
+      </div>
+    </section>
+
+    <!-- Body -->
+    <section class="py-20 bg-black">
+      <div class="container-x max-w-2xl mx-auto prose-dark text-lg space-y-6">
+        {paragraphs.length === 0 && <p class="text-white/50">Kein Inhalt verfügbar.</p>}
+        {paragraphs.map((p) => (
+          <p>{p}</p>
+        ))}
+      </div>
+    </section>
+  </article>
+
+  <CTABand />
+
+  <script type="application/ld+json" set:html={JSON.stringify(articleJsonLd)} />
+</BaseLayout>

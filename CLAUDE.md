@@ -37,17 +37,26 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `
 
 | Route | File | Purpose |
 |---|---|---|
-| `/` | `src/pages/index.astro` | Home — hero, stats, about, projects, dogs, quote, FAQ |
-| `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (hardcoded copy) |
+| `/` | `src/pages/index.astro` | Home — hero, stats, about, services, dogs, quote, FAQ |
+| `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
 | `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
-| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic) |
-| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → Web3Forms |
+| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic, prerendered, emits Article JSON-LD) |
+| `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → POSTs to `/api/adoption` (Resend) |
 | `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
+| `/patenschaft/` | `src/pages/patenschaft.astro` | Monthly sponsorship landing (tiers + benefits + form) |
+| `/aktuelles/` | `src/pages/aktuelles/index.astro` | News/blog index (reads `news` collection, filters drafts) |
+| `/aktuelles/[slug]/` | `src/pages/aktuelles/[slug].astro` | News article (prerendered, NewsArticle JSON-LD) |
+| `/aktuelles/feed.xml` | `src/pages/aktuelles/feed.xml.ts` | RSS feed (linked from `<head>`) |
 | `/ueber-uns/` | `src/pages/ueber-uns.astro` | Team bios (reads Keystatic) + origin story |
 | `/linktree/` | `src/pages/linktree.astro` | Social link hub (Instagram traffic) |
+| `/danke/` | `src/pages/danke.astro` | Thank-you page (noindex, `?typ=kontakt|adoption` switches copy) |
+| `/404` | `src/pages/404.astro` | Branded 404 (noindex) |
 | `/impressum/` | `src/pages/impressum.astro` | Legal — keep verbatim |
 | `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy — keep verbatim |
+| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits |
+| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same content-negotiation pattern) |
+| `/api/keystatic/[...params]` | `src/pages/api/keystatic/[...params].ts` | Keystatic auth callbacks (overrides the auto-injected route to fix Astro cookie handling) |
 
 ## Data Layer
 
@@ -61,14 +70,22 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 |---|---|---|
 | `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
 | `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
+| `reader.collections.news.all()` | News articles (supports `draft` flag, sorted by `date` desc) | `content/news/*.json` |
 | `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
-| `reader.singletons.homeContent.read()` | Hero text, founder quote, home FAQs | `content/pages/home.json` |
-| `reader.singletons.helpContent.read()` | Helfen FAQs + adoption FAQs | `content/pages/help.json` |
+| `reader.singletons.homeContent.read()` | Whole home page: hero, story, services, dogs teaser, quote, FAQs | `content/pages/home.json` |
+| `reader.singletons.missionContent.read()` | Whole mission page: hero, problems, quote, pillars, cats, vision | `content/pages/mission.json` |
+| `reader.singletons.helpContent.read()` | Whole helfen page: hero, donation tiers, ways, volunteer, adopt steps, FAQs | `content/pages/help.json` |
+| `reader.singletons.adoptionContent.read()` | Whole adoptieren page: hero, commitment, timeline, benefits, form intro | `content/pages/adoption.json` |
+| `reader.singletons.aboutContent.read()` | Über-uns page: hero, story chapters, team/reality headings, contact | `content/pages/about.json` |
+| `reader.singletons.projectsPage.read()` | Projekte page hero + outro (project entries stay in the collection) | `content/pages/projects.json` |
+| `reader.singletons.linktreeContent.read()` | Linktree tagline + link list | `content/pages/linktree.json` |
+| `reader.singletons.patenschaftContent.read()` | Patenschaft page: hero, tiers, benefits, form intro | `content/pages/patenschaft.json` |
+| `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
-Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist.
+Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist. **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
-**Image field note**: Dog and project `image` fields use `fields.image({ directory: 'public/images', publicPath: '/images/' })`. JSON stores just the filename (e.g., `IMG_0991.jpeg`). The reader prepends `/images/` automatically. When migrating existing entries with `/images/filename` paths, strip the prefix.
+**Image field note**: All `fields.image({ directory: 'public/images', publicPath: '/images/' })` fields store just the filename in JSON (e.g., `IMG_0991.jpeg`). ⚠️ The `reader` does **NOT** prepend `publicPath` for `fields.image` (that only happens for document-field images) — it returns the bare filename. So always wrap image values with `img()` from `src/lib/img.ts` before using them in `src=`/`ogImage`: `img(entry.image, '/images/fallback.jpg')`. `img()` prepends `/images/` to bare names and passes through values already starting with `/` or `http`, so it's safe on fallbacks too. (Before this helper existed, every CMS image rendered as a relative URL and 404'd.)
 
 ### Static fallbacks
 
@@ -98,7 +115,8 @@ tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 - `Header.astro` — fixed nav, mobile hamburger (`aria-expanded`), logo (h-16), PayPal CTA
 - `Footer.astro` — 4-col grid, social icons (Instagram, Facebook, PayPal, TikTok)
 - `StatsBand.astro` — reads `reader.singletons.settings` directly; use `<StatsBand />` without props
-- `CTABand.astro` — accepts `headline`, `sub`, `primary`, `secondary` props
+- `CTABand.astro` — accepts `headline`, `sub`, `primary`, `secondary` props; `headline`/`sub` default to `siteContent` CMS values
+- `Lines.astro` — renders a CMS string's `\n` as `<br/>`; used for all CMS-managed headings/paragraphs
 - `ProjectCard.astro` — project card with image + status badge
 - `DogCard.astro` — adoption card linking to `/adoptieren/[dog.id]/`
 - `FAQItem.astro` — `<details>/<summary>` accordion
@@ -110,23 +128,40 @@ tiktok:   'https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1'
 
 ### What Eileen can edit
 
+Eileen can now edit **essentially every visible text and most images** across the public pages. Each page has its own admin entry:
+
 | Section in admin | What changes |
 |---|---|
 | 🐾 Hunde | Add dogs, update stories, upload photos directly, mark as vermittelt |
 | 🏗️ Projekte | Update descriptions, impacts, upload photos |
 | ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
-| 🏠 Startseite – Texte & FAQ | Hero headline, hero subtext, founder quote, home FAQs |
-| 💝 Helfen-Seite & Adoptions-FAQ | All FAQ entries on helfen + adoptieren pages |
+| 🏠 Startseite | Hero, trust strip, story teaser, "Was wir tun" cards, dogs teaser, founder quote, FAQs |
+| 🎯 Mission-Seite | Hero, problem cards, quote, the 4 pillars, cats section, vision |
+| 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
+| 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |
+| 📖 Über-uns-Seite (Texte) | Hero, 4 story chapters, team/reality section copy, contact heading |
 | 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
+| 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
+| 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
+| 🤝 Patenschaft-Seite | Tiers + benefits + form copy for the monthly-sponsorship page |
+| 📣 Aktuelles (News) | Create, edit, draft news articles (with cover image + datum) |
+| 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
 
-### Env vars (all required in Vercel)
+**Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
 
-| Variable | Purpose | Notes |
-|---|---|---|
-| `KEYSTATIC_GITHUB_CLIENT_ID` | GitHub **App** client ID | From the App settings page (`github.com/settings/apps/<slug>`) |
-| `KEYSTATIC_GITHUB_CLIENT_SECRET` | GitHub App client secret | Generated under "Client secrets" on the App settings page; rotate if leaked |
-| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | The App's URL slug | Used by the Keystatic admin UI to render the install button |
-| `KEYSTATIC_SECRET` | Session-cookie signing secret (≥32 chars) | Generate: `openssl rand -base64 32`. Internal only — does not match anything external. |
+### Env vars
+
+| Variable | Required? | Purpose | Notes |
+|---|---|---|---|
+| `KEYSTATIC_GITHUB_CLIENT_ID` | yes (CMS) | GitHub **App** client ID | From the App settings page (`github.com/settings/apps/<slug>`) |
+| `KEYSTATIC_GITHUB_CLIENT_SECRET` | yes (CMS) | GitHub App client secret | Generated under "Client secrets" on the App settings page; rotate if leaked |
+| `PUBLIC_KEYSTATIC_GITHUB_APP_SLUG` | yes (CMS) | The App's URL slug | Used by the Keystatic admin UI to render the install button |
+| `KEYSTATIC_SECRET` | yes (CMS) | Session-cookie signing secret (≥32 chars) | Generate: `openssl rand -base64 32`. Internal only — does not match anything external. |
+| `RESEND_API_KEY` | yes (forms) | Resend API key | From <https://resend.com>; without it both forms return 500 |
+| `RESEND_FROM` | no | Sender address | Default: `Travel2Rescue <kontakt@travel2rescue.de>` |
+| `RESEND_TO` | no | Recipient address | Default: `travel2rescue@gmail.com` |
+| `PUBLIC_PLAUSIBLE_DOMAIN` | no | Plausible analytics domain | When set, `BaseLayout` emits the privacy-friendly Plausible `<script>` |
+| `PUBLIC_PLAUSIBLE_SRC` | no | Plausible script src override | For self-hosted instances; defaults to `https://plausible.io/js/script.js` |
 
 ### GitHub App (NOT a classic OAuth App)
 
@@ -190,9 +225,9 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 2. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
 
-3. **Web3Forms key placeholder** — `REPLACE_WITH_WEB3FORMS_KEY` in `src/components/ContactForm.astro` and `src/pages/adoptieren/formular.astro`. Replace with a real key from `https://web3forms.com/` before forms work.
+3. **Resend mail integration** — Both forms POST to internal API routes (`/api/contact`, `/api/adoption`) which send via Resend (`src/lib/email.ts`). Requires `RESEND_API_KEY` in Vercel. Optional: `RESEND_FROM` (default `Travel2Rescue <kontakt@travel2rescue.de>`) and `RESEND_TO` (default `travel2rescue@gmail.com`). Sender domain `travel2rescue.de` must be verified in Resend (DNS records).
 
-4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader prepends `publicPath`. If you see broken images after editing, check that `content/*/[entry].json` has bare filenames, not full paths.
+4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader returns it **bare** (no `publicPath` prepend), so consume it through `img()` from `src/lib/img.ts`. If you see broken images, check the value is wrapped in `img(...)` and that `content/*/[entry].json` has bare filenames.
 
 5. **Heavy portrait images (~6MB each)** — `eileen-portrait.jpeg` and `fynn portrait.jpeg` are ~3500px wide. Slow to fetch in Keystatic admin and on the live page. Consider downscaling to ~1200px / quality 80 (~300KB).
 
@@ -200,7 +235,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### Critical (broken / blocking)
 
-- [ ] **Web3Forms key**: Replace `REPLACE_WITH_WEB3FORMS_KEY` in `ContactForm.astro` and `formular.astro` — contact and adoption forms don't work without this
+- [ ] **Resend setup**: Set `RESEND_API_KEY` in Vercel and verify `travel2rescue.de` as sending domain in Resend dashboard. Without these, both forms return 500.
 
 ### Content (needs Eileen)
 
@@ -218,9 +253,10 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### CMS improvements (medium effort)
 
-- [ ] **Origin story chapters** (on Über uns page) — Currently hardcoded. Could be a Keystatic singleton with 4 `fields.array()` entries if Eileen wants to update them.
-- [ ] **Mission page pillars** — The 4 pillar cards on `/mission/` are hardcoded. Rarely changes but could be CMS-managed.
-- [ ] **Adoption form questions** — See evaluation below.
+- [x] **Origin story chapters** (on Über uns page) — now a `fields.array()` in `aboutContent`.
+- [x] **Mission page pillars** — the 4 pillar cards on `/mission/` are now in `missionContent`.
+- [x] **Full page-text CMS** — every public page (home, mission, helfen, adoptieren, ueber-uns, projekte, linktree) plus footer/CTA now reads its copy from Keystatic singletons with inline fallbacks.
+- [ ] **Adoption form questions** — See evaluation below. (Still the one deliberately-hardcoded text block.)
 
 ### Nice to have (low priority)
 

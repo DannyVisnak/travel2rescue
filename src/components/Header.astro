@@ -1,5 +1,9 @@
 ---
 import { SITE, NAV, NAV_CTA } from '@/data/site';
+import { reader } from '@/lib/keystatic';
+
+const cmsSettings = await reader.singletons.settings.read();
+const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
@@ -21,7 +25,7 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href={NAV_CTA.href} target="_blank" rel="noopener noreferrer" class="btn-primary text-xs px-4 py-2">
+        <a href={ctaHref} target="_blank" rel="noopener noreferrer" class="btn-primary text-xs px-4 py-2">
           {NAV_CTA.label}
         </a>
         <button
@@ -46,7 +50,7 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
           {item.label}
         </a>
       ))}
-      <a href={NAV_CTA.href} class="btn-primary text-center mt-2">
+      <a href={ctaHref} class="btn-primary text-center mt-2">
         {NAV_CTA.label}
       </a>
     </div>
@@ -56,10 +60,25 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
 <script>
   const btn = document.getElementById('mobile-menu-btn') as HTMLButtonElement | null;
   const menu = document.getElementById('mobile-menu');
-  btn?.addEventListener('click', () => {
-    const isOpen = !menu?.classList.contains('hidden');
-    menu?.classList.toggle('hidden');
-    btn.setAttribute('aria-expanded', String(!isOpen));
-    btn.setAttribute('aria-label', isOpen ? 'Menü öffnen' : 'Menü schließen');
-  });
+  if (btn && menu) {
+    function setOpen(open: boolean) {
+      menu!.classList.toggle('hidden', !open);
+      btn!.setAttribute('aria-expanded', String(open));
+      btn!.setAttribute('aria-label', open ? 'Menü schließen' : 'Menü öffnen');
+    }
+    btn.addEventListener('click', () => {
+      setOpen(menu.classList.contains('hidden'));
+    });
+    // Close the panel when the user activates a link inside it. Without this,
+    // hash-only navigations (#kontakt etc.) leave the overlay covering the
+    // section the user just jumped to.
+    menu.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.closest('a')) setOpen(false);
+    });
+    // Esc closes the menu.
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) setOpen(false);
+    });
+  }
 </script>

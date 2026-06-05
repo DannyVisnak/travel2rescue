@@ -1,5 +1,6 @@
 ---
 import type { Project } from '@/data/projects';
+import { img } from '@/lib/img';
 
 interface Props {
   project: Project;
@@ -11,7 +12,7 @@ const { project } = Astro.props;
 <article class="card group overflow-hidden">
   <div class="relative aspect-[16/9] overflow-hidden">
     <img
-      src={project.image}
+      src={img(project.image)}
       alt={project.title}
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"

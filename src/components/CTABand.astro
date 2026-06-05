@@ -1,4 +1,6 @@
 ---
+import { reader } from '@/lib/keystatic';
+
 interface Props {
   headline?: string;
   sub?: string;
@@ -7,9 +9,14 @@ interface Props {
   dark?: boolean;
 }
 
+// Default headline/sub come from the CMS (🌐 Footer & Allgemein) so the
+// recurring donation banner can be edited in one place. Pages may still
+// override via props.
+const site = await reader.singletons.siteContent.read();
+
 const {
-  headline = 'Wir brauchen Deine Hilfe.',
-  sub = 'Jede Spende, egal wie groß, rettet Leben. Heute. Sofort.',
+  headline = site?.ctaHeadline ?? 'Wir brauchen Deine Hilfe.',
+  sub = site?.ctaSub ?? 'Jede Spende, egal wie groß, rettet Leben. Heute. Sofort.',
   primary = { label: 'Jetzt spenden', href: '/helfen/' },
   secondary = { label: 'Mehr erfahren', href: '/mission/' },
   dark = true,

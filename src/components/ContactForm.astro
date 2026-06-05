@@ -3,6 +3,11 @@ interface Props {
   subject?: string;
 }
 const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
+
+// When the no-JS form path POSTs to /api/contact and the API fails, it
+// 303-redirects back here with ?error=1. Show that inline so the user
+// isn't left wondering.
+const showError = Astro.url.searchParams.get('error') === '1';
 ---
 
 <div class="card p-8 md:p-10">
@@ -10,13 +15,11 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
   <form
     id="contact-form"
     method="POST"
-    action="https://api.web3forms.com/submit"
+    action="/api/contact"
     class="space-y-4"
   >
-    <input type="hidden" name="access_key" value="REPLACE_WITH_WEB3FORMS_KEY" />
     <input type="hidden" name="subject" value={subject} />
-    <input type="hidden" name="redirect" value="false" />
-    <input type="checkbox" name="botcheck" class="hidden" style="display:none" />
+    <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
 
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
@@ -67,7 +70,14 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
       Nachricht senden
     </button>
 
-    <p id="form-result" class="hidden text-center text-sm pt-2" role="alert" aria-live="polite"></p>
+    <p
+      id="form-result"
+      class={`text-center text-sm pt-2 ${showError ? 'text-red-400' : 'hidden'}`}
+      role="alert"
+      aria-live="polite"
+    >
+      {showError ? 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com' : ''}
+    </p>
   </form>
 </div>
 
@@ -75,25 +85,52 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
   const form = document.getElementById('contact-form') as HTMLFormElement | null;
   const result = document.getElementById('form-result');
 
+  // If the no-JS fallback redirected here with ?error=1, show the message
+  // even when the page itself is prerendered (so Astro.url couldn't see it).
+  if (result && new URLSearchParams(window.location.search).get('error') === '1') {
+    result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
+    result.classList.remove('hidden');
+    result.classList.add('text-red-400');
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!result) return;
 
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
+    if (btn) {
+      btn.disabled = true;
+      btn.dataset.original = btn.textContent ?? '';
+      btn.textContent = 'Wird gesendet...';
+    }
+
     const data = new FormData(form);
-    const res = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      body: data,
-    });
-    const json = await res.json();
+    let ok = false;
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        body: data,
+        headers: { accept: 'application/json' },
+      });
+      const json = await res.json();
+      ok = res.ok && json.ok === true;
+    } catch {
+      ok = false;
+    }
 
     result.classList.remove('hidden', 'text-red-400', 'text-green-400');
-    if (json.success) {
+    if (ok) {
       result.textContent = 'Danke! Wir melden uns so schnell wie möglich bei dir.';
       result.classList.add('text-green-400');
       form.reset();
+      if (btn) btn.textContent = 'Gesendet ✓';
     } else {
       result.textContent = 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com';
       result.classList.add('text-red-400');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = btn.dataset.original ?? 'Nachricht senden';
+      }
     }
     result.classList.remove('hidden');
   });

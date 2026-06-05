@@ -3,10 +3,48 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
-import { SITE } from '@/data/site';
+import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
 
 const team = await reader.singletons.team.read();
+const c = await reader.singletons.aboutContent.read();
+
+const heroEyebrow = c?.heroEyebrow ?? 'Über uns';
+const heroTitle = c?.heroTitle ?? 'Wer sind';
+const heroTitleAccent = c?.heroTitleAccent ?? 'wir eigentlich?';
+const heroSub = c?.heroSub ?? 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
+const heroImage = img(c?.heroImage, '/images/fynn eileen dogs horizontal.jpg');
+
+const storyEyebrow = c?.storyEyebrow ?? 'Wie alles begann';
+const storyHeadline = c?.storyHeadline ?? 'Der Weg\nzum Verein.';
+const defaultChapters = [
+  { title: 'Der Plan war einfach.', text: 'Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien.', image: '/images/IMG_2198.jpg' },
+  { title: 'Dann kam dieser Welpe.', text: 'Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit.', image: '/images/IMG_0991.jpg' },
+  { title: 'Aus einer Schüssel Futter wurde eine Bewegung.', text: 'Statt weiterzureisen, blieben sie auf Bali, dann Lombok. Was mit gelegentlichem Futter vor der Tür begann, sprach sich herum. Bald warteten immer mehr hungrige Schnauzen. Medizinische Notfälle kamen hinzu. Die Reise war vorbei. Die Mission hatte begonnen.', image: '/images/IMG_4737.jpg' },
+  { title: 'Travel2Rescue e.V. war geboren.', text: 'Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.', image: '/images/IMG_2820.jpg' },
+];
+const storyChapters = c?.storyChapters?.length
+  ? c.storyChapters.map((ch, i) => ({ ...ch, image: img(ch.image, defaultChapters[i]?.image ?? '/images/IMG_2198.jpg') }))
+  : defaultChapters;
+
+const teamEyebrow = c?.teamEyebrow ?? 'Das Team';
+const teamHeadline = c?.teamHeadline ?? 'Kein Büro.\nKeine Bürokratie.';
+const teamSub = c?.teamSub ?? 'Nur wir zwei, ein paar Helfer und eine riesige Mission.';
+
+const realityEyebrow = c?.realityEyebrow ?? 'Die Realität';
+const realityHeadline = c?.realityHeadline ?? 'Kein klassischer\nTierschutzverein.';
+const realityImage = img(c?.realityImage, '/images/IMG_2543.jpg');
+const realityPoints = c?.realityPoints?.length
+  ? c.realityPoints
+  : [
+      { title: 'Unsere Struktur', desc: 'Kein großes Team, keine Bürokratie. Jeder Cent fließt direkt in die Hilfe für die Hunde. Wir zwei, ein paar angestellte Helfer und eine überwältigende Aufgabe.' },
+      { title: 'Unser Alltag', desc: 'Statt Romantik gibt es Schweiß, Tränen und durchwachte Nächte. Kampf gegen Tötungen, Kastrationen und Notfälle auf der Straße. Kein Urlaub. Keine Pause.' },
+      { title: 'Unser Antrieb', desc: 'Zwischen Straßenkampf und Tierklinik versuchen sie, ihr Leben zu erhalten. Chaotisch, ja. Aber sie würden es niemals tauschen.' },
+    ];
+
+const contactEyebrow = c?.contactEyebrow ?? 'Direkt schreiben';
+const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören.';
 ---
 
 <BaseLayout
@@ -17,17 +55,17 @@ const team = await reader.singletons.team.read();
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src="/images/fynn eileen dogs horizontal.jpg" alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-top" loading="eager" />
+      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-top" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
-      <p class="eyebrow mb-5">Über uns</p>
+      <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold leading-[1.05] tracking-tight mb-6">
-        Wer sind<br />
-        <span class="text-amber-500 italic">wir eigentlich?</span>
+        <Lines text={heroTitle} /><br />
+        <span class="text-amber-500 italic">{heroTitleAccent}</span>
       </h1>
       <p class="text-xl text-white/70 leading-relaxed">
-        Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.
+        {heroSub}
       </p>
     </div>
   </section>
@@ -36,36 +74,15 @@ const team = await reader.singletons.team.read();
   <section class="py-20 bg-black">
     <div class="container-x max-w-4xl mx-auto">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Wie alles begann</p>
-        <h2 class="section-heading">Der Weg<br />zum Verein.</h2>
+        <p class="eyebrow mb-3">{storyEyebrow}</p>
+        <h2 class="section-heading"><Lines text={storyHeadline} /></h2>
       </div>
 
       <div class="space-y-12">
-        {[
-          {
-            title: 'Der Plan war einfach.',
-            text: 'Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien.',
-            img: '/images/IMG_2198.jpg',
-          },
-          {
-            title: 'Dann kam dieser Welpe.',
-            text: 'Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit.',
-            img: '/images/IMG_0991.jpg',
-          },
-          {
-            title: 'Aus einer Schüssel Futter wurde eine Bewegung.',
-            text: 'Statt weiterzureisen, blieben sie auf Bali, dann Lombok. Was mit gelegentlichem Futter vor der Tür begann, sprach sich herum. Bald warteten immer mehr hungrige Schnauzen. Medizinische Notfälle kamen hinzu. Die Reise war vorbei. Die Mission hatte begonnen.',
-            img: '/images/IMG_4737.jpg',
-          },
-          {
-            title: 'Travel2Rescue e.V. war geboren.',
-            text: 'Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.',
-            img: '/images/IMG_2820.jpg',
-          },
-        ].map((item, i) => (
-          <div class={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${i % 2 === 1 ? '' : ''}`}>
+        {storyChapters.map((item, i) => (
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
             <div class={i % 2 === 1 ? 'lg:order-2' : ''}>
-              <img src={item.img} alt={item.title} class="rounded-2xl w-full aspect-video object-cover" loading="lazy" />
+              <img src={item.image} alt={item.title} class="rounded-2xl w-full aspect-video object-cover" loading="lazy" />
             </div>
             <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
               <h3 class="text-2xl font-black mb-4 text-amber-500">{item.title}</h3>
@@ -84,15 +101,15 @@ const team = await reader.singletons.team.read();
   <section class="py-20 bg-gray-dark">
     <div class="container-x">
       <div class="text-center mb-14">
-        <p class="eyebrow mb-3">Das Team</p>
-        <h2 class="section-heading">Kein Büro.<br />Keine Bürokratie.</h2>
-        <p class="section-subheading mx-auto mt-4">Nur wir zwei, ein paar Helfer und eine riesige Mission.</p>
+        <p class="eyebrow mb-3">{teamEyebrow}</p>
+        <h2 class="section-heading"><Lines text={teamHeadline} /></h2>
+        <p class="section-subheading mx-auto mt-4">{teamSub}</p>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
         <!-- Eileen -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src={team?.eileenImage ?? '/images/eileen-portrait.jpeg'} alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={img(team?.eileenImage, '/images/eileen-portrait.jpeg')} alt="Eileen" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Eileen</h3>
@@ -112,7 +129,7 @@ const team = await reader.singletons.team.read();
         <!-- Fynn -->
         <div class="card p-8">
           <div class="aspect-square w-32 rounded-full overflow-hidden mb-6 mx-auto border-4 border-amber-500/30">
-            <img src={team?.fynnImage ?? '/images/fynn-portrait.jpeg'} alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
+            <img src={img(team?.fynnImage, '/images/fynn-portrait.jpeg')} alt="Fynn" class="w-full h-full object-cover object-top" loading="lazy" />
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Fynn</h3>
@@ -137,17 +154,13 @@ const team = await reader.singletons.team.read();
     <div class="container-x">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
         <div>
-          <img src="/images/IMG_2543.jpg" alt="Arbeit vor Ort" class="rounded-2xl w-full aspect-video object-cover" loading="lazy" />
+          <img src={realityImage} alt="Arbeit vor Ort" class="rounded-2xl w-full aspect-video object-cover" loading="lazy" />
         </div>
         <div>
-          <p class="eyebrow mb-4">Die Realität</p>
-          <h2 class="text-4xl font-black mb-6">Kein klassischer<br />Tierschutzverein.</h2>
+          <p class="eyebrow mb-4">{realityEyebrow}</p>
+          <h2 class="text-4xl font-black mb-6"><Lines text={realityHeadline} /></h2>
           <div class="space-y-5">
-            {[
-              { title: 'Unsere Struktur', desc: 'Kein großes Team, keine Bürokratie. Jeder Cent fließt direkt in die Hilfe für die Hunde. Wir zwei, ein paar angestellte Helfer und eine überwältigende Aufgabe.' },
-              { title: 'Unser Alltag', desc: 'Statt Romantik gibt es Schweiß, Tränen und durchwachte Nächte. Kampf gegen Tötungen, Kastrationen und Notfälle auf der Straße. Kein Urlaub. Keine Pause.' },
-              { title: 'Unser Antrieb', desc: 'Zwischen Straßenkampf und Tierklinik versuchen sie, ihr Leben zu erhalten. Chaotisch, ja. Aber sie würden es niemals tauschen.' },
-            ].map((item) => (
+            {realityPoints.map((item) => (
               <div class="border-l-2 border-amber-500 pl-5">
                 <h4 class="font-bold text-white mb-1">{item.title}</h4>
                 <p class="text-white/60 text-sm">{item.desc}</p>
@@ -163,16 +176,14 @@ const team = await reader.singletons.team.read();
   <section class="py-20 bg-gray-dark">
     <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-10">
-        <p class="eyebrow mb-3">Direkt schreiben</p>
-        <h2 class="text-3xl font-black mb-4">Wir freuen uns<br />von dir zu hören.</h2>
+        <p class="eyebrow mb-3">{contactEyebrow}</p>
+        <h2 class="text-3xl font-black mb-4"><Lines text={contactHeadline} /></h2>
       </div>
       <ContactForm subject="Anfrage – Über uns" />
     </div>
   </section>
 
   <CTABand
-    headline="Wir brauchen Deine Hilfe."
-    sub="Jede Spende hilft, egal wie groß."
     primary={{ label: 'Jetzt helfen', href: '/helfen/' }}
     secondary={{ label: 'Hund adoptieren', href: '/adoptieren/' }}
   />
