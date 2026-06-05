@@ -3,6 +3,11 @@ interface Props {
   subject?: string;
 }
 const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
+
+// When the no-JS form path POSTs to /api/contact and the API fails, it
+// 303-redirects back here with ?error=1. Show that inline so the user
+// isn't left wondering.
+const showError = Astro.url.searchParams.get('error') === '1';
 ---
 
 <div class="card p-8 md:p-10">
@@ -65,7 +70,14 @@ const { subject = 'Anfrage über travel2rescue.de' } = Astro.props;
       Nachricht senden
     </button>
 
-    <p id="form-result" class="hidden text-center text-sm pt-2" role="alert" aria-live="polite"></p>
+    <p
+      id="form-result"
+      class={`text-center text-sm pt-2 ${showError ? 'text-red-400' : 'hidden'}`}
+      role="alert"
+      aria-live="polite"
+    >
+      {showError ? 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com' : ''}
+    </p>
   </form>
 </div>
 

@@ -4,6 +4,7 @@ import { reader } from '@/lib/keystatic';
 
 const dogEntries = await reader.collections.dogs.all();
 const dogNames = dogEntries.map(({ entry }) => entry.name);
+const showError = Astro.url.searchParams.get('error') === '1';
 ---
 
 <BaseLayout
@@ -361,7 +362,14 @@ const dogNames = dogEntries.map(({ entry }) => entry.name);
           <button type="submit" class="btn-primary w-full justify-center py-4 text-base">
             Formular absenden
           </button>
-          <p id="form-result" class="hidden text-center text-sm pt-2" role="alert" aria-live="polite"></p>
+          <p
+            id="form-result"
+            class={`text-center text-sm pt-2 ${showError ? 'text-red-400' : 'hidden'}`}
+            role="alert"
+            aria-live="polite"
+          >
+            {showError ? 'Etwas hat nicht funktioniert. Schreib uns direkt: travel2rescue@gmail.com' : ''}
+          </p>
         </form>
       </div>
     </div>
