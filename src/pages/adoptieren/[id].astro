@@ -5,32 +5,29 @@ import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 
+// On-demand SSR (no prerender) so middleware can gate this page when
+// SITE_PASSWORD is set. Astro looks up the slug via Astro.params.id at
+// request time.
 const cmsSettings = await reader.singletons.settings.read();
 const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
 
-export const prerender = true;
-
-export async function getStaticPaths() {
-  const entries = await reader.collections.dogs.all();
-  return entries.map(({ slug, entry }) => ({
-    params: { id: slug },
-    props: {
-      dog: {
-        id: slug,
-        name: entry.name,
-        age: entry.age,
-        breed: entry.breed,
-        character: entry.character,
-        story: entry.story,
-        image: entry.image,
-        available: entry.available,
-        tag: entry.tag || undefined,
-      },
-    },
-  }));
+const { id } = Astro.params as { id: string };
+const entry = id ? await reader.collections.dogs.read(id) : null;
+if (!entry) {
+  return Astro.redirect('/adoptieren/');
 }
 
-const { dog } = Astro.props;
+const dog = {
+  id,
+  name: entry.name,
+  age: entry.age,
+  breed: entry.breed,
+  character: entry.character,
+  story: entry.story,
+  image: entry.image,
+  available: entry.available,
+  tag: entry.tag || undefined,
+};
 const dogImage = img(dog.image);
 
 const metaDescription = `${dog.name} (${dog.age}, ${dog.breed}) sucht ein Zuhause in Deutschland. ${dog.story}`.slice(0, 155);

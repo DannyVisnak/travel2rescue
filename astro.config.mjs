@@ -6,17 +6,13 @@ import keystatic from '@keystatic/astro';
 import react from '@astrojs/react';
 
 export default defineConfig({
-  // NOTE: We tried `edgeMiddleware: true` to run src/middleware.ts on every
-  // route (incl. prerendered) — but the @astrojs/vercel adapter bundles
-  // Astro's middleware system into a single Edge function that pulls in
-  // Node APIs (Buffer, fs, Keystatic, sharp) the Edge runtime doesn't
-  // support, and Vercel rejects the deploy.
-  //
-  // Without it, src/middleware.ts still runs on DYNAMIC routes (API
-  // endpoints, /keystatic, etc.) in the Node serverless function. For a
-  // true sitewide lock that covers prerendered HTML, use Vercel's
-  // dashboard: Settings → Deployment Protection → Vercel Authentication
-  // (free on Hobby, one click, no rebuild).
+  // output: 'server' routes every page through the SSR function so the
+  // SITE_PASSWORD middleware can actually gate them. Pages still cached
+  // hard by Vercel's CDN on a per-URL basis once warm. Without this, the
+  // adapter defaults to static prerendering, and prerendered HTML bypasses
+  // Astro middleware entirely — so a password set in Vercel would only
+  // protect dynamic API routes, not the public site.
+  output: 'server',
   adapter: vercel(),
   site: 'https://www.travel2rescue.de',
   trailingSlash: 'always',
