@@ -174,15 +174,14 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
   <!-- Team-Showcase — das ganze Team (Tierärzte, Helfer …), CMS: 👥 Team -->
   <TeamShowcase />
 
-  <!-- Kontakt — zwei Sektionen: Überschrift auf Beige, Formular auf Dunkelbraun -->
-  <section class="py-16 bg-beige">
-    <div class="container-x max-w-2xl mx-auto text-center">
-      <p class="eyebrow mb-3">{contactEyebrow}</p>
-      <h2 class="text-3xl font-black text-black"><Lines text={contactHeadline} /></h2>
-    </div>
-  </section>
+  <!-- Kontakt — Überschrift + Formular in einer Sektion. Bewusst dunkel,
+       damit die beige "Wir brauchen Deine Hilfe"-Band darunter abgesetzt bleibt -->
   <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
+      <div class="text-center mb-10">
+        <p class="eyebrow mb-3">{contactEyebrow}</p>
+        <h2 class="text-3xl font-black"><Lines text={contactHeadline} /></h2>
+      </div>
       <ContactForm subject="Anfrage – Über uns" />
     </div>
   </section>
