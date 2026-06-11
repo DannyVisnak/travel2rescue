@@ -8,7 +8,7 @@ export async function POST(context: APIContext): Promise<Response> {
   // Accept: application/json — for those we redirect to /danke/ on success
   // and back to the page with ?error=1 on failure, so users never see raw
   // JSON. Fetch callers always set Accept and get JSON.
-  const wantsJson = (context.request.headers.get('accept') ?? '').includes('application/json');
+  const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
 
   if (!resend) {
     console.error('[contact] RESEND_API_KEY not configured');
@@ -22,17 +22,17 @@ export async function POST(context: APIContext): Promise<Response> {
     return respond(context, wantsJson, false, 'Ungültige Anfrage.', 400, 'kontakt');
   }
 
-  if (String(data.get('botcheck') ?? '').length > 0) {
+  if (String(data.get('botcheck') || '').length > 0) {
     return respond(context, wantsJson, true, undefined, 200, 'kontakt');
   }
 
-  const vorname = String(data.get('vorname') ?? '').trim();
-  const nachname = String(data.get('nachname') ?? '').trim();
-  const email = String(data.get('email') ?? '').trim();
-  const telefon = String(data.get('telefon') ?? '').trim();
-  const betreff = String(data.get('betreff') ?? '').trim();
-  const nachricht = String(data.get('nachricht') ?? '').trim();
-  const subject = String(data.get('subject') ?? 'Anfrage über travel2rescue.de').trim();
+  const vorname = String(data.get('vorname') || '').trim();
+  const nachname = String(data.get('nachname') || '').trim();
+  const email = String(data.get('email') || '').trim();
+  const telefon = String(data.get('telefon') || '').trim();
+  const betreff = String(data.get('betreff') || '').trim();
+  const nachricht = String(data.get('nachricht') || '').trim();
+  const subject = String(data.get('subject') || 'Anfrage über travel2rescue.de').trim();
 
   if (!vorname || !email || !nachricht) {
     return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400, 'kontakt');

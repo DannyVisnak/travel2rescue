@@ -42,7 +42,8 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is pastel 
 | `/` | `src/pages/index.astro` | Home — hero, stats, about, services, dogs, quote, FAQ |
 | `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
-| `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
+| `/adoptieren/` | `src/pages/adoptieren/index.astro` | Adoption funnel: process, 6-dog teaser, FAQ |
+| `/adoptieren/hunde/` | `src/pages/adoptieren/hunde.astro` | Full dog collection grid (all dogs, auto-grows with Keystatic) |
 | `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail with Steckbrief (on-demand SSR, emits Article JSON-LD) |
 | `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → POSTs to `/api/adoption` (Resend) |
 | `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
@@ -131,7 +132,7 @@ Eileen can now edit **essentially every visible text and most images** across th
 | 🐾 Hunde | Add dogs (appear automatically on /adoptieren/ + home), full Steckbrief (Geschlecht, Größe, Gewicht, kastriert/geimpft/gechipt), stories, photos, mark as vermittelt |
 | 🏗️ Projekte | Update descriptions, impacts, upload photos |
 | ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
-| 🏠 Startseite | Hero, trust strip, mission teaser, "Was wir tun" cards, projects teaser, dogs teaser (+ background photo), helfen teaser, story teaser, founder quote, FAQs |
+| 🏠 Startseite | Hero, trust strip, mission teaser, "Was wir tun" cards, projects teaser, dogs teaser (+ background photo), story teaser, founder quote, FAQs |
 | 🎯 Mission-Seite | Hero, free intro text (before problem cards), 4 problem cards, quote, the 4 pillars, cats section, vision |
 | 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
 | 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |

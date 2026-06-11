@@ -27,8 +27,8 @@ interface LinkItem {
 
 const linktreeData = await reader.singletons.linktreeContent.read();
 const cmsSettings = await reader.singletons.settings.read();
-const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
-const tagline = linktreeData?.tagline ?? `Gemeinsam Hunden ein besseres Leben schenken!❤️\nBankverbindung: Empfänger: ${SITE.bankverbindung.empfaenger}\nIBAN: ${SITE.bankverbindung.iban}`;
+const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
+const tagline = linktreeData?.tagline || `Gemeinsam Hunden ein besseres Leben schenken!❤️\nBankverbindung: Empfänger: ${SITE.bankverbindung.empfaenger}\nIBAN: ${SITE.bankverbindung.iban}`;
 
 // Bewusst kompakt gehalten (Juni 2026) — Liste spiegelt den Insta-Linktree.
 const defaultLinks: LinkItem[] = [

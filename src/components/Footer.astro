@@ -4,8 +4,8 @@ import { reader } from '@/lib/keystatic';
 
 const site = await reader.singletons.siteContent.read();
 const cmsSettings = await reader.singletons.settings.read();
-const footerTagline = site?.footerTagline ?? 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
-const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+const footerTagline = site?.footerTagline || 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
+const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
 ---
 
 <footer class="bg-gray-dark border-t border-white/5 pt-16 pb-8">

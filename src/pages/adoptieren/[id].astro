@@ -9,7 +9,7 @@ import { SITE } from '@/data/site';
 // SITE_PASSWORD is set. Astro looks up the slug via Astro.params.id at
 // request time.
 const cmsSettings = await reader.singletons.settings.read();
-const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
 
 const { id } = Astro.params as { id: string };
 const entry = id ? await reader.collections.dogs.read(id) : null;
@@ -90,7 +90,7 @@ const dogJsonLd = {
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/30" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
-      <a href="/adoptieren/" class="inline-flex items-center gap-2 text-white/50 hover:text-white text-sm mb-6 transition-colors">
+      <a href="/adoptieren/hunde/" class="inline-flex items-center gap-2 text-white/50 hover:text-white text-sm mb-6 transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
@@ -116,7 +116,7 @@ const dogJsonLd = {
           <p class="text-white/70 leading-relaxed text-lg">{dog.story}</p>
 
           <!-- Steckbrief -->
-          <div class="mt-8 rounded-2xl bg-gray-dark border border-white/5 p-6">
+          <div class="mt-8 rounded-2xl bg-card border border-white/5 p-6">
             <p class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-4">Steckbrief</p>
             <div class="space-y-3">
               {steckbrief.map((row) => (
@@ -127,7 +127,7 @@ const dogJsonLd = {
               ))}
               <div class="flex items-center gap-3 text-sm">
                 <span class="text-white/40 w-24 shrink-0">Status</span>
-                <span class="pill bg-amber-500/20 text-amber-400">{dog.tag ?? 'Verfügbar'}</span>
+                <span class="pill bg-amber-500/20 text-amber-400">{dog.tag || 'Verfügbar'}</span>
               </div>
             </div>
             {medChecks.length > 0 && (
@@ -210,7 +210,7 @@ const dogJsonLd = {
     headline="Noch kein Hund, aber helfen?"
     sub="Spende rettet das Leben der Hunde, bis sie ihr Zuhause finden."
     primary={{ label: 'Jetzt spenden', href: paypalUrl }}
-    secondary={{ label: 'Alle Hunde ansehen', href: '/adoptieren/' }}
+    secondary={{ label: 'Alle Hunde ansehen', href: '/adoptieren/hunde/' }}
   />
 
   <script type="application/ld+json" set:html={JSON.stringify(dogJsonLd)} />

@@ -100,7 +100,7 @@ const showError = Astro.url.searchParams.get('error') === '1';
     const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement | null;
     if (btn) {
       btn.disabled = true;
-      btn.dataset.original = btn.textContent ?? '';
+      btn.dataset.original = btn.textContent || '';
       btn.textContent = 'Wird gesendet...';
     }
 
@@ -129,7 +129,7 @@ const showError = Astro.url.searchParams.get('error') === '1';
       result.classList.add('text-red-400');
       if (btn) {
         btn.disabled = false;
-        btn.textContent = btn.dataset.original ?? 'Nachricht senden';
+        btn.textContent = btn.dataset.original || 'Nachricht senden';
       }
     }
     result.classList.remove('hidden');

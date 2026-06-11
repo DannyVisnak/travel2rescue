@@ -26,11 +26,11 @@ const TEASER_PROJECTS = projectEntries
 const homeData = await reader.singletons.homeContent.read();
 
 // Hero
-const heroEyebrow = homeData?.heroEyebrow ?? 'Travel2Rescue e.V. · Kuta, Lombok';
-const heroTitleTop = homeData?.heroTitleTop ?? '50.000';
-const heroTitleAccent = homeData?.heroTitleAccent ?? 'Straßenhunde.';
-const heroTitleBottom = homeData?.heroTitleBottom ?? 'Nur wir sehen hin.';
-const heroSub = homeData?.heroSub ?? 'Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.';
+const heroEyebrow = homeData?.heroEyebrow || 'Travel2Rescue e.V. · Kuta, Lombok';
+const heroTitleTop = homeData?.heroTitleTop || '50.000';
+const heroTitleAccent = homeData?.heroTitleAccent || 'Straßenhunde.';
+const heroTitleBottom = homeData?.heroTitleBottom || 'Nur wir sehen hin.';
+const heroSub = homeData?.heroSub || 'Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.';
 const heroImage = img(homeData?.heroImage, '/images/new_hero.jpeg');
 
 const trustItems = homeData?.trustItems?.length
@@ -38,10 +38,10 @@ const trustItems = homeData?.trustItems?.length
   : ['e.V. seit 2023', 'Vereinsregister Hof', '100% Tierschutz', 'Steuerlich absetzbar'];
 
 // Mission Teaser (Foto rechts — gespiegelt zur Über-uns-Sektion)
-const missionEyebrow = homeData?.missionEyebrow ?? 'Unsere Mission';
-const missionHeadline = homeData?.missionHeadline ?? 'Den Kreislauf aus Elend\ndurchbrechen.';
-const missionText1 = homeData?.missionText1 ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.';
-const missionText2 = homeData?.missionText2 ?? 'Kastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
+const missionEyebrow = homeData?.missionEyebrow || 'Unsere Mission';
+const missionHeadline = homeData?.missionHeadline || 'Den Kreislauf aus Elend\ndurchbrechen.';
+const missionText1 = homeData?.missionText1 || 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.';
+const missionText2 = homeData?.missionText2 || 'Kastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
 const missionImage = img(homeData?.missionImage, '/images/IMG_2977.jpg');
 
 // Was wir tun — icons stay fixed, text editable
@@ -57,44 +57,34 @@ const defaultServices = [
   { title: 'Kastration', desc: 'Eine unkastrierte Hündin kann in 6 Jahren bis zu 60.000 Nachkommen verursachen. Wir stoppen das Leid an der Wurzel.' },
   { title: 'Fütterung', desc: 'Täglich verteilen wir Futter. Nicht nur Nahrung – auch Vertrauen. Ohne Vertrauen kein Zugang, ohne Zugang keine Hilfe.' },
 ];
-const servicesEyebrow = homeData?.servicesEyebrow ?? 'Was wir konkret tun';
-const servicesHeadline = homeData?.servicesHeadline ?? 'Direkt helfen. Nachhaltig verändern.';
+const servicesEyebrow = homeData?.servicesEyebrow || 'Was wir konkret tun';
+const servicesHeadline = homeData?.servicesHeadline || 'Direkt helfen. Nachhaltig verändern.';
 const servicesSource = homeData?.services?.length ? homeData.services : defaultServices;
 const services = servicesSource.map((s, i) => ({ ...s, svg: SERVICE_ICONS[i] ?? SERVICE_ICONS[0] }));
 
 // Projekte Teaser
-const projectsEyebrow = homeData?.projectsEyebrow ?? 'Unsere Projekte';
-const projectsHeadline = homeData?.projectsHeadline ?? 'Hier passiert die Arbeit.';
-const projectsSub = homeData?.projectsSub ?? 'Konkrete Projekte, an denen echte Hilfe ankommt – auf Lombok und darüber hinaus.';
+const projectsEyebrow = homeData?.projectsEyebrow || 'Unsere Projekte';
+const projectsHeadline = homeData?.projectsHeadline || 'Hier passiert die Arbeit.';
+const projectsSub = homeData?.projectsSub || 'Konkrete Projekte, an denen echte Hilfe ankommt – auf Lombok und darüber hinaus.';
 
 // Adoptions-Teaser (mit grossem Hintergrundfoto)
-const dogsEyebrow = homeData?.dogsEyebrow ?? 'Zur Adoption freigegeben';
-const dogsHeadline = homeData?.dogsHeadline ?? 'Sie warten auf dich.';
-const dogsSub = homeData?.dogsSub ?? 'Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.';
+const dogsEyebrow = homeData?.dogsEyebrow || 'Zur Adoption freigegeben';
+const dogsHeadline = homeData?.dogsHeadline || 'Sie warten auf dich.';
+const dogsSub = homeData?.dogsSub || 'Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.';
 const dogsImage = img(homeData?.dogsImage, '/images/fynneileen dogs.jpeg');
 
-// Helfen Teaser
-const helfenEyebrow = homeData?.helfenEyebrow ?? 'Helfen';
-const helfenHeadline = homeData?.helfenHeadline ?? 'Deine Hilfe\nrettet Leben.';
-const helfenSub = homeData?.helfenSub ?? 'Ob Spende, Adoption oder Volunteering: Jeder Beitrag landet zu 100% bei den Tieren – kein Cent in der Verwaltung.';
-const helfenWays = [
-  { title: 'Spenden', desc: 'Futter, Medizin, Not-OPs – dein Geld wirkt sofort.', href: '/helfen/' },
-  { title: 'Adoptieren', desc: 'Gib einem geretteten Hund ein Zuhause in Deutschland.', href: '/adoptieren/' },
-  { title: 'Volunteer', desc: 'Komm nach Lombok und hilf direkt vor Ort mit.', href: '/helfen/#volunteer' },
-];
-
 // Über-uns Teaser
-const storyEyebrow = homeData?.storyEyebrow ?? 'Unsere Geschichte';
-const storyHeadline = homeData?.storyHeadline ?? 'Aus Mitleid wurde Verantwortung.';
-const storyText1 = homeData?.storyText1 ?? 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
-const storyText2 = homeData?.storyText2 ?? 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
+const storyEyebrow = homeData?.storyEyebrow || 'Unsere Geschichte';
+const storyHeadline = homeData?.storyHeadline || 'Aus Mitleid wurde Verantwortung.';
+const storyText1 = homeData?.storyText1 || 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
+const storyText2 = homeData?.storyText2 || 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
 const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
-const storyPostcard = homeData?.storyPostcard ?? 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
+const storyPostcard = homeData?.storyPostcard || 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
 
-const founderQuote = homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.';
+const founderQuote = homeData?.founderQuote || 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.';
 
-const faqEyebrow = homeData?.faqEyebrow ?? 'Häufige Fragen';
-const faqHeadline = homeData?.faqHeadline ?? 'FAQ';
+const faqEyebrow = homeData?.faqEyebrow || 'Häufige Fragen';
+const faqHeadline = homeData?.faqHeadline || 'FAQ';
 const faqs = homeData?.homeFaqs?.length
   ? homeData.homeFaqs
   : [
@@ -270,27 +260,8 @@ const faqs = homeData?.homeFaqs?.length
     </div>
   </section>
 
-  <!-- 4) Helfen Teaser -->
-  <section class="py-20 bg-beige">
-    <div class="container-x">
-      <div class="text-center mb-12 max-w-3xl mx-auto">
-        <p class="eyebrow mb-3">{helfenEyebrow}</p>
-        <h2 class="section-heading text-black"><Lines text={helfenHeadline} /></h2>
-        <p class="text-lg text-black/70 leading-relaxed mt-4">{helfenSub}</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
-        {helfenWays.map((way) => (
-          <a href={way.href} class="rounded-2xl bg-cream border border-black/10 p-7 text-left hover:border-amber-500 transition-colors group">
-            <h3 class="text-xl font-bold text-black mb-2 group-hover:text-amber-dark transition-colors">{way.title}</h3>
-            <p class="text-black/60 text-sm leading-relaxed">{way.desc}</p>
-          </a>
-        ))}
-      </div>
-      <div class="text-center">
-        <a href="/helfen/" class="btn-primary btn-large">Jetzt helfen</a>
-      </div>
-    </div>
-  </section>
+  <!-- 4) Helfen = die vertraute beige "Wir brauchen Deine Hilfe"-Band (CTABand
+       ganz unten). Der separate Helfen-Teaser wurde auf Wunsch entfernt. -->
 
   <!-- 5) Über uns Teaser — asymmetric, photo bleeds to left edge -->
   <section class="py-20 bg-gray-dark overflow-hidden">

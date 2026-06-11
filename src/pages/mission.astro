@@ -9,18 +9,18 @@ import { img } from '@/lib/img';
 
 const m = await reader.singletons.missionContent.read();
 
-const heroEyebrow = m?.heroEyebrow ?? 'Unsere Mission';
-const heroTitle = m?.heroTitle ?? 'Wir kämpfen für Hunde,';
-const heroTitleAccent = m?.heroTitleAccent ?? 'die sonst niemand sieht.';
-const heroSub = m?.heroSub ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.';
+const heroEyebrow = m?.heroEyebrow || 'Unsere Mission';
+const heroTitle = m?.heroTitle || 'Wir kämpfen für Hunde,';
+const heroTitleAccent = m?.heroTitleAccent || 'die sonst niemand sieht.';
+const heroSub = m?.heroSub || 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.';
 const heroImage = img(m?.heroImage, '/images/IMG_2977.jpg');
 
-const introEyebrow = m?.introEyebrow ?? 'Warum wir tun, was wir tun';
-const introHeadline = m?.introHeadline ?? 'Hinschauen,\nwo andere wegsehen.';
-const introText = m?.introText ?? 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
+const introEyebrow = m?.introEyebrow || 'Warum wir tun, was wir tun';
+const introHeadline = m?.introHeadline || 'Hinschauen,\nwo andere wegsehen.';
+const introText = m?.introText || 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
 
-const problemEyebrow = m?.problemEyebrow ?? 'Das Problem';
-const problemHeadline = m?.problemHeadline ?? 'Der tägliche\nÜberlebenskampf.';
+const problemEyebrow = m?.problemEyebrow || 'Das Problem';
+const problemHeadline = m?.problemHeadline || 'Der tägliche\nÜberlebenskampf.';
 // 4 Problem-Karten, deren Reihenfolge die 4 Säulen spiegelt:
 // Vermehrung→Kastrationen, Hunger→Fütterungen, Krankheiten→Medizin, Straße→Rettungen
 const defaultProblems = [
@@ -33,12 +33,12 @@ const problems = m?.problems?.length
   ? m.problems.map((p) => ({ ...p, image: img(p.image, '/images/IMG_2027.jpg') }))
   : defaultProblems;
 
-const quote = m?.quote ?? 'Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben.';
-const quoteAuthor = m?.quoteAuthor ?? 'Fynn & Eileen';
+const quote = m?.quote || 'Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben.';
+const quoteAuthor = m?.quoteAuthor || 'Fynn & Eileen';
 
-const pillarsEyebrow = m?.pillarsEyebrow ?? 'Unser Ansatz';
-const pillarsHeadline = m?.pillarsHeadline ?? 'Den Kreislauf\ndurchbrechen.';
-const pillarsSub = m?.pillarsSub ?? 'Wir bekämpfen nicht nur die Symptome. Wir packen das Problem an der Wurzel.';
+const pillarsEyebrow = m?.pillarsEyebrow || 'Unser Ansatz';
+const pillarsHeadline = m?.pillarsHeadline || 'Den Kreislauf\ndurchbrechen.';
+const pillarsSub = m?.pillarsSub || 'Wir bekämpfen nicht nur die Symptome. Wir packen das Problem an der Wurzel.';
 const defaultPillars = [
   { title: 'Kastrationen', desc: 'Nur durch flächendeckende Kastrationen stoppen wir das Leid, bevor es entsteht. Eine einzige unkastrierte Hündin kann in 6 Jahren durch unkontrollierte Vermehrung bis zu 60.000 Nachkommen verursachen.', image: '/images/IMG_2322.jpg', stat: '2.500+', statLabel: 'Kastrationen durchgeführt' },
   { title: 'Fütterungen', desc: 'Futter bedeutet Leben – und Vertrauen. Wir versorgen die Straßenhunde täglich mit nahrhaftem Futter und frischem Wasser. Diese Fütterungsrunden bewahren vor giftigem Müll und bauen das Vertrauen auf, das wir für medizinische Hilfe brauchen.', image: '/images/IMG_4737.jpg', stat: '3,7 Tonnen', statLabel: 'Futter verteilt' },
@@ -49,18 +49,18 @@ const pillars = m?.pillars?.length
   ? m.pillars.map((p) => ({ ...p, image: img(p.image, '/images/IMG_2322.jpg') }))
   : defaultPillars;
 
-const catsEyebrow = m?.catsEyebrow ?? 'Auch sie brauchen uns';
-const catsHeadline = m?.catsHeadline ?? 'Die Straßenkatzen –\nwir schauen nicht weg.';
-const catsText1 = m?.catsText1 ?? 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.';
-const catsText2 = m?.catsText2 ?? 'In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
-const catsLinkLabel = m?.catsLinkLabel ?? 'Projekt Wing NGO Sumatra';
+const catsEyebrow = m?.catsEyebrow || 'Auch sie brauchen uns';
+const catsHeadline = m?.catsHeadline || 'Die Straßenkatzen –\nwir schauen nicht weg.';
+const catsText1 = m?.catsText1 || 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.';
+const catsText2 = m?.catsText2 || 'In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
+const catsLinkLabel = m?.catsLinkLabel || 'Projekt Wing NGO Sumatra';
 const catsImage = img(m?.catsImage, '/images/IMG_5371.jpg');
 
-const visionEyebrow = m?.visionEyebrow ?? 'Unsere Vision';
-const visionHeadline = m?.visionHeadline ?? 'Größer als\nwir selbst.';
-const visionText1 = m?.visionText1 ?? 'Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.';
-const visionText2 = m?.visionText2 ?? 'Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.';
-const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
+const visionEyebrow = m?.visionEyebrow || 'Unsere Vision';
+const visionHeadline = m?.visionHeadline || 'Größer als\nwir selbst.';
+const visionText1 = m?.visionText1 || 'Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.';
+const visionText2 = m?.visionText2 || 'Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.';
+const visionButton = m?.visionButton || 'Teil der Lösung werden';
 ---
 
 <BaseLayout

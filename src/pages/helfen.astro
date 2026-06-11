@@ -11,17 +11,17 @@ import { reader } from '@/lib/keystatic';
 
 const helpData = await reader.singletons.helpContent.read();
 const cmsSettings = await reader.singletons.settings.read();
-const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
 
-const heroEyebrow = helpData?.heroEyebrow ?? 'Jetzt helfen';
-const heroTitle = helpData?.heroTitle ?? 'Deine Hilfe';
-const heroTitleAccent = helpData?.heroTitleAccent ?? 'rettet Leben.';
-const heroSub = helpData?.heroSub ?? 'Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.';
+const heroEyebrow = helpData?.heroEyebrow || 'Jetzt helfen';
+const heroTitle = helpData?.heroTitle || 'Deine Hilfe';
+const heroTitleAccent = helpData?.heroTitleAccent || 'rettet Leben.';
+const heroSub = helpData?.heroSub || 'Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.';
 const heroImage = img(helpData?.heroImage, '/images/IMG_4737.jpg');
 
-const tiersEyebrow = helpData?.tiersEyebrow ?? 'Konkrete Wirkung';
-const tiersHeadline = helpData?.tiersHeadline ?? 'Was deine Spende\nkonkret bewirkt.';
-const tiersSub = helpData?.tiersSub ?? 'Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:';
+const tiersEyebrow = helpData?.tiersEyebrow || 'Konkrete Wirkung';
+const tiersHeadline = helpData?.tiersHeadline || 'Was deine Spende\nkonkret bewirkt.';
+const tiersSub = helpData?.tiersSub || 'Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:';
 const donationTiers = helpData?.donationTiers?.length
   ? helpData.donationTiers
   : [
@@ -31,8 +31,8 @@ const donationTiers = helpData?.donationTiers?.length
       { amount: 100, impact: 'Wöchentliche Versorgung einer Pflegestelle' },
     ];
 
-const waysEyebrow = helpData?.waysEyebrow ?? 'Wie du helfen kannst';
-const waysHeadline = helpData?.waysHeadline ?? 'Drei Wege.\nEin Ziel.';
+const waysEyebrow = helpData?.waysEyebrow || 'Wie du helfen kannst';
+const waysHeadline = helpData?.waysHeadline || 'Drei Wege.\nEin Ziel.';
 const WAY_META = [
   { id: 'spenden', iconKey: 'heart', image: '/images/IMG_2977.jpg' },
   { id: 'adoption', iconKey: 'home', image: '/images/IMG_9452.jpg' },
@@ -46,24 +46,24 @@ const defaultWays = [
 const waysSource = helpData?.ways?.length ? helpData.ways : defaultWays;
 const ways = waysSource.map((w, i) => ({
   ...w,
-  id: WAY_META[i]?.id ?? `way-${i}`,
-  iconKey: WAY_META[i]?.iconKey ?? 'heart',
-  image: img((w as any).image, WAY_META[i]?.image ?? '/images/IMG_2977.jpg'),
+  id: WAY_META[i]?.id || `way-${i}`,
+  iconKey: WAY_META[i]?.iconKey || 'heart',
+  image: img((w as any).image, WAY_META[i]?.image || '/images/IMG_2977.jpg'),
 }));
 
-const volunteerEyebrow = helpData?.volunteerEyebrow ?? 'Freiwilligenarbeit';
-const volunteerHeadline = helpData?.volunteerHeadline ?? 'Komm vorbei und\nunterstütz uns.';
-const volunteerText = helpData?.volunteerText ?? 'Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.';
+const volunteerEyebrow = helpData?.volunteerEyebrow || 'Freiwilligenarbeit';
+const volunteerHeadline = helpData?.volunteerHeadline || 'Komm vorbei und\nunterstütz uns.';
+const volunteerText = helpData?.volunteerText || 'Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.';
 const VOLUNTEER_ICONS = ['bone', 'paw', 'hammer', 'heart-handshake'];
 const volunteerLabels = helpData?.volunteerTasks?.length
   ? helpData.volunteerTasks
   : ['Futter verteilen', 'Gassi gehen', 'Bauprojekte', 'Kuscheln'];
-const volunteerTasks = volunteerLabels.map((label, i) => ({ label, iconKey: VOLUNTEER_ICONS[i] ?? 'paw' }));
+const volunteerTasks = volunteerLabels.map((label, i) => ({ label, iconKey: VOLUNTEER_ICONS[i] || 'paw' }));
 const volunteerImage = img(helpData?.volunteerImage, '/images/IMG_2820.jpg');
 
-const adoptStepsEyebrow = helpData?.adoptStepsEyebrow ?? 'Adoption';
-const adoptStepsHeadline = helpData?.adoptStepsHeadline ?? 'Der Weg zur';
-const adoptStepsAccent = helpData?.adoptStepsAccent ?? 'Adoption.';
+const adoptStepsEyebrow = helpData?.adoptStepsEyebrow || 'Adoption';
+const adoptStepsHeadline = helpData?.adoptStepsHeadline || 'Der Weg zur';
+const adoptStepsAccent = helpData?.adoptStepsAccent || 'Adoption.';
 const adoptSteps = helpData?.adoptSteps?.length
   ? helpData.adoptSteps
   : [
@@ -74,8 +74,8 @@ const adoptSteps = helpData?.adoptSteps?.length
     ];
 const adoptStepsImage = img(helpData?.adoptStepsImage, '/images/IMG_9452.jpg');
 
-const faqEyebrow = helpData?.faqEyebrow ?? 'Häufige Fragen';
-const faqHeadline = helpData?.faqHeadline ?? 'FAQ';
+const faqEyebrow = helpData?.faqEyebrow || 'Häufige Fragen';
+const faqHeadline = helpData?.faqHeadline || 'FAQ';
 const fallbackFaqs = [
   { question: 'Wie kann ich spenden?', answer: 'Per PayPal, Banküberweisung oder über Betterplace. Alle Wege sind auf dieser Seite verlinkt. Jede Spende – egal wie klein – landet direkt bei den Hunden.' },
   { question: 'Welche Tiere stehen zur Adoption?', answer: 'Aktuell haben wir mehrere Hunde zur Vermittlung. Alle Profile findest du auf der Adoptionsseite. Neue Hunde kommen regelmäßig dazu – folg uns auf Instagram für Updates.' },
@@ -274,7 +274,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
           </p>
           <div class="grid grid-cols-2 gap-4 mb-8">
             {volunteerTasks.map((item) => (
-              <div class="bg-gray-dark rounded-xl p-4 flex items-center gap-3 border border-white/5">
+              <div class="bg-card rounded-xl p-4 flex items-center gap-3 border border-white/5">
                 <span class="text-amber-500 shrink-0">
                   {item.iconKey === 'bone' && (
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 stroke-current" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -361,13 +361,15 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
     </div>
   </section>
 
-  <!-- Kontakt -->
-  <section id="kontakt" class="py-20 bg-beige">
+  <!-- Kontakt — zwei Sektionen: Überschrift auf Beige, Formular auf Dunkelbraun -->
+  <section id="kontakt" class="py-16 bg-beige">
+    <div class="container-x max-w-2xl mx-auto text-center">
+      <p class="eyebrow mb-3">Kontakt</p>
+      <h2 class="text-3xl font-black text-black">Noch Fragen?<br /><span class="text-amber-500">Schreib uns.</span></h2>
+    </div>
+  </section>
+  <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
-      <div class="text-center mb-10">
-        <p class="eyebrow mb-3">Kontakt</p>
-        <h2 class="text-3xl font-black mb-4 text-black">Noch Fragen?<br /><span class="text-amber-500">Schreib uns.</span></h2>
-      </div>
       <ContactForm subject="Helfen – Anfrage" />
     </div>
   </section>

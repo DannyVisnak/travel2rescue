@@ -89,7 +89,7 @@ const SECTIONS: Section[] = [
 ];
 
 export async function POST(context: APIContext): Promise<Response> {
-  const wantsJson = (context.request.headers.get('accept') ?? '').includes('application/json');
+  const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
 
   if (!resend) {
     console.error('[adoption] RESEND_API_KEY not configured');
@@ -103,13 +103,13 @@ export async function POST(context: APIContext): Promise<Response> {
     return respond(context, wantsJson, false, 'Ungültige Anfrage.', 400);
   }
 
-  if (String(data.get('botcheck') ?? '').length > 0) {
+  if (String(data.get('botcheck') || '').length > 0) {
     return respond(context, wantsJson, true, undefined, 200);
   }
 
-  const name = String(data.get('name') ?? '').trim();
-  const telefon = String(data.get('telefon') ?? '').trim();
-  const hund = String(data.get('hund') ?? '').trim();
+  const name = String(data.get('name') || '').trim();
+  const telefon = String(data.get('telefon') || '').trim();
+  const hund = String(data.get('hund') || '').trim();
 
   if (!name || !telefon || !hund) {
     return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400);
@@ -164,7 +164,7 @@ function renderAdoptionEmail(data: FormData, name: string, hund: string): string
   const sectionsHtml = SECTIONS.map((section) => {
     const rows = section.fields
       .map((field) => {
-        const value = String(data.get(field.name) ?? '').trim();
+        const value = String(data.get(field.name) || '').trim();
         if (!value) return '';
         const display = escapeHtml(value).replace(/\n/g, '<br />');
         return `<tr>

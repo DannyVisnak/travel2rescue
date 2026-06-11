@@ -396,7 +396,7 @@ const showError = Astro.url.searchParams.get('error') === '1';
   // contains, so /adoptieren/flummi/'s slug also resolves to "Flummi 🎾".
   if (form) {
     const params = new URLSearchParams(window.location.search);
-    const preselect = (params.get('hund') ?? '').trim().toLowerCase();
+    const preselect = (params.get('hund') || '').trim().toLowerCase();
     if (preselect) {
       const radios = form.querySelectorAll<HTMLInputElement>('input[name="hund"]');
       const match = Array.from(radios).find((r) => {

@@ -12,16 +12,16 @@ const PROJECTS = projectEntries
   .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0));
 
 const p = await reader.singletons.projectsPage.read();
-const heroEyebrow = p?.heroEyebrow ?? 'Aktive Projekte';
-const heroTitle = p?.heroTitle ?? 'Hier passiert';
-const heroTitleAccent = p?.heroTitleAccent ?? 'die Arbeit.';
-const heroSub = p?.heroSub ?? 'Neun konkrete Projekte. Neun Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
+const heroEyebrow = p?.heroEyebrow || 'Aktive Projekte';
+const heroTitle = p?.heroTitle || 'Hier passiert';
+const heroTitleAccent = p?.heroTitleAccent || 'die Arbeit.';
+const heroSub = p?.heroSub || 'Neun konkrete Projekte. Neun Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
 const heroImage = img(p?.heroImage, '/images/IMG_2820.jpg');
 
-const outroEyebrow = p?.outroEyebrow ?? 'Mehr kommt';
-const outroHeadline = p?.outroHeadline ?? 'Jede Spende ermöglicht\ndas nächste Projekt.';
-const outroText = p?.outroText ?? 'Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.';
-const outroButton = p?.outroButton ?? 'Projekte unterstützen';
+const outroEyebrow = p?.outroEyebrow || 'Mehr kommt';
+const outroHeadline = p?.outroHeadline || 'Jede Spende ermöglicht\ndas nächste Projekt.';
+const outroText = p?.outroText || 'Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.';
+const outroButton = p?.outroButton || 'Projekte unterstützen';
 ---
 
 <BaseLayout

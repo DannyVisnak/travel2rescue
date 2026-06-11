@@ -6,7 +6,7 @@ import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
 const cms = await reader.singletons.settings.read();
-const paypalUrl = cms?.paypalUrl ?? SITE.social.paypal;
+const paypalUrl = cms?.paypalUrl || SITE.social.paypal;
 
 const pathname = Astro.url.pathname;
 const HIDE_PREFIXES = ['/helfen', '/danke', '/keystatic', '/linktree', '/404'];

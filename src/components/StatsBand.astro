@@ -14,9 +14,9 @@ interface Props {
 const cms = await reader.singletons.settings.read();
 // 3 Kennzahlen (nicht 4) — Wunsch von Fynn & Eileen
 const defaultStats: Stat[] = [
-  { value: cms?.statsKastrationen ?? SITE.stats.kastrationen, label: 'Kastrationen' },
-  { value: cms?.statsFutter ?? SITE.stats.futter, label: 'Futter verteilt' },
-  { value: cms?.statsOperiert ?? SITE.stats.operiert, label: 'Hunde monatlich operiert' },
+  { value: cms?.statsKastrationen || SITE.stats.kastrationen, label: 'Kastrationen' },
+  { value: cms?.statsFutter || SITE.stats.futter, label: 'Futter verteilt' },
+  { value: cms?.statsOperiert || SITE.stats.operiert, label: 'Hunde monatlich operiert' },
 ];
 
 const { stats = defaultStats } = Astro.props;

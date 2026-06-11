@@ -37,7 +37,7 @@ if (explicit) {
   // "Verfügbar zur Adoption" checkbox is unchecked (or tag includes "vermittelt").
   const entries = await reader.collections.dogs.all();
   const adoptedEntries = entries.filter(({ entry }) =>
-    !entry.available || /vermittelt/i.test(entry.tag ?? ''),
+    !entry.available || /vermittelt/i.test(entry.tag || ''),
   );
   adopted = adoptedEntries.map(({ entry }, i) => ({
     name: entry.name,
@@ -71,7 +71,7 @@ if (explicit) {
         <ul class="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 gap-x-4 gap-y-6">
           {adopted.slice(0, 8).map((dog) => (
             <li class="flex flex-col items-center text-center">
-              <div class={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-2 ring-amber-500/20 ring-offset-2 ring-offset-black bg-gradient-to-br ${dog.gradient ?? 'from-amber-500/30 to-rose-400/20'} flex items-center justify-center`}>
+              <div class={`relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden ring-2 ring-amber-500/20 ring-offset-2 ring-offset-black bg-gradient-to-br ${dog.gradient || 'from-amber-500/30 to-rose-400/20'} flex items-center justify-center`}>
                 {dog.image ? (
                   <img src={resolveImg(dog.image)} alt={`${dog.name} – vermittelt`} class="w-full h-full object-cover" loading="lazy" />
                 ) : (

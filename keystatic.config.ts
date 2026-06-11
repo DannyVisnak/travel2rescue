@@ -104,11 +104,6 @@ export default config({
         projectsHeadline: fields.text({ label: 'Projekte-Teaser – Überschrift', multiline: true }),
         projectsSub: fields.text({ label: 'Projekte-Teaser – Untertext', multiline: true }),
 
-        // Helfen-Teaser
-        helfenEyebrow: fields.text({ label: 'Helfen-Teaser – kleine Zeile' }),
-        helfenHeadline: fields.text({ label: 'Helfen-Teaser – Überschrift', multiline: true }),
-        helfenSub: fields.text({ label: 'Helfen-Teaser – Untertext', multiline: true }),
-
         // Über-uns Teaser
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
