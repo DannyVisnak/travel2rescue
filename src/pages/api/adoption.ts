@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { resend, MAIL_FROM, MAIL_TO, escapeHtml } from '@/lib/email';
+import { appendToSheet } from '@/lib/sheets';
 
 export const prerender = false;
 
@@ -114,6 +115,19 @@ export async function POST(context: APIContext): Promise<Response> {
   if (!name || !telefon || !hund) {
     return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400);
   }
+
+  // Alle Antworten zusätzlich ins Google Sheet schreiben — VOR dem Mailversand,
+  // damit die Daten auch bei einem Resend-Ausfall nicht verloren gehen.
+  // Non-fatal: ein Sheet-Fehler blockiert die Anfrage nicht (src/lib/sheets.ts).
+  const sheetRow: Record<string, string> = {
+    Eingegangen: new Date().toLocaleString('de-DE', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Europe/Berlin' }),
+  };
+  for (const section of SECTIONS) {
+    for (const field of section.fields) {
+      sheetRow[field.label] = String(data.get(field.name) || '').trim();
+    }
+  }
+  await appendToSheet(sheetRow);
 
   const subject = `Adoptionsanfrage – ${name} für ${hund}`;
   const html = renderAdoptionEmail(data, name, hund);

@@ -1,0 +1,249 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+// Englischsprachig: gemeldet wird meist von Touristen vor Ort auf Lombok.
+// Ersetzt das alte Google Form — mit Pflicht-Fotoupload, damit Eileen
+// Notfälle anhand von Bildern priorisieren kann.
+const REPORT_WHATSAPP = '+62 82342539507';
+const REPORT_WHATSAPP_LINK = `https://wa.me/${REPORT_WHATSAPP.replace(/[^\d]/g, '')}`;
+
+const WHAT_HAPPENED_OPTIONS = [
+  'Hit by car / motorbike',
+  'Open wound',
+  'Puppy / kitten abandoned',
+  'Bleeding',
+  'Cannot walk',
+  'Difficulty breathing',
+  'Weak / collapsed',
+  'Skin disease / mange',
+  'Other',
+];
+
+const URGENCY_OPTIONS = [
+  '🔴 Critical – may die soon',
+  '🟠 Serious – needs help today',
+  '🟢 Stable – not an emergency',
+];
+---
+
+<BaseLayout
+  title="Medical Report – Report an animal in need"
+  description="Report sick, injured, abandoned or urgent animal cases on Lombok to Travel2Rescue e.V. Photos and exact location help us prioritize the most critical emergencies."
+>
+  <!-- Intro -->
+  <section class="pt-32 pb-12 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <p class="eyebrow mb-4">Medical Report 🆘</p>
+      <h1 class="text-4xl md:text-5xl font-black mb-6">Thank you for reporting<br /><span class="text-amber-500">an animal in need 🙏🐾</span></h1>
+      <div class="prose-dark space-y-4">
+        <p>Please use this form to report sick, injured, abandoned or urgent animal cases on Lombok.</p>
+        <p>Provide as much detail as possible, including the exact location, photos and a short description, so we can respond effectively.</p>
+        <p>We are a small rescue team with limited resources and receive many reports every day. Clear information helps us prioritize the most critical emergencies first. We review all reports as soon as possible, but response times may vary depending on urgency and available resources.</p>
+      </div>
+      <div class="mt-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 p-5">
+        <p class="text-sm text-white/85 leading-relaxed">
+          ⚠️ <strong>If the animal is in critical condition</strong>, please also call us after submitting this form:
+          <a href={REPORT_WHATSAPP_LINK} class="text-amber-400 font-bold underline underline-offset-4">WhatsApp {REPORT_WHATSAPP}</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form -->
+  <section class="py-12 pb-20 bg-black">
+    <div class="container-x max-w-2xl mx-auto">
+      <div class="card p-8 md:p-10">
+        <form id="medical-form" method="POST" action="/api/medical-report/" enctype="multipart/form-data" class="space-y-6">
+          <input type="checkbox" name="botcheck" class="hidden" style="display:none" tabindex="-1" autocomplete="off" />
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label for="mr-name" class="form-label">Your name *</label>
+              <input type="text" id="mr-name" name="name" required class="input-field" placeholder="Jane Doe" />
+            </div>
+            <div>
+              <label for="mr-whatsapp" class="form-label">WhatsApp phone number *</label>
+              <input type="tel" id="mr-whatsapp" name="whatsapp" required class="input-field" placeholder="+62 ..." />
+            </div>
+          </div>
+
+          <div>
+            <label for="mr-email" class="form-label">Your email * <span class="text-white/40 font-normal">(you'll get a confirmation)</span></label>
+            <input type="email" id="mr-email" name="email" required class="input-field" placeholder="you@example.com" />
+          </div>
+
+          <fieldset>
+            <legend class="form-label">Are you still with the animal?</legend>
+            <div class="flex gap-3">
+              {['Yes', 'No'].map((opt) => (
+                <label class="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                  <input type="radio" name="still_with_animal" value={opt} class="accent-[#F77AB4]" />
+                  <span class="text-sm">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="mr-location" class="form-label">Location – please copy-paste the Google Maps link *</label>
+            <input type="text" id="mr-location" name="location" required class="input-field" placeholder="https://maps.app.goo.gl/..." />
+            <p class="mt-1.5 text-xs text-white/40">In Google Maps: long-press the spot → share → copy link.</p>
+          </div>
+
+          <fieldset>
+            <legend class="form-label">Is the animal easy to find again?</legend>
+            <div class="flex flex-wrap gap-3">
+              {['Yes', 'No', 'Not sure'].map((opt) => (
+                <label class="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                  <input type="radio" name="easy_to_find" value={opt} class="accent-[#F77AB4]" />
+                  <span class="text-sm">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend class="form-label">What happened? *</legend>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {WHAT_HAPPENED_OPTIONS.map((opt) => (
+                <label class="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                  <input type="radio" name="what_happened" value={opt} required class="accent-[#F77AB4]" />
+                  <span class="text-sm">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="mr-description" class="form-label">Short description of the condition *</label>
+            <textarea id="mr-description" name="description" required rows="4" class="input-field resize-none" placeholder="What do you see? Since when? Behaviour?"></textarea>
+          </div>
+
+          <fieldset>
+            <legend class="form-label">How critical do you think it is?</legend>
+            <div class="space-y-2">
+              {URGENCY_OPTIONS.map((opt) => (
+                <label class="flex items-center gap-2 rounded-xl bg-white/5 border border-white/10 px-4 py-2.5 cursor-pointer has-[:checked]:border-amber-500 has-[:checked]:bg-amber-500/10">
+                  <input type="radio" name="urgency" value={opt} class="accent-[#F77AB4]" />
+                  <span class="text-sm">{opt}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div>
+            <label for="mr-details" class="form-label">Any other important details?</label>
+            <textarea id="mr-details" name="details" rows="3" class="input-field resize-none"></textarea>
+          </div>
+
+          <div>
+            <label for="mr-photos" class="form-label">Photos * <span class="text-white/40 font-normal">(up to 4 — full body + close-up of the injury)</span></label>
+            <input
+              type="file"
+              id="mr-photos"
+              name="photos"
+              accept="image/*"
+              multiple
+              required
+              class="block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-amber-500 file:px-5 file:py-2.5 file:text-xs file:font-semibold file:uppercase file:tracking-wider file:text-black hover:file:bg-amber-400 file:cursor-pointer"
+            />
+            <p class="mt-1.5 text-xs text-white/40">Photos are compressed automatically before upload. Videos: please send via <a href={REPORT_WHATSAPP_LINK} class="text-amber-400 underline">WhatsApp {REPORT_WHATSAPP}</a>.</p>
+          </div>
+
+          <button type="submit" class="btn-primary w-full justify-center py-4 text-base">Submit report</button>
+
+          <p id="mr-result" role="alert" class="hidden text-center text-sm pt-2"></p>
+        </form>
+      </div>
+
+      <p class="mt-8 text-center text-white/40 text-xs leading-relaxed max-w-md mx-auto">
+        Submitting this form does not guarantee immediate rescue. We are a small team and prioritize the most critical emergencies first.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const form = document.getElementById('medical-form') as HTMLFormElement | null;
+  const result = document.getElementById('mr-result');
+  const params = new URLSearchParams(window.location.search);
+
+  // No-JS-Fallback-Redirects (?sent=1 / ?error=1) sichtbar machen
+  if (result && params.get('sent') === '1') {
+    result.textContent = '✅ Report received. If the animal is critical, please also call us on WhatsApp!';
+    result.classList.remove('hidden');
+    result.classList.add('text-green-400');
+  }
+  if (result && params.get('error') === '1') {
+    result.textContent = 'Something went wrong. Please contact us directly via WhatsApp.';
+    result.classList.remove('hidden');
+    result.classList.add('text-red-400');
+  }
+
+  // Fotos vor dem Upload verkleinern (max. 1600px, JPEG ~75%) — Handyfotos
+  // sind 3–8 MB groß und würden sonst das 4,5-MB-Request-Limit sprengen.
+  async function compressImage(file: File): Promise<Blob> {
+    try {
+      const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+      const scale = Math.min(1, 1600 / Math.max(bitmap.width, bitmap.height));
+      const canvas = document.createElement('canvas');
+      canvas.width = Math.round(bitmap.width * scale);
+      canvas.height = Math.round(bitmap.height * scale);
+      canvas.getContext('2d')!.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+      const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/jpeg', 0.75));
+      if (blob && blob.size < file.size) return blob;
+    } catch {
+      // Format nicht dekodierbar (z.B. exotisches Bildformat) — Original schicken
+    }
+    return file;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!result) return;
+
+    const btn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+
+    const photoInput = form.querySelector<HTMLInputElement>('#mr-photos');
+    const files = Array.from(photoInput?.files ?? []).slice(0, 4);
+
+    const data = new FormData(form);
+    data.delete('photos');
+    for (const file of files) {
+      const compressed = await compressImage(file);
+      data.append('photos', compressed, file.name.replace(/\.\w+$/, '') + '.jpg');
+    }
+
+    let ok = false;
+    let serverError = '';
+    try {
+      const res = await fetch('/api/medical-report/', {
+        method: 'POST',
+        body: data,
+        headers: { accept: 'application/json' },
+      });
+      const json = await res.json();
+      ok = res.ok && json.ok === true;
+      serverError = json.error || '';
+    } catch {
+      ok = false;
+    }
+
+    result.classList.remove('hidden', 'text-red-400', 'text-green-400');
+    if (ok) {
+      (window as any).dataLayer = (window as any).dataLayer || [];
+      (window as any).dataLayer.push({ event: 'medical_report_submit' });
+      result.textContent = '✅ Report received. If the animal is critical, please also call us on WhatsApp!';
+      result.classList.add('text-green-400');
+      form.reset();
+      btn.textContent = 'Report sent ✓';
+    } else {
+      result.textContent = serverError || 'Something went wrong. Please contact us directly via WhatsApp.';
+      result.classList.add('text-red-400');
+      btn.disabled = false;
+      btn.textContent = 'Submit report';
+    }
+  });
+</script>

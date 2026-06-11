@@ -10,8 +10,8 @@
     },
     {
       "label": "Medical Report🆘",
-      "desc": "Aktuelle Notfälle und wie du helfen kannst",
-      "href": "/helfen/",
+      "desc": "Report a sick or injured animal on Lombok",
+      "href": "/medical-report/",
       "icon": "hand-helping",
       "primary": false
     },

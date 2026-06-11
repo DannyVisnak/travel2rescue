@@ -120,6 +120,11 @@ const showError = Astro.url.searchParams.get('error') === '1';
 
     result.classList.remove('hidden', 'text-red-400', 'text-green-400');
     if (ok) {
+      (window.dataLayer = window.dataLayer || []).push({
+        event: 'contact_form_submit',
+        form_subject: String(data.get('subject') || ''),
+        page_path: location.pathname,
+      });
       result.textContent = 'Danke! Wir melden uns so schnell wie möglich bei dir.';
       result.classList.add('text-green-400');
       form.reset();

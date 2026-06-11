@@ -9,7 +9,7 @@ const cms = await reader.singletons.settings.read();
 const paypalUrl = cms?.paypalUrl || SITE.social.paypal;
 
 const pathname = Astro.url.pathname;
-const HIDE_PREFIXES = ['/helfen', '/danke', '/keystatic', '/linktree', '/404'];
+const HIDE_PREFIXES = ['/helfen', '/danke', '/keystatic', '/linktree', '/404', '/medical-report'];
 const hide = HIDE_PREFIXES.some((p) => pathname.startsWith(p));
 ---
 

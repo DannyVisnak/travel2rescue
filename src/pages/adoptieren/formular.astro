@@ -431,6 +431,10 @@ const showError = Astro.url.searchParams.get('error') === '1';
 
     result.classList.remove('hidden', 'text-red-400', 'text-green-400');
     if (ok) {
+      (window.dataLayer = window.dataLayer || []).push({
+        event: 'adoption_form_submit',
+        dog: String(data.get('hund') || ''),
+      });
       result.textContent = 'Danke! Eileen meldet sich so schnell wie möglich per WhatsApp bei dir.';
       result.classList.add('text-green-400');
       form.reset();

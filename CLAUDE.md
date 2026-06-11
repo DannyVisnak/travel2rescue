@@ -53,8 +53,10 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is pastel 
 | `/404` | `src/pages/404.astro` | Branded 404 (noindex) |
 | `/impressum/` | `src/pages/impressum.astro` | Legal — keep verbatim |
 | `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy — keep verbatim |
-| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits |
-| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same content-negotiation pattern) |
+| `/medical-report/` | `src/pages/medical-report.astro` | English emergency report form (rebuilt Google Form) — required photos, client-side compression |
+| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits; sends confirmation email to submitter |
+| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same pattern); also appends all answers to a Google Sheet (see env vars) |
+| `/api/medical-report` | `src/pages/api/medical-report.ts` | Emergency report handler — emails Eileen with photo attachments + confirmation to reporter |
 | `/api/keystatic/[...params]` | `src/pages/api/keystatic/[...params].ts` | Keystatic auth callbacks (overrides the auto-injected route to fix Astro cookie handling) |
 
 ## Data Layer
@@ -80,7 +82,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
-Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist. **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
+Always add `|| fallback` (NOT `??`) when using singleton **text** values — `read()` returns `null` if the file doesn't exist, but returns `''` (empty string) for text fields that are missing from the JSON or emptied in the admin, and `??` doesn't catch `''` (this once rendered whole homepage sections blank). Keep `??` only for booleans (e.g. `entry.kastriert ?? true`). **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
 **Image field note**: All `fields.image({ directory: 'public/images', publicPath: '/images/' })` fields store just the filename in JSON (e.g., `IMG_0991.jpeg`). ⚠️ The `reader` does **NOT** prepend `publicPath` for `fields.image` (that only happens for document-field images) — it returns the bare filename. So always wrap image values with `img()` from `src/lib/img.ts` before using them in `src=`/`ogImage`: `img(entry.image, '/images/fallback.jpg')`. `img()` prepends `/images/` to bare names and passes through values already starting with `/` or `http`, so it's safe on fallbacks too. (Before this helper existed, every CMS image rendered as a relative URL and 404'd.)
 
@@ -155,6 +157,8 @@ Eileen can now edit **essentially every visible text and most images** across th
 | `RESEND_API_KEY` | yes (forms) | Resend API key | From <https://resend.com>; without it both forms return 500 |
 | `RESEND_FROM` | no | Sender address | Default: `Travel2Rescue <kontakt@travel2rescue.de>` |
 | `RESEND_TO` | no | Recipient address | Default: `travel2rescue@gmail.com` |
+| `GOOGLE_SHEETS_WEBHOOK_URL` | no | Apps-Script web-app URL (ends in /exec) for the adoption-form → Google Sheet export | Script template: `scripts/google-sheets-webhook.gs`; without it the sheet export is a silent no-op |
+| `GOOGLE_SHEETS_WEBHOOK_SECRET` | no | Shared secret checked by the Apps Script | Must match `SECRET` in the script |
 | `PUBLIC_PLAUSIBLE_DOMAIN` | no | Plausible analytics domain | When set, `BaseLayout` emits the privacy-friendly Plausible `<script>` |
 | `PUBLIC_PLAUSIBLE_SRC` | no | Plausible script src override | For self-hosted instances; defaults to `https://plausible.io/js/script.js` |
 
