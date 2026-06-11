@@ -97,7 +97,8 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
   </section>
 
   <!-- 6–7 Monate Commitment Statement -->
-  <section id="prozess" class="relative py-24 bg-gradient-to-b from-black via-[#1c1410] to-[#1a1410] overflow-hidden">
+  <!-- Verlauf: sehr dunkles Braun oben → helleres Braun unten -->
+  <section id="prozess" class="relative py-24 bg-gradient-to-b from-[#140F0B] via-[#241A13] to-[#3A2C20] overflow-hidden">
     <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
     <div class="container-x relative">
       <div class="max-w-4xl mx-auto text-center">
@@ -166,13 +167,13 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
     </div>
   </section>
 
-  <!-- Hunde -->
-  <section id="hunde" class="py-20 bg-black">
+  <!-- Hunde — beige Sektion, damit die dunklen Steckbrief-Karten hervorstechen -->
+  <section id="hunde" class="py-20 bg-beige">
     <div class="container-x">
       <div class="text-center mb-12">
         <p class="eyebrow mb-3">{dogsEyebrow}</p>
-        <h2 class="section-heading"><Lines text={dogsHeadline} /><br /><span class="text-amber-500">{dogsHeadlineAccent}</span></h2>
-        <p class="section-subheading mx-auto mt-4">
+        <h2 class="section-heading text-black"><Lines text={dogsHeadline} /><br /><span class="text-amber-500">{dogsHeadlineAccent}</span></h2>
+        <p class="text-xl md:text-2xl text-black/70 max-w-2xl leading-relaxed mx-auto mt-4">
           {dogsSub}
         </p>
       </div>

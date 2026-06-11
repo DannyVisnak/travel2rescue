@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import DogCard from '@/components/DogCard.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
@@ -13,6 +14,14 @@ const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));
+// Teaser zeigt 3 Hunde — alle weiteren auf /adoptieren/
+const TEASER_DOGS = DOGS.slice(0, 3);
+
+const projectEntries = await reader.collections.projects.all();
+const TEASER_PROJECTS = projectEntries
+  .map(({ slug, entry }) => ({ id: slug, ...entry }))
+  .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0))
+  .slice(0, 3);
 
 const homeData = await reader.singletons.homeContent.read();
 
@@ -28,13 +37,12 @@ const trustItems = homeData?.trustItems?.length
   ? homeData.trustItems
   : ['e.V. seit 2023', 'Vereinsregister Hof', '100% Tierschutz', 'Steuerlich absetzbar'];
 
-// Story teaser
-const storyEyebrow = homeData?.storyEyebrow ?? 'Unsere Geschichte';
-const storyHeadline = homeData?.storyHeadline ?? 'Aus Mitleid wurde Verantwortung.';
-const storyText1 = homeData?.storyText1 ?? 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
-const storyText2 = homeData?.storyText2 ?? 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
-const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
-const storyPostcard = homeData?.storyPostcard ?? 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
+// Mission Teaser (Foto rechts — gespiegelt zur Über-uns-Sektion)
+const missionEyebrow = homeData?.missionEyebrow ?? 'Unsere Mission';
+const missionHeadline = homeData?.missionHeadline ?? 'Den Kreislauf aus Elend\ndurchbrechen.';
+const missionText1 = homeData?.missionText1 ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.';
+const missionText2 = homeData?.missionText2 ?? 'Kastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
+const missionImage = img(homeData?.missionImage, '/images/IMG_2977.jpg');
 
 // Was wir tun — icons stay fixed, text editable
 const SERVICE_ICONS = [
@@ -54,10 +62,34 @@ const servicesHeadline = homeData?.servicesHeadline ?? 'Direkt helfen. Nachhalti
 const servicesSource = homeData?.services?.length ? homeData.services : defaultServices;
 const services = servicesSource.map((s, i) => ({ ...s, svg: SERVICE_ICONS[i] ?? SERVICE_ICONS[0] }));
 
-// Dogs teaser
+// Projekte Teaser
+const projectsEyebrow = homeData?.projectsEyebrow ?? 'Unsere Projekte';
+const projectsHeadline = homeData?.projectsHeadline ?? 'Hier passiert die Arbeit.';
+const projectsSub = homeData?.projectsSub ?? 'Konkrete Projekte, an denen echte Hilfe ankommt – auf Lombok und darüber hinaus.';
+
+// Adoptions-Teaser (mit grossem Hintergrundfoto)
 const dogsEyebrow = homeData?.dogsEyebrow ?? 'Zur Adoption freigegeben';
 const dogsHeadline = homeData?.dogsHeadline ?? 'Sie warten auf dich.';
 const dogsSub = homeData?.dogsSub ?? 'Jeder dieser Hunde hat überlebt. Jetzt brauchen sie ein letztes Kapitel: dein Zuhause.';
+const dogsImage = img(homeData?.dogsImage, '/images/fynneileen dogs.jpeg');
+
+// Helfen Teaser
+const helfenEyebrow = homeData?.helfenEyebrow ?? 'Helfen';
+const helfenHeadline = homeData?.helfenHeadline ?? 'Deine Hilfe\nrettet Leben.';
+const helfenSub = homeData?.helfenSub ?? 'Ob Spende, Adoption oder Volunteering: Jeder Beitrag landet zu 100% bei den Tieren – kein Cent in der Verwaltung.';
+const helfenWays = [
+  { title: 'Spenden', desc: 'Futter, Medizin, Not-OPs – dein Geld wirkt sofort.', href: '/helfen/' },
+  { title: 'Adoptieren', desc: 'Gib einem geretteten Hund ein Zuhause in Deutschland.', href: '/adoptieren/' },
+  { title: 'Volunteer', desc: 'Komm nach Lombok und hilf direkt vor Ort mit.', href: '/helfen/#volunteer' },
+];
+
+// Über-uns Teaser
+const storyEyebrow = homeData?.storyEyebrow ?? 'Unsere Geschichte';
+const storyHeadline = homeData?.storyHeadline ?? 'Aus Mitleid wurde Verantwortung.';
+const storyText1 = homeData?.storyText1 ?? 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
+const storyText2 = homeData?.storyText2 ?? 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
+const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
+const storyPostcard = homeData?.storyPostcard ?? 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
 
 const founderQuote = homeData?.founderQuote ?? 'Was wir hier tun, ist mehr als Tierschutz. Es ist eine Familie. Eine Bewegung. Eine Entscheidung: nicht wegzusehen.';
 
@@ -136,7 +168,131 @@ const faqs = homeData?.homeFaqs?.length
   <!-- Stats -->
   <StatsBand />
 
-  <!-- Über uns Teaser — asymmetric, photo bleeds to left edge -->
+  <!--
+    Die folgenden Sektionen spiegeln die Navigation in ihrer Reihenfolge:
+    Unsere Mission → Projekte → Adoptieren → Helfen → Über uns.
+    Jede Sektion verlinkt auf die zugehörige Unterseite.
+  -->
+
+  <!-- 1) Unsere Mission — Foto rechts (gespiegelt zur Über-uns-Sektion unten) -->
+  <section class="py-20 bg-gray-dark overflow-hidden">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+      <div class="lg:col-span-5 lg:col-start-2 container-x lg:px-0">
+        <p class="eyebrow mb-4">{missionEyebrow}</p>
+        <h2 class="section-heading mb-6">
+          <Lines text={missionHeadline} />
+        </h2>
+        <p class="prose-dark text-lg mb-4">
+          {missionText1}
+        </p>
+        <p class="prose-dark mb-8">
+          {missionText2}
+        </p>
+        <a href="/mission/" class="btn-ghost">Unsere Mission</a>
+      </div>
+
+      <div class="lg:col-span-6 relative">
+        <img
+          src={missionImage}
+          alt="Straßenhund auf Lombok"
+          class="w-full aspect-[4/3] object-cover rounded-l-2xl"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- Was wir tun — vertieft die Mission; 2x2 grid, Lucide outline icons -->
+  <section class="relative py-20 bg-black overflow-hidden">
+    <!-- Punkteraster wie auf der Adoptions-Timeline — Eileens Liebling -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
+    <div class="container-x relative">
+      <div class="text-center mb-14">
+        <p class="eyebrow mb-3">{servicesEyebrow}</p>
+        <h2 class="section-heading"><Lines text={servicesHeadline} /></h2>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {services.map((item) => (
+          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 p-7 hover:bg-amber-500/10 transition-colors">
+            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-500">
+              <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" set:html={item.svg} />
+            </div>
+            <h3 class="text-xl font-bold mb-2">{item.title}</h3>
+            <p class="text-white/65 text-sm leading-relaxed">{item.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 2) Projekte Teaser -->
+  <section class="py-20 bg-gray-dark">
+    <div class="container-x">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">{projectsEyebrow}</p>
+        <h2 class="section-heading"><Lines text={projectsHeadline} /></h2>
+        <p class="section-subheading mx-auto mt-4">{projectsSub}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {TEASER_PROJECTS.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+      <div class="text-center">
+        <a href="/projekte/" class="btn-primary btn-large">Alle Projekte ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3) Adoptieren Teaser — grosses Hintergrundfoto, damit die Sektion nicht untergeht -->
+  <section class="relative py-20 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src={dogsImage} alt="" class="w-full h-full object-cover object-center" loading="lazy" />
+      <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black/90" />
+    </div>
+    <div class="container-x relative z-10">
+      <div class="text-center mb-12">
+        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
+          Aktuell warten {DOGS.length} {DOGS.length === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
+        </p>
+        <p class="eyebrow mb-3">{dogsEyebrow}</p>
+        <h2 class="section-heading">{dogsHeadline}</h2>
+        <p class="section-subheading mx-auto mt-4">{dogsSub}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {TEASER_DOGS.map((dog) => (
+          <DogCard dog={dog} />
+        ))}
+      </div>
+      <div class="text-center">
+        <a href="/adoptieren/" class="btn-primary btn-large">Alle {DOGS.length} Hunde ansehen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4) Helfen Teaser -->
+  <section class="py-20 bg-beige">
+    <div class="container-x">
+      <div class="text-center mb-12 max-w-3xl mx-auto">
+        <p class="eyebrow mb-3">{helfenEyebrow}</p>
+        <h2 class="section-heading text-black"><Lines text={helfenHeadline} /></h2>
+        <p class="text-lg text-black/70 leading-relaxed mt-4">{helfenSub}</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto mb-10">
+        {helfenWays.map((way) => (
+          <a href={way.href} class="rounded-2xl bg-cream border border-black/10 p-7 text-left hover:border-amber-500 transition-colors group">
+            <h3 class="text-xl font-bold text-black mb-2 group-hover:text-amber-dark transition-colors">{way.title}</h3>
+            <p class="text-black/60 text-sm leading-relaxed">{way.desc}</p>
+          </a>
+        ))}
+      </div>
+      <div class="text-center">
+        <a href="/helfen/" class="btn-primary btn-large">Jetzt helfen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5) Über uns Teaser — asymmetric, photo bleeds to left edge -->
   <section class="py-20 bg-gray-dark overflow-hidden">
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
       <div class="lg:col-span-6 relative">
@@ -175,49 +331,6 @@ const faqs = homeData?.homeFaqs?.length
           {storyText2}
         </p>
         <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Was wir tun — 2x2 grid, cream-tinted cards, Lucide outline icons -->
-  <section class="py-20 bg-black">
-    <div class="container-x">
-      <div class="text-center mb-14">
-        <p class="eyebrow mb-3">{servicesEyebrow}</p>
-        <h2 class="section-heading"><Lines text={servicesHeadline} /></h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {services.map((item) => (
-          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 p-7 hover:bg-amber-500/10 transition-colors">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-500">
-              <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" set:html={item.svg} />
-            </div>
-            <h3 class="text-xl font-bold mb-2">{item.title}</h3>
-            <p class="text-white/65 text-sm leading-relaxed">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- Adoption Teaser — with counter line -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
-      <div class="text-center mb-12">
-        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
-          Aktuell warten {DOGS.length} {DOGS.length === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
-        </p>
-        <p class="eyebrow mb-3">{dogsEyebrow}</p>
-        <h2 class="section-heading">{dogsHeadline}</h2>
-        <p class="section-subheading mx-auto mt-4">{dogsSub}</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {DOGS.map((dog) => (
-          <DogCard dog={dog} />
-        ))}
-      </div>
-      <div class="text-center">
-        <a href="/adoptieren/" class="btn-primary btn-large">Alle Hunde ansehen</a>
       </div>
     </div>
   </section>

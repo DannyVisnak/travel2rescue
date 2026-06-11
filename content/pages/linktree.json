@@ -1,85 +1,50 @@
 {
-  "tagline": "Gemeinsam Hunden ein besseres Leben schenken.",
+  "tagline": "Gemeinsam Hunden ein besseres Leben schenken!❤️\nBankverbindung: Empfänger: Travel2Rescue e.V\nIBAN: DE83 7805 0000 0223 2368 37",
   "links": [
     {
-      "label": "Jetzt spenden – PayPal",
-      "desc": "Direkte Hilfe für die Hunde auf Lombok",
+      "label": "Tieren in Not helfen via Paypal🏩🥹",
+      "desc": "Schnell, sicher und sofort bei den Hunden",
       "href": "https://www.paypal.com/donate/?hosted_button_id=AYZRLZ6YJ7SNA",
       "icon": "heart",
       "primary": true
     },
     {
-      "label": "Hund adoptieren",
-      "desc": "Alle Hunde & Adoptionsformular",
-      "href": "/adoptieren/",
-      "icon": "home",
+      "label": "Medical Report🆘",
+      "desc": "Aktuelle Notfälle und wie du helfen kannst",
+      "href": "/helfen/",
+      "icon": "hand-helping",
       "primary": false
     },
     {
-      "label": "Adoptionsformular ausfüllen",
+      "label": "Zum Adoptionsformular🤩",
       "desc": "Finde dein perfektes Match",
       "href": "/adoptieren/formular/",
       "icon": "clipboard-list",
       "primary": false
     },
     {
-      "label": "Instagram",
-      "desc": "@travel2rescue – tägliche Updates aus Lombok",
-      "href": "https://www.instagram.com/travel2rescue",
-      "icon": "camera",
-      "primary": false
-    },
-    {
-      "label": "TikTok",
+      "label": "Tiktok🤩",
       "desc": "@travel2rescue – Videos aus dem Alltag",
       "href": "https://www.tiktok.com/@travel2rescue?_t=8hlW78pdQ49&_r=1",
       "icon": "music",
       "primary": false
     },
     {
-      "label": "Facebook",
-      "desc": "Community & Neuigkeiten",
-      "href": "https://www.facebook.com/travel2rescue",
+      "label": "Instagram👑",
+      "desc": "@travel2rescue – tägliche Updates aus Lombok",
+      "href": "https://www.instagram.com/travel2rescue",
+      "icon": "camera",
+      "primary": false
+    },
+    {
+      "label": "zum Youtube Kanal🤩",
+      "desc": "Unsere Rettungen in bewegten Bildern",
+      "href": "https://www.youtube.com/@travel2rescue",
       "icon": "users",
       "primary": false
     },
     {
-      "label": "Banküberweisung",
-      "desc": "IBAN: DE83 7805 0000 0223 2368 37",
-      "href": "mailto:travel2rescue@gmail.com?subject=Spende%20per%20%C3%9Cberweisung",
-      "icon": "landmark",
-      "primary": false
-    },
-    {
-      "label": "Unsere Mission",
-      "desc": "50.000 Straßenhunde – was wir dagegen tun",
-      "href": "/mission/",
-      "icon": "paw-print",
-      "primary": false
-    },
-    {
-      "label": "Unsere Projekte",
-      "desc": "Hundehütten, Müllhaide, Wing NGO Sumatra",
-      "href": "/projekte/",
-      "icon": "hammer",
-      "primary": false
-    },
-    {
-      "label": "Volunteer werden",
-      "desc": "Komm nach Lombok und hilf aktiv vor Ort",
-      "href": "/helfen/#volunteer",
-      "icon": "hand-helping",
-      "primary": false
-    },
-    {
-      "label": "Über Fynn & Eileen",
-      "desc": "Wie alles begann",
-      "href": "/ueber-uns/",
-      "icon": "heart",
-      "primary": false
-    },
-    {
-      "label": "Kontakt",
+      "label": "E-Mail",
       "desc": "travel2rescue@gmail.com",
       "href": "mailto:travel2rescue@gmail.com",
       "icon": "mail",

@@ -27,8 +27,29 @@ const dog = {
   image: entry.image,
   available: entry.available,
   tag: entry.tag || undefined,
+  geschlecht: entry.geschlecht || undefined,
+  groesse: entry.groesse || undefined,
+  gewicht: entry.gewicht || undefined,
+  kastriert: entry.kastriert ?? true,
+  geimpft: entry.geimpft ?? true,
+  gechipt: entry.gechipt ?? true,
 };
 const dogImage = img(dog.image);
+
+// Steckbrief — leere Felder werden automatisch ausgeblendet
+const steckbrief = [
+  { label: 'Alter', value: dog.age },
+  { label: 'Geschlecht', value: dog.geschlecht },
+  { label: 'Rasse', value: dog.breed },
+  { label: 'Größe', value: dog.groesse },
+  { label: 'Gewicht', value: dog.gewicht },
+  { label: 'Charakter', value: dog.character },
+].filter((row) => row.value);
+const medChecks = [
+  dog.kastriert && 'Kastriert',
+  dog.geimpft && 'Geimpft',
+  dog.gechipt && 'Gechipt',
+].filter(Boolean) as string[];
 
 const metaDescription = `${dog.name} (${dog.age}, ${dog.breed}) sucht ein Zuhause in Deutschland. ${dog.story}`.slice(0, 155);
 
@@ -79,7 +100,7 @@ const dogJsonLd = {
       <h1 class="text-5xl md:text-6xl font-black mb-4">{dog.name}</h1>
       <p class="text-lg text-white/70 mb-2">{dog.age} · {dog.breed}</p>
       <p class="text-amber-400 font-semibold mb-8">{dog.character}</p>
-      <a href={`/adoptieren/formular/?hund=${dog.id}`} class="btn-primary btn-large">
+      <a href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`} class="btn-primary btn-large">
         Adoptionsanfrage für {dog.name}
       </a>
     </div>
@@ -93,23 +114,34 @@ const dogJsonLd = {
           <p class="eyebrow mb-4">Die Geschichte</p>
           <h2 class="text-3xl font-black mb-6">Wer ist <span class="text-amber-500">{dog.name}?</span></h2>
           <p class="text-white/70 leading-relaxed text-lg">{dog.story}</p>
-          <div class="mt-8 space-y-3">
-            <div class="flex items-center gap-3 text-sm">
-              <span class="text-white/40 w-20 shrink-0">Alter</span>
-              <span class="font-medium">{dog.age}</span>
+
+          <!-- Steckbrief -->
+          <div class="mt-8 rounded-2xl bg-gray-dark border border-white/5 p-6">
+            <p class="text-xs font-bold uppercase tracking-wider text-amber-500 mb-4">Steckbrief</p>
+            <div class="space-y-3">
+              {steckbrief.map((row) => (
+                <div class="flex items-center gap-3 text-sm">
+                  <span class="text-white/40 w-24 shrink-0">{row.label}</span>
+                  <span class="font-medium">{row.value}</span>
+                </div>
+              ))}
+              <div class="flex items-center gap-3 text-sm">
+                <span class="text-white/40 w-24 shrink-0">Status</span>
+                <span class="pill bg-amber-500/20 text-amber-400">{dog.tag ?? 'Verfügbar'}</span>
+              </div>
             </div>
-            <div class="flex items-center gap-3 text-sm">
-              <span class="text-white/40 w-20 shrink-0">Rasse</span>
-              <span class="font-medium">{dog.breed}</span>
-            </div>
-            <div class="flex items-center gap-3 text-sm">
-              <span class="text-white/40 w-20 shrink-0">Charakter</span>
-              <span class="font-medium text-amber-400">{dog.character}</span>
-            </div>
-            <div class="flex items-center gap-3 text-sm">
-              <span class="text-white/40 w-20 shrink-0">Status</span>
-              <span class="pill bg-amber-500/20 text-amber-400">{dog.tag ?? 'Verfügbar'}</span>
-            </div>
+            {medChecks.length > 0 && (
+              <div class="mt-5 pt-4 border-t border-white/5 flex flex-wrap gap-2">
+                {medChecks.map((check) => (
+                  <span class="pill bg-forest/40 border border-forest text-white/85">
+                    <svg class="w-3.5 h-3.5 text-amber-400" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    {check}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
         <div>
@@ -168,7 +200,7 @@ const dogJsonLd = {
         Sobald du das Formular ausgefüllt hast, meldet sich Eileen per WhatsApp bei dir.
         Kein Tribunal – ein echtes Gespräch.
       </p>
-      <a href={`/adoptieren/formular/?hund=${dog.id}`} class="btn-primary btn-large">
+      <a href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`} class="btn-primary btn-large">
         Jetzt Formular ausfüllen
       </a>
     </div>

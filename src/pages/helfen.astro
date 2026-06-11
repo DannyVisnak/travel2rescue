@@ -106,8 +106,7 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         {heroSub}
       </p>
       <div class="flex flex-wrap gap-4">
-        <a href="#spenden" class="btn-primary btn-large">Jetzt spenden</a>
-        <a href="#volunteer" class="btn-ghost btn-large">Volunteer werden</a>
+        <a href="#spenden-wege" class="btn-primary btn-large">Jetzt spenden</a>
       </div>
     </div>
   </section>
@@ -168,8 +167,8 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <!-- Stats -->
   <StatsBand />
 
-  <!-- 3 Wege -->
-  <section class="py-20 bg-black">
+  <!-- 3 Wege — helleres Braun im Wechsel zur Sektion darüber -->
+  <section class="py-20 bg-gray-dark">
     <div class="container-x">
       <div class="text-center mb-14">
         <p class="eyebrow mb-3">{waysEyebrow}</p>
@@ -212,12 +211,12 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
     </div>
   </section>
 
-  <!-- Spenden Optionen -->
-  <section id="spenden-wege" class="py-20 bg-gray-dark">
+  <!-- Spenden Optionen — beige, die dunklen Karten stechen hervor -->
+  <section id="spenden-wege" class="py-20 bg-beige">
     <div class="container-x">
       <div class="text-center mb-14">
         <p class="eyebrow mb-3">Jetzt spenden</p>
-        <h2 class="section-heading">Wähle deinen Weg.</h2>
+        <h2 class="section-heading text-black">Wähle deinen Weg.</h2>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
         <a

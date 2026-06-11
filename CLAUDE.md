@@ -29,7 +29,9 @@ No test suite, no linter. TypeScript errors surface in `npm run build`.
 | **`@astrojs/react`** | Required by Keystatic admin UI |
 | **`@/*` alias** | → `src/*` |
 
-Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `#F25C3A` (overrides `--color-amber-500` / `--color-amber-400`). Use `text-amber-500`, `bg-amber-500`, etc. — they resolve to coral. Do **not** use accent on large backgrounds.
+Design tokens in `src/styles/global.css` under `@theme`. Accent color is pastel pink `#F77AB4` (overrides `--color-amber-500` / `--color-amber-400`). Use `text-amber-500`, `bg-amber-500`, etc. — they resolve to pink. Do **not** use accent on large backgrounds.
+
+**Palette (Juni 2026)**: warm browns + pink + beige — Eileen's reference is the "Was dich erwartet" section on /adoptieren/. The old gray/black neutrals are remapped in `@theme`: `--color-black` → `#1A1410` (dark brown, body bg + `text-black` on light sections), `--color-gray-dark` → `#241A13` (lighter brown, cards + alternate sections), `--color-gray-mid` → `#3A2C20` (light brown). `bg-black` / `bg-gray-dark` / `text-black` therefore render **brown** sitewide — don't "fix" them back. Light sections use `bg-beige` with `text-black` headings.
 
 **Tailwind v4 rule**: Never `@apply` a custom component class inside another custom class — causes "unknown utility" error. Inline all utilities instead.
 
@@ -41,13 +43,9 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `
 | `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
 | `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
-| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic, prerendered, emits Article JSON-LD) |
+| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail with Steckbrief (on-demand SSR, emits Article JSON-LD) |
 | `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → POSTs to `/api/adoption` (Resend) |
 | `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
-| `/patenschaft/` | `src/pages/patenschaft.astro` | Monthly sponsorship landing (tiers + benefits + form) |
-| `/aktuelles/` | `src/pages/aktuelles/index.astro` | News/blog index (reads `news` collection, filters drafts) |
-| `/aktuelles/[slug]/` | `src/pages/aktuelles/[slug].astro` | News article (prerendered, NewsArticle JSON-LD) |
-| `/aktuelles/feed.xml` | `src/pages/aktuelles/feed.xml.ts` | RSS feed (linked from `<head>`) |
 | `/ueber-uns/` | `src/pages/ueber-uns.astro` | Team bios (reads Keystatic) + origin story |
 | `/linktree/` | `src/pages/linktree.astro` | Social link hub (Instagram traffic) |
 | `/danke/` | `src/pages/danke.astro` | Thank-you page (noindex, `?typ=kontakt|adoption` switches copy) |
@@ -70,7 +68,6 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 |---|---|---|
 | `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
 | `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
-| `reader.collections.news.all()` | News articles (supports `draft` flag, sorted by `date` desc) | `content/news/*.json` |
 | `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
 | `reader.singletons.homeContent.read()` | Whole home page: hero, story, services, dogs teaser, quote, FAQs | `content/pages/home.json` |
 | `reader.singletons.missionContent.read()` | Whole mission page: hero, problems, quote, pillars, cats, vision | `content/pages/mission.json` |
@@ -79,7 +76,6 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.singletons.aboutContent.read()` | Über-uns page: hero, story chapters, team/reality headings, contact | `content/pages/about.json` |
 | `reader.singletons.projectsPage.read()` | Projekte page hero + outro (project entries stay in the collection) | `content/pages/projects.json` |
 | `reader.singletons.linktreeContent.read()` | Linktree tagline + link list | `content/pages/linktree.json` |
-| `reader.singletons.patenschaftContent.read()` | Patenschaft page: hero, tiers, benefits, form intro | `content/pages/patenschaft.json` |
 | `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
@@ -132,19 +128,17 @@ Eileen can now edit **essentially every visible text and most images** across th
 
 | Section in admin | What changes |
 |---|---|
-| 🐾 Hunde | Add dogs, update stories, upload photos directly, mark as vermittelt |
+| 🐾 Hunde | Add dogs (appear automatically on /adoptieren/ + home), full Steckbrief (Geschlecht, Größe, Gewicht, kastriert/geimpft/gechipt), stories, photos, mark as vermittelt |
 | 🏗️ Projekte | Update descriptions, impacts, upload photos |
 | ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
-| 🏠 Startseite | Hero, trust strip, story teaser, "Was wir tun" cards, dogs teaser, founder quote, FAQs |
-| 🎯 Mission-Seite | Hero, problem cards, quote, the 4 pillars, cats section, vision |
+| 🏠 Startseite | Hero, trust strip, mission teaser, "Was wir tun" cards, projects teaser, dogs teaser (+ background photo), helfen teaser, story teaser, founder quote, FAQs |
+| 🎯 Mission-Seite | Hero, free intro text (before problem cards), 4 problem cards, quote, the 4 pillars, cats section, vision |
 | 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
 | 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |
 | 📖 Über-uns-Seite (Texte) | Hero, 4 story chapters, team/reality section copy, contact heading |
 | 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
 | 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
 | 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
-| 🤝 Patenschaft-Seite | Tiers + benefits + form copy for the monthly-sponsorship page |
-| 📣 Aktuelles (News) | Create, edit, draft news articles (with cover image + datum) |
 | 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
 
 **Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
@@ -222,6 +216,8 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ## Known Quirks & Issues
 
+0. **`output: 'server'` + content bundling (CRITICAL)** — The site runs fully SSR so the `SITE_PASSWORD` basic-auth middleware can gate every page during the under-construction window. Because pages render at request time inside the Vercel function, the Keystatic `content/**/*.json` files MUST be force-bundled via `vercel({ includeFiles })` in `astro.config.mjs` (the bundler doesn't trace fs reads). Without it the reader silently returns empty collections / null singletons in production: no dogs, no projects, all CMS edits invisible — pages "look fine" because of the `?? fallback` pattern. If a new content subfolder is added, it's picked up automatically (the list is globbed at config load). When the lock is no longer needed, the long-term plan is to go back to static prerendering.
+
 1. **Astro route collision warning** — "The route `/api/keystatic/[...params]` is defined in both...". This is expected — our override file takes priority. Just a warning, not an error. Will become an error in a future Astro version; solution will be to configure the Keystatic integration to not inject the route.
 
 2. **Node 24 / Vercel Node 22 warning** — Vercel serverless runs Node 22 locally but Node 24 is installed. No action needed.
@@ -230,7 +226,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader returns it **bare** (no `publicPath` prepend), so consume it through `img()` from `src/lib/img.ts`. If you see broken images, check the value is wrapped in `img(...)` and that `content/*/[entry].json` has bare filenames.
 
-5. **Heavy portrait images (~6MB each)** — `eileen-portrait.jpeg` and `fynn portrait.jpeg` are ~3500px wide. Slow to fetch in Keystatic admin and on the live page. Consider downscaling to ~1200px / quality 80 (~300KB).
+5. **Image optimization** — All JPEGs in `public/images/` were batch-optimized (max 1920px, quality 78, mozjpeg, EXIF orientation baked in) via `node scripts/optimize-images.mjs` — run it again after Eileen uploads new phone photos through Keystatic (they arrive full-size, ~5MB). The script only overwrites a file when it gets ≥10% smaller and keeps filenames identical, so content JSON references stay valid.
 
 ## To-Do List
 
@@ -250,7 +246,6 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 - [ ] **OG image** — Create a proper 1200×630 branded PNG (`public/og-image.png`). Currently using `fynn eileen dogs horizontal.jpg` which isn't sized correctly for social sharing.
 - [ ] **Sitemap** — Verify all routes appear in `/sitemap-index.xml` after deploy
 - [ ] **Google Search Console** — Submit sitemap, verify domain ownership
-- [ ] **Patenschaft page** — FAQ on helfen page mentions Patenschaften but there's no dedicated page/flow for it
 
 ### CMS improvements (medium effort)
 
@@ -261,8 +256,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### Nice to have (low priority)
 
-- [ ] **Patenschaft flow** — Monthly sponsorship for a specific dog (requires Stripe or external form)
-- [ ] **News/Aktuelles section** — Keystatic collection for news posts (easy to add, needs design)
+- ~~Patenschaft page / Aktuelles (News)~~ — both removed on request (Juni 2026); git history has the implementations if they come back
 - [ ] **Instagram feed embed** — Live feed from @travel2rescue on home page or linktree
 
 ---

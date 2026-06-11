@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black: #0D0D0D;
+  /* Warm-brown palette (Juni 2026): Eileens Referenz ist die
+     "Was dich erwartet"-Sektion — dunkles Braun (#1A1410) mit Pink-Akzent,
+     dazu Beige für helle Sektionen. Die früheren Grau/Schwarz-Töne sind
+     bewusst auf Braun umgemappt, damit bg-black/bg-gray-dark sitewide
+     warm rendern, ohne jede Seite anzufassen. */
+  --color-black: #1A1410;
   --color-forest: #1A3D2B;
   --color-forest-light: #2A5C40;
   --color-beige: #EFE3D0;
@@ -15,9 +20,9 @@
   --color-amber-500: #F77AB4;
   --color-sand: #E8D4BB;
   --color-cream: #F5F0E8;
-  --color-gray-dark: #1A1A1A;
-  --color-gray-mid: #2D2D2D;
-  --color-gray-text: #9CA3AF;
+  --color-gray-dark: #241A13;  /* helleres Braun — Karten & Wechsel-Sektionen */
+  --color-gray-mid: #3A2C20;   /* light brown — Linien, Hover, Akzente */
+  --color-gray-text: #B7A99A;  /* warmes Hellbraun für gedämpften Text */
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;

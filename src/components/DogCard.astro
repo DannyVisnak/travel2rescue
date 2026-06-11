@@ -28,14 +28,22 @@ const { dog } = Astro.props;
     <div class="flex items-start justify-between mb-2">
       <div>
         <h3 class="text-xl font-bold">{dog.name}</h3>
-        <p class="text-white/50 text-sm">{dog.age} · {dog.breed}</p>
+        <p class="text-white/50 text-sm">{[dog.age, dog.geschlecht, dog.breed].filter(Boolean).join(' · ')}</p>
       </div>
       <span class="text-xs text-amber-400 font-semibold uppercase tracking-wide mt-1">{dog.character}</span>
     </div>
     <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
+    <!-- Direkt zum Adoptionsformular — Hund wird per ?hund= vorausgewählt,
+         #adoption-form scrollt zum Formular -->
+    <a
+      href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`}
+      class="mt-4 btn-primary w-full justify-center py-2.5 text-xs"
+    >
+      Adoptionsanfrage stellen
+    </a>
     <a
       href={`/adoptieren/${dog.id}/`}
-      class="mt-4 btn-primary w-full justify-center py-2.5 text-xs"
+      class="mt-2 inline-flex w-full items-center justify-center rounded-full border border-white/15 text-white/80 hover:border-white/40 hover:text-white transition-colors py-2.5 text-xs font-semibold uppercase tracking-wider"
     >
       Mehr über {dog.name}
     </a>

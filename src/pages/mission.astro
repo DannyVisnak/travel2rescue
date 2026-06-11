@@ -2,6 +2,7 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
@@ -14,12 +15,19 @@ const heroTitleAccent = m?.heroTitleAccent ?? 'die sonst niemand sieht.';
 const heroSub = m?.heroSub ?? 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.';
 const heroImage = img(m?.heroImage, '/images/IMG_2977.jpg');
 
+const introEyebrow = m?.introEyebrow ?? 'Warum wir tun, was wir tun';
+const introHeadline = m?.introHeadline ?? 'Hinschauen,\nwo andere wegsehen.';
+const introText = m?.introText ?? 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
+
 const problemEyebrow = m?.problemEyebrow ?? 'Das Problem';
 const problemHeadline = m?.problemHeadline ?? 'Der tägliche\nÜberlebenskampf.';
+// 4 Problem-Karten, deren Reihenfolge die 4 Säulen spiegelt:
+// Vermehrung→Kastrationen, Hunger→Fütterungen, Krankheiten→Medizin, Straße→Rettungen
 const defaultProblems = [
+  { title: 'Unkontrollierte Vermehrung', image: '/images/IMG_2322.jpg', desc: 'Eine einzige unkastrierte Hündin kann in nur sechs Jahren bis zu 60.000 Nachkommen verursachen. Jeder neue Wurf wird in dasselbe Elend geboren – der Kreislauf aus Hunger, Krankheit und Leid beginnt von vorn.', solution: 'Flächendeckende Kastrationsprogramme – wir stoppen das Leid, bevor es entsteht.' },
   { title: 'Der ständige Hunger', image: '/images/IMG_2027.jpg', desc: 'Für die meisten Hunde auf Lombok gibt es niemanden, der hinsieht. Aus purer Verzweiflung fressen viele Steine, Müll oder Plastik – das führt zu inneren Verletzungen, Vergiftungen und oft einem qualvollen Tod.', solution: 'Tägliche Fütterungsrunden, sauberes Wasser, Aufklärung der Gemeinden über artgerechte Ernährung.' },
-  { title: 'Gefahr auf der Straße', image: '/images/IMG_0891.jpg', desc: 'Unfälle mit Rollern oder Autos sind Alltag. Viele Hunde bleiben schwer verletzt oder gelähmt am Straßenrand zurück – ohne jede medizinische Hilfe, ohne dass jemand kommt.', solution: 'Mobile Tierarztteams, Rettung und Transport zu Tierkliniken, Rehabilitationsprogramme.' },
   { title: 'Gezielte Tötungen & Krankheiten', image: '/images/IMG_3554.jpg', desc: 'Dazu kommt die Gefahr durch Vergiftungen, wenn versucht wird, das „Straßenhundeproblem" auf grausame Weise zu lösen. Unbehandelte Wunden, Parasiten und Hautkrankheiten schwächen die Tiere täglich.', solution: 'Impf- und Entwurmungsprogramme, Behandlung von Hautkrankheiten, Aufklärung über humanen Tierschutz.' },
+  { title: 'Gefahr auf der Straße', image: '/images/IMG_0891.jpg', desc: 'Unfälle mit Rollern oder Autos sind Alltag. Viele Hunde bleiben schwer verletzt oder gelähmt am Straßenrand zurück – ohne jede medizinische Hilfe, ohne dass jemand kommt.', solution: 'Mobile Tierarztteams, Rettung und Transport zu Tierkliniken, Rehabilitationsprogramme.' },
 ];
 const problems = m?.problems?.length
   ? m.problems.map((p) => ({ ...p, image: img(p.image, '/images/IMG_2027.jpg') }))
@@ -89,6 +97,15 @@ const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
   <!-- Stats -->
   <StatsBand />
 
+  <!-- Intro — freier Text von Eileen (Keystatic: 🎯 Mission-Seite → Intro) -->
+  <section class="py-16 bg-beige">
+    <div class="container-x text-center max-w-3xl mx-auto">
+      <p class="eyebrow mb-4">{introEyebrow}</p>
+      <h2 class="text-3xl md:text-4xl font-black mb-6 text-black"><Lines text={introHeadline} /></h2>
+      <p class="text-lg text-black/70 leading-relaxed"><Lines text={introText} /></p>
+    </div>
+  </section>
+
   <!-- Das Problem -->
   <section class="py-20 bg-black">
     <div class="container-x">
@@ -96,16 +113,18 @@ const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
         <p class="eyebrow mb-3">{problemEyebrow}</p>
         <h2 class="section-heading"><Lines text={problemHeadline} /></h2>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {problems.map((item) => (
-          <div class="card overflow-hidden">
-            <div class="aspect-video overflow-hidden">
+          <div class="card overflow-hidden flex flex-col">
+            <div class="aspect-video overflow-hidden shrink-0">
               <img src={item.image} alt={item.title} class="w-full h-full object-cover" loading="lazy" />
             </div>
-            <div class="p-6">
-              <h3 class="text-xl font-bold mb-3">{item.title}</h3>
+            <div class="p-6 flex flex-col flex-1">
+              <!-- min-h reserviert 2 Zeilen, damit Beschreibung & Lösung in allen
+                   Karten nebeneinander auf gleicher Höhe beginnen -->
+              <h3 class="text-xl font-bold mb-3 lg:min-h-14">{item.title}</h3>
               <p class="text-white/60 text-sm leading-relaxed mb-4">{item.desc}</p>
-              <div class="border-t border-white/5 pt-4">
+              <div class="border-t border-white/5 pt-4 mt-auto">
                 <p class="text-xs text-amber-500 uppercase tracking-wider mb-2 font-bold">Unsere Lösung</p>
                 <p class="text-white/70 text-sm">{item.solution}</p>
               </div>
@@ -127,8 +146,10 @@ const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
   </section>
 
   <!-- Die vier Säulen -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
+  <section class="relative py-20 bg-gray-dark overflow-hidden">
+    <!-- Punkteraster wie auf der Adoptions-Timeline — Eileens Liebling -->
+    <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
+    <div class="container-x relative">
       <div class="text-center mb-14">
         <p class="eyebrow mb-3">{pillarsEyebrow}</p>
         <h2 class="section-heading"><Lines text={pillarsHeadline} /></h2>
@@ -184,6 +205,9 @@ const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
     </div>
   </section>
 
+  <!-- Team-Showcase — gleiche Sektion wie auf /ueber-uns/ (CMS: 👥 Team) -->
+  <TeamShowcase />
+
   <!-- Vision -->
   <section class="py-20 bg-beige">
     <div class="container-x text-center max-w-3xl mx-auto">
@@ -199,8 +223,9 @@ const visionButton = m?.visionButton ?? 'Teil der Lösung werden';
     </div>
   </section>
 
-  <!-- Kontakt -->
-  <section class="py-20 bg-beige">
+  <!-- Kontakt — bewusst dunkler Hintergrund, damit sich das Formular von der
+       beigen Vision-Sektion darüber absetzt -->
+  <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
       <ContactForm subject="Anfrage zu Mission / Projekt" />
     </div>

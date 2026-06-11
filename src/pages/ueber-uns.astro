@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
@@ -55,7 +56,9 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-top" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
+      <!-- Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
+           zeigte nur Himmel und schnitt die Köpfe ab -->
+      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-[center_40%]" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
@@ -171,6 +174,9 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
       </div>
     </div>
   </section>
+
+  <!-- Team-Showcase — das ganze Team (Tierärzte, Helfer …), CMS: 👥 Team -->
+  <TeamShowcase />
 
   <!-- Kontakt -->
   <section class="py-20 bg-beige">

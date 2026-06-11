@@ -1,0 +1,34 @@
+---
+import Lines from '@/components/Lines.astro';
+import { reader } from '@/lib/keystatic';
+import { img } from '@/lib/img';
+
+// Gemeinsame Team-Sektion für /ueber-uns/ und /mission/ — Inhalte kommen aus
+// dem 👥-Team-Singleton, damit Eileen sie nur an einer Stelle pflegt.
+const team = await reader.singletons.team.read();
+
+const eyebrow = team?.showcaseEyebrow || 'Unser Team';
+const headline = team?.showcaseHeadline || 'Mehr als\nnur wir zwei.';
+const text = team?.showcaseText || 'Hinter jeder Rettung steht ein ganzes Team: lokale Tierärztinnen und Tierärzte, angestellte Helfer und Pflegestellen, die unsere Notfälle rund um die Uhr versorgen. Gemeinsam stemmen wir, was zu zweit unmöglich wäre.';
+const image = img(team?.showcaseImage, '/images/fynn eileen dogs horizontal.jpg');
+---
+
+<section class="py-20 bg-gray-dark overflow-hidden">
+  <div class="container-x">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="relative">
+        <img
+          src={image}
+          alt="Das Team von Travel2Rescue"
+          class="rounded-2xl w-full aspect-[4/3] object-cover"
+          loading="lazy"
+        />
+      </div>
+      <div>
+        <p class="eyebrow mb-4">{eyebrow}</p>
+        <h2 class="text-4xl font-black mb-6"><Lines text={headline} /></h2>
+        <p class="prose-dark text-lg"><Lines text={text} /></p>
+      </div>
+    </div>
+  </div>
+</section>

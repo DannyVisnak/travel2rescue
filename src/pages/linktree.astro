@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import Lines from '@/components/Lines.astro';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
@@ -27,21 +28,17 @@ interface LinkItem {
 const linktreeData = await reader.singletons.linktreeContent.read();
 const cmsSettings = await reader.singletons.settings.read();
 const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
-const tagline = linktreeData?.tagline ?? 'Gemeinsam Hunden ein besseres Leben schenken.';
+const tagline = linktreeData?.tagline ?? `Gemeinsam Hunden ein besseres Leben schenken!❤️\nBankverbindung: Empfänger: ${SITE.bankverbindung.empfaenger}\nIBAN: ${SITE.bankverbindung.iban}`;
 
+// Bewusst kompakt gehalten (Juni 2026) — Liste spiegelt den Insta-Linktree.
 const defaultLinks: LinkItem[] = [
-  { label: 'Jetzt spenden – PayPal', desc: 'Direkte Hilfe für die Hunde auf Lombok', href: paypalUrl, icon: 'heart', primary: true },
-  { label: 'Hund adoptieren', desc: 'Alle Hunde & Adoptionsformular', href: '/adoptieren/', icon: 'home' },
-  { label: 'Adoptionsformular ausfüllen', desc: 'Finde dein perfektes Match', href: '/adoptieren/formular/', icon: 'clipboard-list' },
-  { label: 'Instagram', desc: '@travel2rescue – tägliche Updates aus Lombok', href: SITE.social.instagram, icon: 'camera' },
-  { label: 'TikTok', desc: '@travel2rescue – Videos aus dem Alltag', href: SITE.social.tiktok, icon: 'music' },
-  { label: 'Facebook', desc: 'Community & Neuigkeiten', href: SITE.social.facebook, icon: 'users' },
-  { label: 'Banküberweisung', desc: `IBAN: ${SITE.bankverbindung.iban}`, href: `mailto:${SITE.email}?subject=Spende%20per%20%C3%9Cberweisung`, icon: 'landmark' },
-  { label: 'Unsere Mission', desc: '50.000 Straßenhunde – was wir dagegen tun', href: '/mission/', icon: 'paw-print' },
-  { label: 'Unsere Projekte', desc: 'Hundehütten, Müllhaide, Wing NGO Sumatra', href: '/projekte/', icon: 'hammer' },
-  { label: 'Volunteer werden', desc: 'Komm nach Lombok und hilf aktiv vor Ort', href: '/helfen/#volunteer', icon: 'hand-helping' },
-  { label: 'Über Fynn & Eileen', desc: 'Wie alles begann', href: '/ueber-uns/', icon: 'heart' },
-  { label: 'Kontakt', desc: SITE.email, href: `mailto:${SITE.email}`, icon: 'mail' },
+  { label: 'Tieren in Not helfen via Paypal🏩🥹', desc: 'Schnell, sicher und sofort bei den Hunden', href: paypalUrl, icon: 'heart', primary: true },
+  { label: 'Medical Report🆘', desc: 'Aktuelle Notfälle und wie du helfen kannst', href: '/helfen/', icon: 'hand-helping' },
+  { label: 'Zum Adoptionsformular🤩', desc: 'Finde dein perfektes Match', href: '/adoptieren/formular/', icon: 'clipboard-list' },
+  { label: 'Tiktok🤩', desc: '@travel2rescue – Videos aus dem Alltag', href: SITE.social.tiktok, icon: 'music' },
+  { label: 'Instagram👑', desc: '@travel2rescue – tägliche Updates aus Lombok', href: SITE.social.instagram, icon: 'camera' },
+  { label: 'zum Youtube Kanal🤩', desc: 'Unsere Rettungen in bewegten Bildern', href: 'https://www.youtube.com/@travel2rescue', icon: 'users' },
+  { label: 'E-Mail', desc: SITE.email, href: `mailto:${SITE.email}`, icon: 'mail' },
 ];
 
 const links: LinkItem[] = linktreeData?.links?.length
@@ -73,7 +70,7 @@ const links: LinkItem[] = linktreeData?.links?.length
           />
         </div>
         <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-3" loading="eager" />
-        <p class="font-serif text-white/75 text-base italic">{tagline}</p>
+        <p class="font-serif text-white/75 text-base italic"><Lines text={tagline} /></p>
         <p class="text-white/40 text-xs mt-2">{SITE.location}</p>
       </div>
 

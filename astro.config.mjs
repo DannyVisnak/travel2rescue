@@ -4,6 +4,17 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
 import react from '@astrojs/react';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+
+// With output:'server', pages render inside the Vercel function at request
+// time — but the function bundle only contains traced JS imports, NOT the
+// Keystatic content/ JSON files the reader loads via fs. Without these the
+// reader silently returns empty collections / null singletons in production:
+// no dogs, no projects, every CMS edit invisible. Force-bundle them.
+const keystaticContentFiles = readdirSync('content', { recursive: true })
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => join('content', f));
 
 export default defineConfig({
   // output: 'server' routes every page through the SSR function so the
@@ -13,7 +24,7 @@ export default defineConfig({
   // Astro middleware entirely — so a password set in Vercel would only
   // protect dynamic API routes, not the public site.
   output: 'server',
-  adapter: vercel(),
+  adapter: vercel({ includeFiles: keystaticContentFiles }),
   site: 'https://www.travel2rescue.de',
   trailingSlash: 'always',
   build: {
