@@ -9,8 +9,8 @@ interface Props {
 const { dog } = Astro.props;
 ---
 
-<article class="card group overflow-hidden">
-  <div class="relative aspect-[4/3] overflow-hidden">
+<article class="card group overflow-hidden flex flex-col">
+  <div class="relative aspect-[4/3] overflow-hidden shrink-0">
     <img
       src={img(dog.image)}
       alt={`${dog.name} – zur Adoption`}
@@ -24,7 +24,7 @@ const { dog } = Astro.props;
       </div>
     )}
   </div>
-  <div class="p-5">
+  <div class="p-5 flex flex-col flex-1">
     <div class="flex items-start justify-between mb-2">
       <div>
         <h3 class="text-xl font-bold">{dog.name}</h3>
@@ -33,19 +33,23 @@ const { dog } = Astro.props;
       <span class="text-xs text-amber-400 font-semibold uppercase tracking-wide mt-1">{dog.character}</span>
     </div>
     <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
-    <!-- Direkt zum Adoptionsformular — Hund wird per ?hund= vorausgewählt,
-         #adoption-form scrollt zum Formular -->
-    <a
-      href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`}
-      class="mt-4 btn-primary w-full justify-center py-2.5 text-xs"
-    >
-      Adoptionsanfrage stellen
-    </a>
-    <a
-      href={`/adoptieren/${dog.id}/`}
-      class="mt-2 inline-flex w-full items-center justify-center rounded-full border border-amber-500/40 text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 transition-colors py-2.5 text-xs font-semibold uppercase tracking-wider"
-    >
-      Mehr über {dog.name}
-    </a>
+    <!-- mt-auto pinnt die Buttons an den Kartenboden — so liegen sie in jeder
+         Reihe auf gleicher Höhe, egal wie der Text darüber umbricht -->
+    <div class="mt-auto pt-4">
+      <!-- Direkt zum Adoptionsformular — Hund wird per ?hund= vorausgewählt,
+           #adoption-form scrollt zum Formular -->
+      <a
+        href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`}
+        class="btn-primary w-full justify-center py-2.5 text-xs"
+      >
+        Adoptionsanfrage stellen
+      </a>
+      <a
+        href={`/adoptieren/${dog.id}/`}
+        class="mt-2 inline-flex w-full items-center justify-center rounded-full border border-amber-500/40 text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 transition-colors py-2.5 text-xs font-semibold uppercase tracking-wider"
+      >
+        Mehr über {dog.name}
+      </a>
+    </div>
   </div>
 </article>
