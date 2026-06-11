@@ -20,9 +20,12 @@
   --color-amber-500: #F77AB4;
   --color-sand: #E8D4BB;
   --color-cream: #F5F0E8;
-  --color-gray-dark: #241A13;  /* helleres Braun — Karten & Wechsel-Sektionen */
+  --color-gray-dark: #241A13;  /* helleres Braun — Wechsel-Sektionen */
   --color-gray-mid: #3A2C20;   /* light brown — Linien, Hover, Akzente */
   --color-gray-text: #B7A99A;  /* warmes Hellbraun für gedämpften Text */
+  --color-card: #2E2218;       /* Karten — eine Stufe heller als gray-dark,
+                                  damit Karten auf bg-black UND bg-gray-dark
+                                  Sektionen sichtbar bleiben */
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
@@ -94,7 +97,7 @@
   }
 
   .card {
-    @apply rounded-2xl bg-gray-dark border border-white/5 overflow-hidden;
+    @apply rounded-2xl bg-card border border-white/5 overflow-hidden;
   }
 
   .pill {
