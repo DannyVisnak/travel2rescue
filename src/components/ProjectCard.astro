@@ -28,12 +28,10 @@ const { project } = Astro.props;
     </div>
   </div>
   <div class="p-6">
-    <h3 class="text-xl font-bold mb-1">{project.title}</h3>
-    <p class="text-amber-500 text-sm font-medium mb-3">{project.subtitle}</p>
-    <p class="text-white/60 text-sm leading-relaxed mb-4">{project.description}</p>
-    <div class="border-t border-white/5 pt-4">
-      <p class="text-xs text-white/40 uppercase tracking-wider mb-1">Wirkung</p>
-      <p class="text-sm text-white/70">{project.impact}</p>
-    </div>
+    <!-- min-h reserviert 2 Zeilen für Titel/Untertitel, damit die Beschreibungen
+         nebeneinanderliegender Karten auf gleicher Höhe beginnen -->
+    <h3 class="text-xl font-bold mb-1 md:min-h-14">{project.title}</h3>
+    <p class="text-amber-500 text-sm font-medium mb-3 md:min-h-10">{project.subtitle}</p>
+    <p class="text-white/60 text-sm leading-relaxed">{project.description}</p>
   </div>
 </article>
