@@ -178,7 +178,7 @@ Create at `https://github.com/settings/apps/new`:
   - **Contents**: Read and write
   - **Metadata**: Read-only (mandatory, locked — may not appear as a separate row)
   - **Pull requests**: Read and write
-- Where can this GitHub App be installed: Only on this account
+- Where can this GitHub App be installed: **Any account** (public). A private app ("Only on this account") returns a GitHub 404 to every user except the owner when they try to authorize it — collaborators like Eileen can't log in to Keystatic. Making the app public is safe: it stays installed only on this repo, the client secret stays private, and Keystatic still requires write access to the repo.
 
 After creating, install on `DannyVisnak/travel2rescue` (left sidebar → Install App → select the repo).
 
@@ -192,6 +192,7 @@ The original `req.url`-has-hostname-`localhost` workaround that lived here is no
 
 | Symptom | Cause | Fix |
 |---|---|---|
+| GitHub shows **404** right after clicking "Log in with GitHub" (but the app owner can log in fine) | The GitHub App is private ("Only on this account") — GitHub 404s the authorize page for everyone except the app owner | App settings (`github.com/settings/apps/<slug>`) → **Advanced** → **Make public**. Also verify the user accepted the repo collaborator invite (write access) and is logged into the invited GitHub account |
 | "Authorization failed" after callback | Configured a classic OAuth App instead of a GitHub App — token response is missing `refresh_token` / `expires_in` and Keystatic's schema rejects it | Create a GitHub App (NOT an OAuth App) and check "Expire user authorization tokens"; update Vercel env vars |
 | "Authorization failed" after callback (with a GitHub App) | `KEYSTATIC_SECRET` < 32 chars OR `KEYSTATIC_GITHUB_CLIENT_SECRET` doesn't match the App | Regenerate `KEYSTATIC_SECRET`, verify the client secret matches GitHub, redeploy |
 | `403 Cross-site POST form submissions are forbidden` on `/api/keystatic/github/refresh-token/` | Astro CSRF check sees `context.url.origin` as `http://localhost` because `x-forwarded-host` isn't trusted | Ensure `security.allowedDomains` includes `travel2rescue.de` in `astro.config.mjs` |
