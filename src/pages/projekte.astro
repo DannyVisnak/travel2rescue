@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CTABand from '@/components/CTABand.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
@@ -83,15 +82,14 @@ const outroButton = p?.outroButton || 'Projekte unterstützen';
     </div>
   </section>
 
-  <!-- Mehr Projekte kommen -->
-  <section class="py-16 bg-gray-dark border-y border-white/5">
+  <!-- Mehr Projekte kommen — die beige Abschluss-Sektion der Seite
+       (ersetzt die generische CTABand) -->
+  <section class="py-20 bg-beige">
     <div class="container-x text-center max-w-2xl mx-auto">
       <p class="eyebrow mb-4">{outroEyebrow}</p>
-      <h2 class="text-3xl font-black mb-4"><Lines text={outroHeadline} /></h2>
-      <p class="text-white/60 mb-8">{outroText}</p>
+      <h2 class="text-3xl md:text-4xl font-black mb-4 text-black"><Lines text={outroHeadline} /></h2>
+      <p class="text-black/60 mb-8">{outroText}</p>
       <a href="/helfen/" class="btn-primary btn-large">{outroButton}</a>
     </div>
   </section>
-
-  <CTABand />
 </BaseLayout>
