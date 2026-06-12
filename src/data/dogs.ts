@@ -10,6 +10,13 @@ export interface Dog {
   image: string | null;
   available: boolean;
   tag?: string;
+  // Steckbrief-Felder (optional — ältere Einträge haben sie noch nicht)
+  geschlecht?: string;
+  groesse?: string;
+  gewicht?: string;
+  kastriert?: boolean;
+  geimpft?: boolean;
+  gechipt?: boolean;
 }
 
 export const ADOPTION_STEPS = [

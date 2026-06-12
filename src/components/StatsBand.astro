@@ -12,11 +12,11 @@ interface Props {
 }
 
 const cms = await reader.singletons.settings.read();
+// 3 Kennzahlen (nicht 4) — Wunsch von Fynn & Eileen
 const defaultStats: Stat[] = [
-  { value: cms?.statsKastrationen ?? SITE.stats.kastrationen, label: 'Kastrationen' },
-  { value: cms?.statsFutter ?? SITE.stats.futter, label: 'Futter verteilt' },
-  { value: cms?.statsOperiert ?? SITE.stats.operiert, label: 'Hunde monatlich operiert' },
-  { value: '0 €', label: 'Verwaltungskosten' },
+  { value: cms?.statsKastrationen || SITE.stats.kastrationen, label: 'Kastrationen' },
+  { value: cms?.statsFutter || SITE.stats.futter, label: 'Futter verteilt' },
+  { value: cms?.statsOperiert || SITE.stats.operiert, label: 'Hunde monatlich operiert' },
 ];
 
 const { stats = defaultStats } = Astro.props;
@@ -24,7 +24,7 @@ const { stats = defaultStats } = Astro.props;
 
 <div class="bg-black border-y border-white/5 py-12">
   <div class="container-x">
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
       {stats.map((s) => (
         <div>
           <div class="stat-number">{s.value}</div>

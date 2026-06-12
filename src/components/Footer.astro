@@ -4,8 +4,8 @@ import { reader } from '@/lib/keystatic';
 
 const site = await reader.singletons.siteContent.read();
 const cmsSettings = await reader.singletons.settings.read();
-const footerTagline = site?.footerTagline ?? 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
-const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
+const footerTagline = site?.footerTagline || 'Tierschutz auf Lombok, Indonesien. 100% der Spenden fließen direkt in die Hilfe.';
+const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
 ---
 
 <footer class="bg-gray-dark border-t border-white/5 pt-16 pb-8">
@@ -69,7 +69,9 @@ const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
       <div>
         <h4 class="text-xs font-bold uppercase tracking-widest text-white/40 mb-4">Navigation</h4>
         <ul class="space-y-2">
-          {NAV.map((item) => (
+          <!-- "Helfen" aus der NAV wird hier übersprungen — der pinke
+               "Jetzt helfen"-Link darunter ist derselbe Ort -->
+          {NAV.filter((item) => item.href !== '/helfen/').map((item) => (
             <li>
               <a href={item.href} class="text-sm text-white/60 hover:text-white transition-colors">
                 {item.label}
@@ -77,8 +79,6 @@ const paypalUrl = cmsSettings?.paypalUrl ?? SITE.social.paypal;
             </li>
           ))}
           <li><a href="/helfen/" class="text-sm text-amber-500 hover:text-amber-400 transition-colors font-semibold">Jetzt helfen</a></li>
-          <li><a href="/patenschaft/" class="text-sm text-white/60 hover:text-white transition-colors">Patenschaft</a></li>
-          <li><a href="/aktuelles/" class="text-sm text-white/60 hover:text-white transition-colors">Aktuelles</a></li>
           <li><a href="/linktree/" class="text-sm text-white/60 hover:text-white transition-colors">Linktree</a></li>
         </ul>
       </div>

@@ -92,6 +92,18 @@ export default config({
           itemLabel: (props) => props.value || 'Eintrag',
         }),
 
+        // Mission-Teaser
+        missionEyebrow: fields.text({ label: 'Mission-Teaser – kleine Zeile' }),
+        missionHeadline: fields.text({ label: 'Mission-Teaser – Überschrift', multiline: true }),
+        missionText1: fields.text({ label: 'Mission-Teaser – Absatz 1', multiline: true }),
+        missionText2: fields.text({ label: 'Mission-Teaser – Absatz 2', multiline: true }),
+        missionImage: sectionImage('Mission-Teaser – Foto (rechte Seite)'),
+
+        // Projekte-Teaser
+        projectsEyebrow: fields.text({ label: 'Projekte-Teaser – kleine Zeile' }),
+        projectsHeadline: fields.text({ label: 'Projekte-Teaser – Überschrift', multiline: true }),
+        projectsSub: fields.text({ label: 'Projekte-Teaser – Untertext', multiline: true }),
+
         // Über-uns Teaser
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
@@ -118,6 +130,7 @@ export default config({
         dogsEyebrow: fields.text({ label: 'Hunde-Teaser – kleine Zeile' }),
         dogsHeadline: fields.text({ label: 'Hunde-Teaser – Überschrift' }),
         dogsSub: fields.text({ label: 'Hunde-Teaser – Untertext', multiline: true }),
+        dogsImage: sectionImage('Hunde-Teaser – grosses Hintergrundfoto'),
 
         // Zitat
         founderQuote: fields.text({
@@ -143,6 +156,14 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('Hero – Hintergrundbild'),
+
+        introEyebrow: fields.text({ label: 'Intro – kleine Zeile' }),
+        introHeadline: fields.text({ label: 'Intro – Überschrift', multiline: true }),
+        introText: fields.text({
+          label: 'Intro – Absatz',
+          multiline: true,
+          description: 'Freier Text direkt vor den Problem-Karten — hier kannst du in eigenen Worten erzählen, worum es geht.',
+        }),
 
         problemEyebrow: fields.text({ label: 'Problem – kleine Zeile' }),
         problemHeadline: fields.text({ label: 'Problem – Überschrift', multiline: true }),
@@ -316,50 +337,6 @@ export default config({
       },
     }),
 
-    patenschaftContent: singleton({
-      label: '🤝 Patenschaft-Seite',
-      path: 'content/pages/patenschaft',
-      format: { data: 'json' },
-      schema: {
-        heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
-        heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
-        heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
-        heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
-
-        tiersEyebrow: fields.text({ label: 'Pakete – kleine Zeile' }),
-        tiersHeadline: fields.text({ label: 'Pakete – Überschrift', multiline: true }),
-        tiers: fields.array(
-          fields.object({
-            amount: fields.integer({ label: 'Betrag in € / Monat' }),
-            title: fields.text({ label: 'Bezeichnung, z.B. Kleine Pate' }),
-            impact: fields.text({ label: 'Was die Patenschaft bewirkt', multiline: true }),
-          }),
-          {
-            label: 'Patenschafts-Pakete',
-            itemLabel: (props) => (props.fields.amount.value ? `€${props.fields.amount.value} – ${props.fields.title.value ?? ''}` : 'Paket'),
-          },
-        ),
-
-        benefitsEyebrow: fields.text({ label: 'Vorteile – kleine Zeile' }),
-        benefitsHeadline: fields.text({ label: 'Vorteile – Überschrift', multiline: true }),
-        benefits: fields.array(
-          fields.object({
-            title: fields.text({ label: 'Titel' }),
-            desc: fields.text({ label: 'Beschreibung', multiline: true }),
-          }),
-          {
-            label: 'Vorteile-Punkte',
-            itemLabel: (props) => props.fields.title.value || 'Punkt',
-          },
-        ),
-
-        formEyebrow: fields.text({ label: 'Formular – kleine Zeile' }),
-        formHeadline: fields.text({ label: 'Formular – Überschrift' }),
-        formSub: fields.text({ label: 'Formular – Untertext', multiline: true }),
-      },
-    }),
-
     aboutContent: singleton({
       label: '📖 Über-uns-Seite (Texte)',
       path: 'content/pages/about',
@@ -436,6 +413,21 @@ export default config({
           directory: 'public/images',
           publicPath: '/images/',
           description: 'Foto direkt hier hochladen – kein GitHub nötig',
+        }),
+
+        // Team-Showcase — erscheint auf /ueber-uns/ UND /mission/
+        showcaseEyebrow: fields.text({ label: 'Team-Showcase – kleine Zeile' }),
+        showcaseHeadline: fields.text({ label: 'Team-Showcase – Überschrift', multiline: true }),
+        showcaseText: fields.text({
+          label: 'Team-Showcase – Text',
+          multiline: true,
+          description: 'Text über das ganze Team (Tierärzte, Helfer, Pflegestellen …). Erscheint auf der Über-uns- und der Mission-Seite.',
+        }),
+        showcaseImage: fields.image({
+          label: 'Team-Showcase – Foto vom ganzen Team',
+          directory: 'public/images',
+          publicPath: '/images/',
+          description: 'Gruppenfoto direkt hier hochladen',
         }),
       },
     }),
@@ -531,13 +523,37 @@ export default config({
           label: 'Alter',
           description: 'z.B. 1 Jahr, 8 Monate',
         }),
+        geschlecht: fields.text({
+          label: 'Geschlecht',
+          description: 'z.B. Hündin oder Rüde — leer lassen, wenn unbekannt',
+        }),
         breed: fields.text({
           label: 'Rasse',
           description: 'z.B. Mischling',
         }),
+        groesse: fields.text({
+          label: 'Größe (optional)',
+          description: 'z.B. ca. 45 cm Schulterhöhe oder mittelgroß',
+        }),
+        gewicht: fields.text({
+          label: 'Gewicht (optional)',
+          description: 'z.B. ca. 12 kg',
+        }),
         character: fields.text({
           label: 'Kurzbeschreibung (1 Zeile)',
           description: 'Slogan, z.B. Kleiner Wirbelwind',
+        }),
+        kastriert: fields.checkbox({
+          label: 'Kastriert',
+          defaultValue: true,
+        }),
+        geimpft: fields.checkbox({
+          label: 'Geimpft',
+          defaultValue: true,
+        }),
+        gechipt: fields.checkbox({
+          label: 'Gechipt',
+          defaultValue: true,
         }),
         story: fields.text({
           label: 'Geschichte',
@@ -558,44 +574,6 @@ export default config({
         tag: fields.text({
           label: 'Status-Tag (optional)',
           description: 'z.B. Sucht Zuhause, Welpe, Aktiver Hund, Vermittelt',
-        }),
-      },
-    }),
-
-    news: collection({
-      label: '📣 Aktuelles (News)',
-      slugField: 'title',
-      path: 'content/news/*',
-      format: { data: 'json' },
-      schema: {
-        title: fields.slug({
-          name: { label: 'Titel' },
-          slug: { label: 'URL-Kürzel', description: 'Wird automatisch generiert' },
-        }),
-        date: fields.date({
-          label: 'Datum',
-          description: 'Bestimmt die Sortierung; neueste oben.',
-        }),
-        excerpt: fields.text({
-          label: 'Anriss (1–2 Sätze)',
-          multiline: true,
-          description: 'Wird in der Übersicht und im Teaser angezeigt.',
-        }),
-        body: fields.text({
-          label: 'Text',
-          multiline: true,
-          description: 'Vollständiger Artikeltext. Leerzeilen werden zu Absätzen.',
-        }),
-        image: fields.image({
-          label: 'Titelbild',
-          directory: 'public/images',
-          publicPath: '/images/',
-          description: 'Optionales Foto, das oben im Artikel und in der Übersicht erscheint.',
-        }),
-        draft: fields.checkbox({
-          label: 'Entwurf (noch nicht öffentlich)',
-          defaultValue: false,
-          description: 'Solange aktiv, erscheint der Artikel nicht auf der öffentlichen Seite.',
         }),
       },
     }),

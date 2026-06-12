@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import CTABand from '@/components/CTABand.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
@@ -12,16 +11,16 @@ const PROJECTS = projectEntries
   .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0));
 
 const p = await reader.singletons.projectsPage.read();
-const heroEyebrow = p?.heroEyebrow ?? 'Aktive Projekte';
-const heroTitle = p?.heroTitle ?? 'Hier passiert';
-const heroTitleAccent = p?.heroTitleAccent ?? 'die Arbeit.';
-const heroSub = p?.heroSub ?? 'Drei konkrete Projekte. Drei Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
+const heroEyebrow = p?.heroEyebrow || 'Aktive Projekte';
+const heroTitle = p?.heroTitle || 'Hier passiert';
+const heroTitleAccent = p?.heroTitleAccent || 'die Arbeit.';
+const heroSub = p?.heroSub || 'Neun konkrete Projekte. Neun Orte, an denen echte Hilfe ankommt. Keine Versprechen – nur Taten.';
 const heroImage = img(p?.heroImage, '/images/IMG_2820.jpg');
 
-const outroEyebrow = p?.outroEyebrow ?? 'Mehr kommt';
-const outroHeadline = p?.outroHeadline ?? 'Jede Spende ermöglicht\ndas nächste Projekt.';
-const outroText = p?.outroText ?? 'Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.';
-const outroButton = p?.outroButton ?? 'Projekte unterstützen';
+const outroEyebrow = p?.outroEyebrow || 'Mehr kommt';
+const outroHeadline = p?.outroHeadline || 'Jede Spende ermöglicht\ndas nächste Projekt.';
+const outroText = p?.outroText || 'Mobile Kliniken, Kastrationsmobile, weitere Partnerschaften mit NGOs in Südostasien – deine Unterstützung macht es möglich.';
+const outroButton = p?.outroButton || 'Projekte unterstützen';
 ---
 
 <BaseLayout
@@ -83,15 +82,14 @@ const outroButton = p?.outroButton ?? 'Projekte unterstützen';
     </div>
   </section>
 
-  <!-- Mehr Projekte kommen -->
-  <section class="py-16 bg-gray-dark border-y border-white/5">
+  <!-- Mehr Projekte kommen — die beige Abschluss-Sektion der Seite
+       (ersetzt die generische CTABand) -->
+  <section class="py-20 bg-beige">
     <div class="container-x text-center max-w-2xl mx-auto">
       <p class="eyebrow mb-4">{outroEyebrow}</p>
-      <h2 class="text-3xl font-black mb-4"><Lines text={outroHeadline} /></h2>
-      <p class="text-white/60 mb-8">{outroText}</p>
+      <h2 class="text-3xl md:text-4xl font-black mb-4 text-black"><Lines text={outroHeadline} /></h2>
+      <p class="text-black/60 mb-8">{outroText}</p>
       <a href="/helfen/" class="btn-primary btn-large">{outroButton}</a>
     </div>
   </section>
-
-  <CTABand />
 </BaseLayout>

@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
+import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
@@ -10,14 +10,14 @@ import { img } from '@/lib/img';
 const team = await reader.singletons.team.read();
 const c = await reader.singletons.aboutContent.read();
 
-const heroEyebrow = c?.heroEyebrow ?? 'Über uns';
-const heroTitle = c?.heroTitle ?? 'Wer sind';
-const heroTitleAccent = c?.heroTitleAccent ?? 'wir eigentlich?';
-const heroSub = c?.heroSub ?? 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
+const heroEyebrow = c?.heroEyebrow || 'Über uns';
+const heroTitle = c?.heroTitle || 'Wer sind';
+const heroTitleAccent = c?.heroTitleAccent || 'wir eigentlich?';
+const heroSub = c?.heroSub || 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
 const heroImage = img(c?.heroImage, '/images/fynn eileen dogs horizontal.jpg');
 
-const storyEyebrow = c?.storyEyebrow ?? 'Wie alles begann';
-const storyHeadline = c?.storyHeadline ?? 'Der Weg\nzum Verein.';
+const storyEyebrow = c?.storyEyebrow || 'Wie alles begann';
+const storyHeadline = c?.storyHeadline || 'Der Weg\nzum Verein.';
 const defaultChapters = [
   { title: 'Der Plan war einfach.', text: 'Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien.', image: '/images/IMG_2198.jpg' },
   { title: 'Dann kam dieser Welpe.', text: 'Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit.', image: '/images/IMG_0991.jpg' },
@@ -25,15 +25,15 @@ const defaultChapters = [
   { title: 'Travel2Rescue e.V. war geboren.', text: 'Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.', image: '/images/IMG_2820.jpg' },
 ];
 const storyChapters = c?.storyChapters?.length
-  ? c.storyChapters.map((ch, i) => ({ ...ch, image: img(ch.image, defaultChapters[i]?.image ?? '/images/IMG_2198.jpg') }))
+  ? c.storyChapters.map((ch, i) => ({ ...ch, image: img(ch.image, defaultChapters[i]?.image || '/images/IMG_2198.jpg') }))
   : defaultChapters;
 
-const teamEyebrow = c?.teamEyebrow ?? 'Das Team';
-const teamHeadline = c?.teamHeadline ?? 'Kein Büro.\nKeine Bürokratie.';
-const teamSub = c?.teamSub ?? 'Nur wir zwei, ein paar Helfer und eine riesige Mission.';
+const teamEyebrow = c?.teamEyebrow || 'Das Team';
+const teamHeadline = c?.teamHeadline || 'Kein Büro.\nKeine Bürokratie.';
+const teamSub = c?.teamSub || 'Nur wir zwei, ein paar Helfer und eine riesige Mission.';
 
-const realityEyebrow = c?.realityEyebrow ?? 'Die Realität';
-const realityHeadline = c?.realityHeadline ?? 'Kein klassischer\nTierschutzverein.';
+const realityEyebrow = c?.realityEyebrow || 'Die Realität';
+const realityHeadline = c?.realityHeadline || 'Kein klassischer\nTierschutzverein.';
 const realityImage = img(c?.realityImage, '/images/IMG_2543.jpg');
 const realityPoints = c?.realityPoints?.length
   ? c.realityPoints
@@ -43,8 +43,8 @@ const realityPoints = c?.realityPoints?.length
       { title: 'Unser Antrieb', desc: 'Zwischen Straßenkampf und Tierklinik versuchen sie, ihr Leben zu erhalten. Chaotisch, ja. Aber sie würden es niemals tauschen.' },
     ];
 
-const contactEyebrow = c?.contactEyebrow ?? 'Direkt schreiben';
-const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören.';
+const contactEyebrow = c?.contactEyebrow || 'Direkt schreiben';
+const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören.';
 ---
 
 <BaseLayout
@@ -55,7 +55,9 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-top" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
+      <!-- Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
+           zeigte nur Himmel und schnitt die Köpfe ab -->
+      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-[center_40%]" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
@@ -94,9 +96,6 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
     </div>
   </section>
 
-  <!-- Stats -->
-  <StatsBand />
-
   <!-- Team -->
   <section class="py-20 bg-gray-dark">
     <div class="container-x">
@@ -113,13 +112,13 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Eileen</h3>
-            <p class="text-amber-500 font-semibold">{team?.eileenRole ?? 'Die unermüdliche Hundemama'}</p>
+            <p class="text-amber-500 font-semibold">{team?.eileenRole || 'Die unermüdliche Hundemama'}</p>
           </div>
           <p class="text-white/60 text-sm leading-relaxed mb-4">
-            {team?.eileenBio1 ?? 'Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.'}
+            {team?.eileenBio1 || 'Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.'}
           </p>
           <p class="text-white/60 text-sm leading-relaxed">
-            {team?.eileenBio2 ?? 'Ihr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.'}
+            {team?.eileenBio2 || 'Ihr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.'}
           </p>
           <div class="mt-5 pill bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs">
             HERZBLUT
@@ -133,13 +132,13 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
           </div>
           <div class="text-center mb-5">
             <h3 class="text-2xl font-black">Fynn</h3>
-            <p class="text-amber-500 font-semibold">{team?.fynnRole ?? 'Der Ruhepol & Baumeister'}</p>
+            <p class="text-amber-500 font-semibold">{team?.fynnRole || 'Der Ruhepol & Baumeister'}</p>
           </div>
           <p class="text-white/60 text-sm leading-relaxed mb-4">
-            {team?.fynnBio1 ?? '25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.'}
+            {team?.fynnBio1 || '25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.'}
           </p>
           <p class="text-white/60 text-sm leading-relaxed">
-            {team?.fynnBio2 ?? 'Sein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.'}
+            {team?.fynnBio2 || 'Sein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.'}
           </p>
           <div class="mt-5 pill bg-forest/40 text-green-400 border border-green-500/20 text-xs">
             RUHEPOL
@@ -172,12 +171,16 @@ const contactHeadline = c?.contactHeadline ?? 'Wir freuen uns\nvon dir zu hören
     </div>
   </section>
 
-  <!-- Kontakt -->
-  <section class="py-20 bg-beige">
+  <!-- Team-Showcase — das ganze Team (Tierärzte, Helfer …), CMS: 👥 Team -->
+  <TeamShowcase />
+
+  <!-- Kontakt — Überschrift + Formular in einer Sektion. Bewusst dunkel,
+       damit die beige "Wir brauchen Deine Hilfe"-Band darunter abgesetzt bleibt -->
+  <section class="py-20 bg-black">
     <div class="container-x max-w-2xl mx-auto">
       <div class="text-center mb-10">
         <p class="eyebrow mb-3">{contactEyebrow}</p>
-        <h2 class="text-3xl font-black mb-4 text-black"><Lines text={contactHeadline} /></h2>
+        <h2 class="text-3xl font-black"><Lines text={contactHeadline} /></h2>
       </div>
       <ContactForm subject="Anfrage – Über uns" />
     </div>

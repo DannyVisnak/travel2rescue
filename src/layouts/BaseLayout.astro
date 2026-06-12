@@ -78,7 +78,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
 // PUBLIC_PLAUSIBLE_SRC.
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
 const plausibleSrc =
-  import.meta.env.PUBLIC_PLAUSIBLE_SRC ?? 'https://plausible.io/js/script.js';
+  import.meta.env.PUBLIC_PLAUSIBLE_SRC || 'https://plausible.io/js/script.js';
 
 const segments = Astro.url.pathname.split('/').filter(Boolean);
 const breadcrumbJsonLd = segments.length
@@ -133,7 +133,6 @@ const breadcrumbJsonLd = segments.length
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/favicon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="alternate" type="application/rss+xml" title={`${SITE.name} – Aktuelles`} href="/aktuelles/feed.xml" />
 
     <link rel="preconnect" href="https://rsms.me" crossorigin />
     <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
@@ -153,6 +152,21 @@ const breadcrumbJsonLd = segments.length
     {plausibleDomain && (
       <script defer data-domain={plausibleDomain} src={plausibleSrc}></script>
     )}
+
+    <!-- GTM dataLayer: initialisieren + Spenden-Outbound-Klicks (PayPal) als
+         Event pushen. Formular-Events pushen die Formulare selbst. -->
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      document.addEventListener('click', function (e) {
+        var el = e.target instanceof Element ? e.target.closest('a[href*="paypal.com"]') : null;
+        if (!el) return;
+        window.dataLayer.push({
+          event: 'spenden_outbound',
+          link_url: el.href,
+          page_path: location.pathname,
+        });
+      });
+    </script>
   </head>
   <body>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-black focus:font-bold focus:rounded-lg">

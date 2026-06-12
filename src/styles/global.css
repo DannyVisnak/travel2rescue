@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-black: #0D0D0D;
+  /* Warm-brown palette (Juni 2026): Eileens Referenz ist die
+     "Was dich erwartet"-Sektion — dunkles Braun (#1A1410) mit Pink-Akzent,
+     dazu Beige für helle Sektionen. Die früheren Grau/Schwarz-Töne sind
+     bewusst auf Braun umgemappt, damit bg-black/bg-gray-dark sitewide
+     warm rendern, ohne jede Seite anzufassen. */
+  --color-black: #1A1410;
   --color-forest: #1A3D2B;
   --color-forest-light: #2A5C40;
   --color-beige: #EFE3D0;
@@ -15,9 +20,12 @@
   --color-amber-500: #F77AB4;
   --color-sand: #E8D4BB;
   --color-cream: #F5F0E8;
-  --color-gray-dark: #1A1A1A;
-  --color-gray-mid: #2D2D2D;
-  --color-gray-text: #9CA3AF;
+  --color-gray-dark: #241A13;  /* helleres Braun — Wechsel-Sektionen */
+  --color-gray-mid: #3A2C20;   /* light brown — Linien, Hover, Akzente */
+  --color-gray-text: #B7A99A;  /* warmes Hellbraun für gedämpften Text */
+  --color-card: #33261A;       /* Karten — deutlich heller als gray-dark,
+                                  damit Karten auf bg-black UND bg-gray-dark
+                                  Sektionen sichtbar bleiben */
 
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-display: 'Clash Display', 'Inter', system-ui, sans-serif;
@@ -68,8 +76,9 @@
     @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer bg-amber-500 text-black hover:bg-amber-400 focus:ring-amber-500 px-6 py-3 text-sm uppercase tracking-wider;
   }
 
+  /* Sekundär-CTA: transparent mit Pink-Outline — nur der Haupt-CTA ist gefüllt */
   .btn-ghost {
-    @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer border border-white/30 text-white hover:border-white hover:bg-white/10 px-6 py-3 text-sm uppercase tracking-wider;
+    @apply inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer border border-amber-500/50 text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 focus:ring-amber-500 px-6 py-3 text-sm uppercase tracking-wider;
   }
 
   .btn-large {
@@ -89,7 +98,7 @@
   }
 
   .card {
-    @apply rounded-2xl bg-gray-dark border border-white/5 overflow-hidden;
+    @apply rounded-2xl bg-card border border-white/5 overflow-hidden;
   }
 
   .pill {

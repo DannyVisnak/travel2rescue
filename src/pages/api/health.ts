@@ -15,7 +15,7 @@ export async function GET(_context: APIContext): Promise<Response> {
     time: new Date().toISOString(),
     runtime: {
       node: typeof process !== 'undefined' ? process.version : null,
-      env: process.env.VERCEL_ENV ?? process.env.NODE_ENV ?? 'unknown',
+      env: process.env.VERCEL_ENV || process.env.NODE_ENV || 'unknown',
     },
     config: {
       resend: Boolean(process.env.RESEND_API_KEY),

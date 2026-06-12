@@ -8,7 +8,7 @@ export async function POST(context: APIContext): Promise<Response> {
   // Accept: application/json — for those we redirect to /danke/ on success
   // and back to the page with ?error=1 on failure, so users never see raw
   // JSON. Fetch callers always set Accept and get JSON.
-  const wantsJson = (context.request.headers.get('accept') ?? '').includes('application/json');
+  const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
 
   if (!resend) {
     console.error('[contact] RESEND_API_KEY not configured');
@@ -22,17 +22,17 @@ export async function POST(context: APIContext): Promise<Response> {
     return respond(context, wantsJson, false, 'Ungültige Anfrage.', 400, 'kontakt');
   }
 
-  if (String(data.get('botcheck') ?? '').length > 0) {
+  if (String(data.get('botcheck') || '').length > 0) {
     return respond(context, wantsJson, true, undefined, 200, 'kontakt');
   }
 
-  const vorname = String(data.get('vorname') ?? '').trim();
-  const nachname = String(data.get('nachname') ?? '').trim();
-  const email = String(data.get('email') ?? '').trim();
-  const telefon = String(data.get('telefon') ?? '').trim();
-  const betreff = String(data.get('betreff') ?? '').trim();
-  const nachricht = String(data.get('nachricht') ?? '').trim();
-  const subject = String(data.get('subject') ?? 'Anfrage über travel2rescue.de').trim();
+  const vorname = String(data.get('vorname') || '').trim();
+  const nachname = String(data.get('nachname') || '').trim();
+  const email = String(data.get('email') || '').trim();
+  const telefon = String(data.get('telefon') || '').trim();
+  const betreff = String(data.get('betreff') || '').trim();
+  const nachricht = String(data.get('nachricht') || '').trim();
+  const subject = String(data.get('subject') || 'Anfrage über travel2rescue.de').trim();
 
   if (!vorname || !email || !nachricht) {
     return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400, 'kontakt');
@@ -56,11 +56,39 @@ export async function POST(context: APIContext): Promise<Response> {
       console.error('[contact] resend error', error);
       return respond(context, wantsJson, false, 'Versand fehlgeschlagen.', 502, 'kontakt');
     }
+
+    // Eingangsbestätigung an die Absenderin/den Absender — non-fatal:
+    // schlägt sie fehl, ist die Anfrage bei uns trotzdem angekommen.
+    try {
+      await resend.emails.send({
+        from: MAIL_FROM,
+        to: [email],
+        subject: 'Deine Nachricht ist angekommen – Travel2Rescue e.V.',
+        html: renderConfirmationEmail(vorname),
+      });
+    } catch (confirmErr) {
+      console.error('[contact] confirmation email failed', confirmErr);
+    }
+
     return respond(context, wantsJson, true, undefined, 200, 'kontakt');
   } catch (err) {
     console.error('[contact] unexpected error', err);
     return respond(context, wantsJson, false, 'Unerwarteter Fehler.', 500, 'kontakt');
   }
+}
+
+function renderConfirmationEmail(vorname: string): string {
+  return `<!doctype html>
+<html lang="de"><body style="margin:0;padding:24px;background:#f5f0e8;font-family:Inter,Helvetica,Arial,sans-serif;color:#111;">
+  <div style="max-width:560px;margin:0 auto;background:#fff;border-radius:12px;padding:28px;border:1px solid #eee;">
+    <p style="margin:0 0 4px 0;font-size:12px;text-transform:uppercase;letter-spacing:0.12em;color:#888;">Travel2Rescue e.V.</p>
+    <h1 style="margin:0 0 16px 0;font-size:20px;color:#1A3D2B;">Deine Nachricht ist angekommen${vorname ? `, ${escapeHtml(vorname)}` : ''}!</h1>
+    <p style="margin:0 0 12px 0;font-size:15px;line-height:1.55;">danke, dass du dich bei uns meldest. Wir lesen jede Nachricht persönlich und antworten so schnell wie möglich – meistens innerhalb von 1–3 Tagen.</p>
+    <p style="margin:0 0 12px 0;font-size:15px;line-height:1.55;">Da wir tagsüber auf Lomboks Straßen unterwegs sind, kann es manchmal etwas dauern. Versprochen: Wir melden uns.</p>
+    <p style="margin:0;font-size:15px;line-height:1.55;">Fynn &amp; Eileen<br /><span style="color:#888;font-size:13px;">Travel2Rescue e.V. · Kuta, Lombok</span></p>
+    <p style="margin:20px 0 0 0;padding-top:16px;border-top:1px solid #eee;font-size:12px;color:#888;">Diese Bestätigung wurde automatisch versendet. Antworten auf diese E-Mail erreichen uns unter travel2rescue@gmail.com.</p>
+  </div>
+</body></html>`;
 }
 
 function json(body: unknown, status = 200): Response {

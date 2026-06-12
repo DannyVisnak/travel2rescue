@@ -1,16 +1,15 @@
 ---
 // Persistent floating donation CTA. Renders as a fixed bottom-right pill on
 // every page EXCEPT pages that already foreground their own donation/CTA
-// (/helfen, /patenschaft, /danke), and admin/utility pages (/keystatic,
-// /linktree, /404).
+// (/helfen, /danke), and admin/utility pages (/keystatic, /linktree, /404).
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
 const cms = await reader.singletons.settings.read();
-const paypalUrl = cms?.paypalUrl ?? SITE.social.paypal;
+const paypalUrl = cms?.paypalUrl || SITE.social.paypal;
 
 const pathname = Astro.url.pathname;
-const HIDE_PREFIXES = ['/helfen', '/patenschaft', '/danke', '/keystatic', '/linktree', '/404'];
+const HIDE_PREFIXES = ['/helfen', '/danke', '/keystatic', '/linktree', '/404', '/medical-report'];
 const hide = HIDE_PREFIXES.some((p) => pathname.startsWith(p));
 ---
 

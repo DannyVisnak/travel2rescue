@@ -3,15 +3,27 @@
   "heroTitle": "Deine Hilfe",
   "heroTitleAccent": "rettet Leben.",
   "heroSub": "Gemeinsam für Tiere in Not. Jede Spende, jede Adoption und jeder Freiwilligendienst macht einen konkreten Unterschied.",
-  "heroImage": "IMG_4737.jpg",
+  "heroImage": "/images/IMG_4737.jpg",
   "tiersEyebrow": "Konkrete Wirkung",
   "tiersHeadline": "Was deine Spende\nkonkret bewirkt.",
   "tiersSub": "Jeder Betrag landet direkt bei den Hunden – kein Cent in die Verwaltung. So sieht deine Hilfe in Zahlen aus:",
   "donationTiers": [
-    { "amount": 10, "impact": "Eine Woche Futter für 5 Hunde" },
-    { "amount": 25, "impact": "Eine Kastration: ein Hund weniger, der leidet" },
-    { "amount": 50, "impact": "Notfall-OP für einen verletzten Welpen" },
-    { "amount": 100, "impact": "Wöchentliche Versorgung einer Pflegestelle" }
+    {
+      "amount": 10,
+      "impact": "Eine Woche Futter für 5 Hunde"
+    },
+    {
+      "amount": 25,
+      "impact": "Eine Kastration: ein Hund weniger, der leidet"
+    },
+    {
+      "amount": 50,
+      "impact": "Notfall-OP für einen verletzten Welpen"
+    },
+    {
+      "amount": 100,
+      "impact": "Wöchentliche Versorgung einer Pflegestelle"
+    }
   ],
   "waysEyebrow": "Wie du helfen kannst",
   "waysHeadline": "Drei Wege.\nEin Ziel.",
@@ -20,13 +32,13 @@
       "label": "01 · Spenden",
       "title": "Deine Spende rettet Leben",
       "desc": "Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.",
-      "image": "IMG_2977.jpg"
+      "image": "/images/IMG_2977.jpg"
     },
     {
       "label": "02 · Adoptieren",
       "title": "Gib einem Hund ein Zuhause",
       "desc": "Schenk einem geretteten Hund ein liebevolles Zuhause in Deutschland. Wir begleiten dich durch jeden Schritt des Prozesses.",
-      "image": "IMG_9452.jpg"
+      "image": "/images/IMG_9452.jpg"
     },
     {
       "label": "03 · Volunteer",
@@ -44,7 +56,7 @@
     "Bauprojekte",
     "Kuscheln"
   ],
-  "volunteerImage": "IMG_2820.jpg",
+  "volunteerImage": "/images/IMG_2820.jpg",
   "adoptStepsEyebrow": "Adoption",
   "adoptStepsHeadline": "Der Weg zur",
   "adoptStepsAccent": "Adoption.",
@@ -54,7 +66,7 @@
     "Videocall mit Eileen",
     "Hund reist nach Deutschland (6–7 Monate Vorbereitungszeit)"
   ],
-  "adoptStepsImage": "IMG_9452.jpg",
+  "adoptStepsImage": "/images/IMG_9452.jpg",
   "faqEyebrow": "Häufige Fragen",
   "faqHeadline": "FAQ",
   "helpFaqs": [
@@ -72,7 +84,7 @@
     },
     {
       "question": "Kann ich eine Patenschaft übernehmen?",
-      "answer": "Ja! Eine Patenschaft bedeutet, dass du monatlich einen festen Betrag spendest und damit dauerhaft an unserer Seite stehst – planbar für uns, persönlich für dich. Auf unserer Patenschaft-Seite (/patenschaft/) findest du alle Pakete und ein Formular."
+      "answer": "Ja! Eine Patenschaft bedeutet, dass du monatlich einen festen Betrag spendest und damit dauerhaft an unserer Seite stehst – planbar für uns, persönlich für dich. Schreib uns einfach per E-Mail oder Instagram, dann besprechen wir alles Weitere."
     },
     {
       "question": "Wie wird meine Spende verwendet?",

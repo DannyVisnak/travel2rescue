@@ -1,0 +1,41 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import DogCard from '@/components/DogCard.astro';
+import CTABand from '@/components/CTABand.astro';
+import { reader } from '@/lib/keystatic';
+
+// Komplette Hunde-Übersicht — /adoptieren/ zeigt nur einen Ausschnitt und
+// verlinkt hierher. Neue Hunde aus Keystatic erscheinen automatisch.
+const dogEntries = await reader.collections.dogs.all();
+const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
+const availableCount = DOGS.filter((d) => d.available).length;
+---
+
+<BaseLayout
+  title="Alle Hunde"
+  description={`${availableCount} gerettete Straßenhunde aus Lombok suchen ein Zuhause in Deutschland. Alle Steckbriefe im Überblick – Travel2Rescue e.V.`}
+>
+  <section class="pt-32 pb-20 bg-beige">
+    <div class="container-x">
+      <div class="text-center mb-12">
+        <p class="eyebrow mb-3">Unsere Hunde</p>
+        <h1 class="section-heading text-black">Alle Hunde<br /><span class="text-amber-500">im Überblick.</span></h1>
+        <p class="text-xl md:text-2xl text-black/70 max-w-2xl leading-relaxed mx-auto mt-4">
+          Aktuell {availableCount === 1 ? 'wartet' : 'warten'} {availableCount} {availableCount === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause. Jeder von ihnen hat überlebt – jetzt fehlt nur noch dein Kapitel.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {DOGS.map((dog) => (
+          <DogCard dog={dog} />
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <CTABand
+    headline="Noch unsicher, welcher Hund passt?"
+    sub="Füll das Adoptionsformular aus – wir schauen gemeinsam, wer zu dir passt."
+    primary={{ label: 'Adoptionsanfrage stellen', href: '/adoptieren/formular/' }}
+    secondary={{ label: 'So läuft die Adoption', href: '/adoptieren/#prozess' }}
+  />
+</BaseLayout>

@@ -29,7 +29,9 @@ No test suite, no linter. TypeScript errors surface in `npm run build`.
 | **`@astrojs/react`** | Required by Keystatic admin UI |
 | **`@/*` alias** | → `src/*` |
 
-Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `#F25C3A` (overrides `--color-amber-500` / `--color-amber-400`). Use `text-amber-500`, `bg-amber-500`, etc. — they resolve to coral. Do **not** use accent on large backgrounds.
+Design tokens in `src/styles/global.css` under `@theme`. Accent color is pastel pink `#F77AB4` (overrides `--color-amber-500` / `--color-amber-400`). Use `text-amber-500`, `bg-amber-500`, etc. — they resolve to pink. Do **not** use accent on large backgrounds.
+
+**Palette (Juni 2026)**: warm browns + pink + beige — Eileen's reference is the "Was dich erwartet" section on /adoptieren/. The old gray/black neutrals are remapped in `@theme`: `--color-black` → `#1A1410` (dark brown, body bg + `text-black` on light sections), `--color-gray-dark` → `#241A13` (lighter brown, cards + alternate sections), `--color-gray-mid` → `#3A2C20` (light brown). `bg-black` / `bg-gray-dark` / `text-black` therefore render **brown** sitewide — don't "fix" them back. Light sections use `bg-beige` with `text-black` headings.
 
 **Tailwind v4 rule**: Never `@apply` a custom component class inside another custom class — causes "unknown utility" error. Inline all utilities instead.
 
@@ -40,22 +42,21 @@ Design tokens in `src/styles/global.css` under `@theme`. Accent color is coral `
 | `/` | `src/pages/index.astro` | Home — hero, stats, about, services, dogs, quote, FAQ |
 | `/mission/` | `src/pages/mission.astro` | 50k problem + 4 pillars (reads `missionContent`) |
 | `/projekte/` | `src/pages/projekte.astro` | Projects (reads Keystatic) |
-| `/adoptieren/` | `src/pages/adoptieren/index.astro` | Dog profiles + process + FAQ |
-| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail (dynamic, prerendered, emits Article JSON-LD) |
+| `/adoptieren/` | `src/pages/adoptieren/index.astro` | Adoption funnel: process, 6-dog teaser, FAQ |
+| `/adoptieren/hunde/` | `src/pages/adoptieren/hunde.astro` | Full dog collection grid (all dogs, auto-grows with Keystatic) |
+| `/adoptieren/[id]/` | `src/pages/adoptieren/[id].astro` | Individual dog detail with Steckbrief (on-demand SSR, emits Article JSON-LD) |
 | `/adoptieren/formular/` | `src/pages/adoptieren/formular.astro` | 39-question adoption form → POSTs to `/api/adoption` (Resend) |
 | `/helfen/` | `src/pages/helfen.astro` | Donate/volunteer/adopt funnels + FAQ |
-| `/patenschaft/` | `src/pages/patenschaft.astro` | Monthly sponsorship landing (tiers + benefits + form) |
-| `/aktuelles/` | `src/pages/aktuelles/index.astro` | News/blog index (reads `news` collection, filters drafts) |
-| `/aktuelles/[slug]/` | `src/pages/aktuelles/[slug].astro` | News article (prerendered, NewsArticle JSON-LD) |
-| `/aktuelles/feed.xml` | `src/pages/aktuelles/feed.xml.ts` | RSS feed (linked from `<head>`) |
 | `/ueber-uns/` | `src/pages/ueber-uns.astro` | Team bios (reads Keystatic) + origin story |
 | `/linktree/` | `src/pages/linktree.astro` | Social link hub (Instagram traffic) |
 | `/danke/` | `src/pages/danke.astro` | Thank-you page (noindex, `?typ=kontakt|adoption` switches copy) |
 | `/404` | `src/pages/404.astro` | Branded 404 (noindex) |
 | `/impressum/` | `src/pages/impressum.astro` | Legal — keep verbatim |
 | `/datenschutz/` | `src/pages/datenschutz.astro` | Privacy — keep verbatim |
-| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits |
-| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same content-negotiation pattern) |
+| `/medical-report/` | `src/pages/medical-report.astro` | English emergency report form (rebuilt Google Form) — required photos, client-side compression |
+| `/api/contact` | `src/pages/api/contact.ts` | Resend handler for ContactForm — JSON for fetch, 303 → /danke/ for native form submits; sends confirmation email to submitter |
+| `/api/adoption` | `src/pages/api/adoption.ts` | Resend handler for adoption form (same pattern); also appends all answers to a Google Sheet (see env vars) |
+| `/api/medical-report` | `src/pages/api/medical-report.ts` | Emergency report handler — emails Eileen with photo attachments + confirmation to reporter |
 | `/api/keystatic/[...params]` | `src/pages/api/keystatic/[...params].ts` | Keystatic auth callbacks (overrides the auto-injected route to fix Astro cookie handling) |
 
 ## Data Layer
@@ -70,7 +71,6 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 |---|---|---|
 | `reader.collections.dogs.all()` | Dog profiles | `content/dogs/*.json` |
 | `reader.collections.projects.all()` | Projects | `content/projects/*.json` |
-| `reader.collections.news.all()` | News articles (supports `draft` flag, sorted by `date` desc) | `content/news/*.json` |
 | `reader.singletons.settings.read()` | Stats + PayPal URL + phone | `content/settings.json` |
 | `reader.singletons.homeContent.read()` | Whole home page: hero, story, services, dogs teaser, quote, FAQs | `content/pages/home.json` |
 | `reader.singletons.missionContent.read()` | Whole mission page: hero, problems, quote, pillars, cats, vision | `content/pages/mission.json` |
@@ -79,13 +79,12 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.singletons.aboutContent.read()` | Über-uns page: hero, story chapters, team/reality headings, contact | `content/pages/about.json` |
 | `reader.singletons.projectsPage.read()` | Projekte page hero + outro (project entries stay in the collection) | `content/pages/projects.json` |
 | `reader.singletons.linktreeContent.read()` | Linktree tagline + link list | `content/pages/linktree.json` |
-| `reader.singletons.patenschaftContent.read()` | Patenschaft page: hero, tiers, benefits, form intro | `content/pages/patenschaft.json` |
 | `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
-Always add `?? fallback` when using singleton values — `read()` returns `null` if the file doesn't exist. **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
+Always add `|| fallback` (NOT `??`) when using singleton **text** values — `read()` returns `null` if the file doesn't exist, but returns `''` (empty string) for text fields that are missing from the JSON or emptied in the admin, and `??` doesn't catch `''` (this once rendered whole homepage sections blank). Keep `??` only for booleans (e.g. `entry.kastriert ?? true`). **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
-**Image field note**: All `fields.image({ directory: 'public/images', publicPath: '/images/' })` fields store just the filename in JSON (e.g., `IMG_0991.jpeg`). ⚠️ The `reader` does **NOT** prepend `publicPath` for `fields.image` (that only happens for document-field images) — it returns the bare filename. So always wrap image values with `img()` from `src/lib/img.ts` before using them in `src=`/`ogImage`: `img(entry.image, '/images/fallback.jpg')`. `img()` prepends `/images/` to bare names and passes through values already starting with `/` or `http`, so it's safe on fallbacks too. (Before this helper existed, every CMS image rendered as a relative URL and 404'd.)
+**Image field note**: Image values in content JSON MUST be stored as full public paths (`/images/<file>` — for collection entries the admin writes `/images/<slug>/<field>.jpeg`). That's the format the Keystatic admin itself writes and the only one it can resolve when re-opening an entry. ⚠️ Bare filenames (`IMG_0991.jpeg`) break the admin: it shows the field as empty, silently REMOVES the image on the next save (this happened to Flummi), and can fail saves with a GraphQL "path requested for deletion" error. All values were migrated in Juni 2026. The `reader` returns values verbatim; keep wrapping with `img()` from `src/lib/img.ts` (`img(entry.image, '/images/fallback.jpg')`) — it passes `/...` through and still rescues any stray bare filename.
 
 ### Static fallbacks
 
@@ -132,19 +131,17 @@ Eileen can now edit **essentially every visible text and most images** across th
 
 | Section in admin | What changes |
 |---|---|
-| 🐾 Hunde | Add dogs, update stories, upload photos directly, mark as vermittelt |
+| 🐾 Hunde | Add dogs (appear automatically on /adoptieren/ + home), full Steckbrief (Geschlecht, Größe, Gewicht, kastriert/geimpft/gechipt), stories, photos, mark as vermittelt |
 | 🏗️ Projekte | Update descriptions, impacts, upload photos |
 | ⚙️ Statistiken & Kontakt | Kastrationen/Futter/Hunde numbers, PayPal link, WhatsApp number |
-| 🏠 Startseite | Hero, trust strip, story teaser, "Was wir tun" cards, dogs teaser, founder quote, FAQs |
-| 🎯 Mission-Seite | Hero, problem cards, quote, the 4 pillars, cats section, vision |
+| 🏠 Startseite | Hero, trust strip, mission teaser, "Was wir tun" cards, projects teaser, dogs teaser (+ background photo), story teaser, founder quote, FAQs |
+| 🎯 Mission-Seite | Hero, free intro text (before problem cards), 4 problem cards, quote, the 4 pillars, cats section, vision |
 | 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
 | 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |
 | 📖 Über-uns-Seite (Texte) | Hero, 4 story chapters, team/reality section copy, contact heading |
 | 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
 | 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
 | 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
-| 🤝 Patenschaft-Seite | Tiers + benefits + form copy for the monthly-sponsorship page |
-| 📣 Aktuelles (News) | Create, edit, draft news articles (with cover image + datum) |
 | 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
 
 **Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
@@ -160,6 +157,8 @@ Eileen can now edit **essentially every visible text and most images** across th
 | `RESEND_API_KEY` | yes (forms) | Resend API key | From <https://resend.com>; without it both forms return 500 |
 | `RESEND_FROM` | no | Sender address | Default: `Travel2Rescue <kontakt@travel2rescue.de>` |
 | `RESEND_TO` | no | Recipient address | Default: `travel2rescue@gmail.com` |
+| `GOOGLE_SHEETS_WEBHOOK_URL` | no | Apps-Script web-app URL (ends in /exec) for the adoption-form → Google Sheet export | Script template: `scripts/google-sheets-webhook.gs`; without it the sheet export is a silent no-op |
+| `GOOGLE_SHEETS_WEBHOOK_SECRET` | no | Shared secret checked by the Apps Script | Must match `SECRET` in the script |
 | `PUBLIC_PLAUSIBLE_DOMAIN` | no | Plausible analytics domain | When set, `BaseLayout` emits the privacy-friendly Plausible `<script>` |
 | `PUBLIC_PLAUSIBLE_SRC` | no | Plausible script src override | For self-hosted instances; defaults to `https://plausible.io/js/script.js` |
 
@@ -178,7 +177,7 @@ Create at `https://github.com/settings/apps/new`:
   - **Contents**: Read and write
   - **Metadata**: Read-only (mandatory, locked — may not appear as a separate row)
   - **Pull requests**: Read and write
-- Where can this GitHub App be installed: Only on this account
+- Where can this GitHub App be installed: **Any account** (public). A private app ("Only on this account") returns a GitHub 404 to every user except the owner when they try to authorize it — collaborators like Eileen can't log in to Keystatic. Making the app public is safe: it stays installed only on this repo, the client secret stays private, and Keystatic still requires write access to the repo.
 
 After creating, install on `DannyVisnak/travel2rescue` (left sidebar → Install App → select the repo).
 
@@ -192,6 +191,7 @@ The original `req.url`-has-hostname-`localhost` workaround that lived here is no
 
 | Symptom | Cause | Fix |
 |---|---|---|
+| GitHub shows **404** right after clicking "Log in with GitHub" (but the app owner can log in fine) | The GitHub App is private ("Only on this account") — GitHub 404s the authorize page for everyone except the app owner | App settings (`github.com/settings/apps/<slug>`) → **Advanced** → **Make public**. Also verify the user accepted the repo collaborator invite (write access) and is logged into the invited GitHub account |
 | "Authorization failed" after callback | Configured a classic OAuth App instead of a GitHub App — token response is missing `refresh_token` / `expires_in` and Keystatic's schema rejects it | Create a GitHub App (NOT an OAuth App) and check "Expire user authorization tokens"; update Vercel env vars |
 | "Authorization failed" after callback (with a GitHub App) | `KEYSTATIC_SECRET` < 32 chars OR `KEYSTATIC_GITHUB_CLIENT_SECRET` doesn't match the App | Regenerate `KEYSTATIC_SECRET`, verify the client secret matches GitHub, redeploy |
 | `403 Cross-site POST form submissions are forbidden` on `/api/keystatic/github/refresh-token/` | Astro CSRF check sees `context.url.origin` as `http://localhost` because `x-forwarded-host` isn't trusted | Ensure `security.allowedDomains` includes `travel2rescue.de` in `astro.config.mjs` |
@@ -199,6 +199,7 @@ The original `req.url`-has-hostname-`localhost` workaround that lived here is no
 | "Bad verification code" | OAuth code expired (>10 min) or was already used | Restart the login flow |
 | Admin loads but GitHub shows auth error | Callback URL mismatch in the GitHub App | Ensure callback is `https://travel2rescue.de/api/keystatic/github/oauth/callback` (no trailing slash) |
 | Specific singleton/collection page hangs with "Failed to fetch" | An image field references a filename with weird chars (trailing space, etc.) — Keystatic UI fetches images via GitHub API and chokes on the encoded URL | Rename the file to something filesystem-clean and update the JSON reference |
+| `[GraphQL] A path was requested for deletion which does not exist as of commit oid …` when saving | The entry's image value is a bare filename (or the draft is stale after earlier saves) — the admin computes a delete for a file path that was never committed | Reset the draft (Änderungen verwerfen), reload the admin, re-do the edit. Long-term: store image values as `/images/<file>` full paths (see Image field note) |
 
 ## Images
 
@@ -217,9 +218,13 @@ All images in `public/images/`. Key images:
 
 Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Vercel project settings.
 
+⚠️ **Vercel Hobby + private repo**: Vercel only builds commits whose author is a member of the Vercel team. Eileen's Keystatic commits are SKIPPED ("not a member of the team" email). `.github/workflows/deploy-cms-commits.yml` fixes this by hitting a Vercel **Deploy Hook** for every main-push by someone other than DannyVisnak. Setup: Vercel → Settings → Git → Deploy Hooks → create hook for `main`, then add its URL as GitHub Actions secret `VERCEL_DEPLOY_HOOK_URL`. Without the secret the workflow logs a warning and does nothing.
+
 **Do not commit** `.vercel/` directory.
 
 ## Known Quirks & Issues
+
+0. **`output: 'server'` + content bundling (CRITICAL)** — The site runs fully SSR so the `SITE_PASSWORD` basic-auth middleware can gate every page during the under-construction window. Because pages render at request time inside the Vercel function, the Keystatic `content/**/*.json` files MUST be force-bundled via `vercel({ includeFiles })` in `astro.config.mjs` (the bundler doesn't trace fs reads). Without it the reader silently returns empty collections / null singletons in production: no dogs, no projects, all CMS edits invisible — pages "look fine" because of the `?? fallback` pattern. If a new content subfolder is added, it's picked up automatically (the list is globbed at config load). When the lock is no longer needed, the long-term plan is to go back to static prerendering.
 
 1. **Astro route collision warning** — "The route `/api/keystatic/[...params]` is defined in both...". This is expected — our override file takes priority. Just a warning, not an error. Will become an error in a future Astro version; solution will be to configure the Keystatic integration to not inject the route.
 
@@ -229,7 +234,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 4. **`fields.image()` path format** — JSON stores filename only (not `/images/filename`). The reader returns it **bare** (no `publicPath` prepend), so consume it through `img()` from `src/lib/img.ts`. If you see broken images, check the value is wrapped in `img(...)` and that `content/*/[entry].json` has bare filenames.
 
-5. **Heavy portrait images (~6MB each)** — `eileen-portrait.jpeg` and `fynn portrait.jpeg` are ~3500px wide. Slow to fetch in Keystatic admin and on the live page. Consider downscaling to ~1200px / quality 80 (~300KB).
+5. **Image optimization** — All JPEGs in `public/images/` were batch-optimized (max 1920px, quality 78, mozjpeg, EXIF orientation baked in) via `node scripts/optimize-images.mjs` — run it again after Eileen uploads new phone photos through Keystatic (they arrive full-size, ~5MB). The script only overwrites a file when it gets ≥10% smaller and keeps filenames identical, so content JSON references stay valid.
 
 ## To-Do List
 
@@ -249,7 +254,6 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 - [ ] **OG image** — Create a proper 1200×630 branded PNG (`public/og-image.png`). Currently using `fynn eileen dogs horizontal.jpg` which isn't sized correctly for social sharing.
 - [ ] **Sitemap** — Verify all routes appear in `/sitemap-index.xml` after deploy
 - [ ] **Google Search Console** — Submit sitemap, verify domain ownership
-- [ ] **Patenschaft page** — FAQ on helfen page mentions Patenschaften but there's no dedicated page/flow for it
 
 ### CMS improvements (medium effort)
 
@@ -260,8 +264,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 
 ### Nice to have (low priority)
 
-- [ ] **Patenschaft flow** — Monthly sponsorship for a specific dog (requires Stripe or external form)
-- [ ] **News/Aktuelles section** — Keystatic collection for news posts (easy to add, needs design)
+- ~~Patenschaft page / Aktuelles (News)~~ — both removed on request (Juni 2026); git history has the implementations if they come back
 - [ ] **Instagram feed embed** — Live feed from @travel2rescue on home page or linktree
 
 ---

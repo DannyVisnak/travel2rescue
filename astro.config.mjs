@@ -4,20 +4,27 @@ import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
 import react from '@astrojs/react';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+
+// With output:'server', pages render inside the Vercel function at request
+// time — but the function bundle only contains traced JS imports, NOT the
+// Keystatic content/ JSON files the reader loads via fs. Without these the
+// reader silently returns empty collections / null singletons in production:
+// no dogs, no projects, every CMS edit invisible. Force-bundle them.
+const keystaticContentFiles = readdirSync('content', { recursive: true })
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => join('content', f));
 
 export default defineConfig({
-  // NOTE: We tried `edgeMiddleware: true` to run src/middleware.ts on every
-  // route (incl. prerendered) — but the @astrojs/vercel adapter bundles
-  // Astro's middleware system into a single Edge function that pulls in
-  // Node APIs (Buffer, fs, Keystatic, sharp) the Edge runtime doesn't
-  // support, and Vercel rejects the deploy.
-  //
-  // Without it, src/middleware.ts still runs on DYNAMIC routes (API
-  // endpoints, /keystatic, etc.) in the Node serverless function. For a
-  // true sitewide lock that covers prerendered HTML, use Vercel's
-  // dashboard: Settings → Deployment Protection → Vercel Authentication
-  // (free on Hobby, one click, no rebuild).
-  adapter: vercel(),
+  // output: 'server' routes every page through the SSR function so the
+  // SITE_PASSWORD middleware can actually gate them. Pages still cached
+  // hard by Vercel's CDN on a per-URL basis once warm. Without this, the
+  // adapter defaults to static prerendering, and prerendered HTML bypasses
+  // Astro middleware entirely — so a password set in Vercel would only
+  // protect dynamic API routes, not the public site.
+  output: 'server',
+  adapter: vercel({ includeFiles: keystaticContentFiles }),
   site: 'https://www.travel2rescue.de',
   trailingSlash: 'always',
   build: {

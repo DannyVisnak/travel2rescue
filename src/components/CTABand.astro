@@ -15,8 +15,8 @@ interface Props {
 const site = await reader.singletons.siteContent.read();
 
 const {
-  headline = site?.ctaHeadline ?? 'Wir brauchen Deine Hilfe.',
-  sub = site?.ctaSub ?? 'Jede Spende, egal wie groß, rettet Leben. Heute. Sofort.',
+  headline = site?.ctaHeadline || 'Wir brauchen Deine Hilfe.',
+  sub = site?.ctaSub || 'Jede Spende, egal wie groß, rettet Leben. Heute. Sofort.',
   primary = { label: 'Jetzt spenden', href: '/helfen/' },
   secondary = { label: 'Mehr erfahren', href: '/mission/' },
   dark = true,
@@ -34,8 +34,8 @@ const {
           href={secondary.href}
           class={`inline-flex items-center justify-center rounded-full font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-pointer px-8 py-4 text-base uppercase tracking-wider ${
             dark
-              ? 'border border-black/30 text-black hover:border-black hover:bg-black/10 focus:ring-black/40'
-              : 'border border-white/30 text-white hover:border-white hover:bg-white/10 focus:ring-white/40'
+              ? 'border border-amber-dark/60 text-amber-dark hover:border-amber-dark hover:bg-amber-dark/10 focus:ring-amber-dark'
+              : 'border border-amber-500/50 text-amber-400 hover:border-amber-400 hover:bg-amber-500/10 focus:ring-amber-500'
           }`}
         >
           {secondary.label}

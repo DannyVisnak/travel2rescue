@@ -12,21 +12,23 @@ import { img } from '@/lib/img';
 
 const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
+// Nur ein Ausschnitt — die komplette Übersicht lebt auf /adoptieren/hunde/
+const TEASER_DOGS = DOGS.slice(0, 6);
 
 const a = await reader.singletons.adoptionContent.read();
 const helpData = await reader.singletons.helpContent.read();
 
-const heroEyebrow = a?.heroEyebrow ?? 'Adoption · 6–7 Monate';
-const heroTitle = a?.heroTitle ?? 'Find deinen';
-const heroTitleAccent = a?.heroTitleAccent ?? 'besten Freund fürs Leben.';
-const heroSub = a?.heroSub ?? 'Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.';
+const heroEyebrow = a?.heroEyebrow || 'Adoption · 6–7 Monate';
+const heroTitle = a?.heroTitle || 'Find deinen';
+const heroTitleAccent = a?.heroTitleAccent || 'besten Freund fürs Leben.';
+const heroSub = a?.heroSub || 'Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.';
 const heroImage = img(a?.heroImage, '/images/fynneileen dogs.jpeg');
 
-const commitmentEyebrow = a?.commitmentEyebrow ?? 'Was uns unterscheidet';
-const commitmentText = a?.commitmentText ?? 'Eine Adoption aus Lombok dauert';
-const commitmentAccent = a?.commitmentAccent ?? '6–7 Monate.';
-const commitmentSub = a?.commitmentSub ?? 'Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.';
-const commitmentBadge = a?.commitmentBadge ?? 'Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.';
+const commitmentEyebrow = a?.commitmentEyebrow || 'Was uns unterscheidet';
+const commitmentText = a?.commitmentText || 'Eine Adoption aus Lombok dauert';
+const commitmentAccent = a?.commitmentAccent || '6–7 Monate.';
+const commitmentSub = a?.commitmentSub || 'Aber genau diese Zeit ist, was uns von Schnell-Vermittlungen unterscheidet — und was deinen Hund sicher zu dir bringt.';
+const commitmentBadge = a?.commitmentBadge || 'Vorgeschrieben durch EU-Tollwut-Regulierung — und unsere Sorgfalt.';
 
 const TIMELINE = a?.timeline?.length
   ? a.timeline
@@ -37,15 +39,15 @@ const TIMELINE = a?.timeline?.length
       { nummer: '04', title: 'Ankunft', duration: 'Monat 6–7', desc: 'Dein Hund kommt nach Deutschland.' },
     ];
 
-const dogsEyebrow = a?.dogsEyebrow ?? 'Verfügbare Hunde';
-const dogsHeadline = a?.dogsHeadline ?? 'Sie warten';
-const dogsHeadlineAccent = a?.dogsHeadlineAccent ?? 'auf dich.';
-const dogsSub = a?.dogsSub ?? 'Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.';
+const dogsEyebrow = a?.dogsEyebrow || 'Verfügbare Hunde';
+const dogsHeadline = a?.dogsHeadline || 'Sie warten';
+const dogsHeadlineAccent = a?.dogsHeadlineAccent || 'auf dich.';
+const dogsSub = a?.dogsSub || 'Jeder dieser Hunde hat eine einzigartige Geschichte. Jeder wartet darauf, ein neues Kapitel mit dir zu beginnen.';
 
-const benefitsEyebrow = a?.benefitsEyebrow ?? 'Was dich erwartet';
-const benefitsHeadline = a?.benefitsHeadline ?? 'Ein gesundes Tier.';
-const benefitsHeadlineAccent = a?.benefitsHeadlineAccent ?? 'Und eine echte Beziehung.';
-const benefitsSub = a?.benefitsSub ?? 'Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.';
+const benefitsEyebrow = a?.benefitsEyebrow || 'Was dich erwartet';
+const benefitsHeadline = a?.benefitsHeadline || 'Ein gesundes Tier.';
+const benefitsHeadlineAccent = a?.benefitsHeadlineAccent || 'Und eine echte Beziehung.';
+const benefitsSub = a?.benefitsSub || 'Diese drei Dinge bekommst du von uns. Nicht versprochen — geliefert.';
 const benefitsImage = img(a?.benefitsImage, '/images/IMG_9452.jpg');
 const benefits = a?.benefits?.length
   ? a.benefits
@@ -55,10 +57,10 @@ const benefits = a?.benefits?.length
       { title: 'Begleitung durch den Prozess', desc: 'Wir sind von Anfang bis Ende an deiner Seite – auch nach der Ankunft in Deutschland.' },
     ];
 
-const formEyebrow = a?.formEyebrow ?? 'Bereit?';
-const formHeadline = a?.formHeadline ?? 'Stell deine';
-const formHeadlineAccent = a?.formHeadlineAccent ?? 'Adoptionsanfrage.';
-const formSub = a?.formSub ?? 'Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt.';
+const formEyebrow = a?.formEyebrow || 'Bereit?';
+const formHeadline = a?.formHeadline || 'Stell deine';
+const formHeadlineAccent = a?.formHeadlineAccent || 'Adoptionsanfrage.';
+const formSub = a?.formSub || 'Schreib uns – und wir schauen gemeinsam, welcher Hund wirklich zu dir passt.';
 
 const fallbackFaqs = [
   { question: 'Wie läuft der Adoptionsprozess ab?', answer: 'Du füllst unser Formular aus, dann führen wir einen Videocall durch. Wenn alles passt, folgen weitere Gespräche und dann beginnt die Ausreisevorbereitung deines Hundes nach Deutschland.' },
@@ -97,7 +99,8 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
   </section>
 
   <!-- 6–7 Monate Commitment Statement -->
-  <section id="prozess" class="relative py-24 bg-gradient-to-b from-black via-[#1c1410] to-[#1a1410] overflow-hidden">
+  <!-- Verlauf: sehr dunkles Braun oben → helleres Braun unten -->
+  <section id="prozess" class="relative py-24 bg-gradient-to-b from-[#140F0B] via-[#241A13] to-[#3A2C20] overflow-hidden">
     <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
     <div class="container-x relative">
       <div class="max-w-4xl mx-auto text-center">
@@ -166,20 +169,23 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
     </div>
   </section>
 
-  <!-- Hunde -->
-  <section id="hunde" class="py-20 bg-black">
+  <!-- Hunde — beige Sektion, damit die dunklen Steckbrief-Karten hervorstechen -->
+  <section id="hunde" class="py-20 bg-beige">
     <div class="container-x">
       <div class="text-center mb-12">
         <p class="eyebrow mb-3">{dogsEyebrow}</p>
-        <h2 class="section-heading"><Lines text={dogsHeadline} /><br /><span class="text-amber-500">{dogsHeadlineAccent}</span></h2>
-        <p class="section-subheading mx-auto mt-4">
+        <h2 class="section-heading text-black"><Lines text={dogsHeadline} /><br /><span class="text-amber-500">{dogsHeadlineAccent}</span></h2>
+        <p class="text-xl md:text-2xl text-black/70 max-w-2xl leading-relaxed mx-auto mt-4">
           {dogsSub}
         </p>
       </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {DOGS.map((dog) => (
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+        {TEASER_DOGS.map((dog) => (
           <DogCard dog={dog} />
         ))}
+      </div>
+      <div class="text-center">
+        <a href="/adoptieren/hunde/" class="btn-primary btn-large">Alle {DOGS.length} Hunde ansehen</a>
       </div>
     </div>
   </section>
