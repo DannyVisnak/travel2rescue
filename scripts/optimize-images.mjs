@@ -7,7 +7,9 @@ const MAX = 1920;       // genug für Full-Bleed-Hero auf üblichen Screens
 const QUALITY = 78;
 
 let saved = 0, processed = 0, skipped = 0;
-for (const name of readdirSync(DIR)) {
+// recursive: Keystatic legt Collection-Uploads in Unterordnern ab
+// (z.B. public/images/travis-scott/image.jpeg)
+for (const name of readdirSync(DIR, { recursive: true })) {
   if (!/\.(jpe?g)$/i.test(name)) { continue; }
   const file = join(DIR, name);
   const before = statSync(file).size;

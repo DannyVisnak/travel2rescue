@@ -12,7 +12,7 @@ const { dog } = Astro.props;
 <article class="card group overflow-hidden flex flex-col">
   <div class="relative aspect-[4/3] overflow-hidden shrink-0">
     <img
-      src={img(dog.image)}
+      src={img(dog.image, '/images/fynneileen dogs.jpeg')}
       alt={`${dog.name} – zur Adoption`}
       class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
       loading="lazy"

@@ -84,7 +84,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 
 Always add `|| fallback` (NOT `??`) when using singleton **text** values — `read()` returns `null` if the file doesn't exist, but returns `''` (empty string) for text fields that are missing from the JSON or emptied in the admin, and `??` doesn't catch `''` (this once rendered whole homepage sections blank). Keep `??` only for booleans (e.g. `entry.kastriert ?? true`). **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
-**Image field note**: All `fields.image({ directory: 'public/images', publicPath: '/images/' })` fields store just the filename in JSON (e.g., `IMG_0991.jpeg`). ⚠️ The `reader` does **NOT** prepend `publicPath` for `fields.image` (that only happens for document-field images) — it returns the bare filename. So always wrap image values with `img()` from `src/lib/img.ts` before using them in `src=`/`ogImage`: `img(entry.image, '/images/fallback.jpg')`. `img()` prepends `/images/` to bare names and passes through values already starting with `/` or `http`, so it's safe on fallbacks too. (Before this helper existed, every CMS image rendered as a relative URL and 404'd.)
+**Image field note**: Image values in content JSON MUST be stored as full public paths (`/images/<file>` — for collection entries the admin writes `/images/<slug>/<field>.jpeg`). That's the format the Keystatic admin itself writes and the only one it can resolve when re-opening an entry. ⚠️ Bare filenames (`IMG_0991.jpeg`) break the admin: it shows the field as empty, silently REMOVES the image on the next save (this happened to Flummi), and can fail saves with a GraphQL "path requested for deletion" error. All values were migrated in Juni 2026. The `reader` returns values verbatim; keep wrapping with `img()` from `src/lib/img.ts` (`img(entry.image, '/images/fallback.jpg')`) — it passes `/...` through and still rescues any stray bare filename.
 
 ### Static fallbacks
 
@@ -199,6 +199,7 @@ The original `req.url`-has-hostname-`localhost` workaround that lived here is no
 | "Bad verification code" | OAuth code expired (>10 min) or was already used | Restart the login flow |
 | Admin loads but GitHub shows auth error | Callback URL mismatch in the GitHub App | Ensure callback is `https://travel2rescue.de/api/keystatic/github/oauth/callback` (no trailing slash) |
 | Specific singleton/collection page hangs with "Failed to fetch" | An image field references a filename with weird chars (trailing space, etc.) — Keystatic UI fetches images via GitHub API and chokes on the encoded URL | Rename the file to something filesystem-clean and update the JSON reference |
+| `[GraphQL] A path was requested for deletion which does not exist as of commit oid …` when saving | The entry's image value is a bare filename (or the draft is stale after earlier saves) — the admin computes a delete for a file path that was never committed | Reset the draft (Änderungen verwerfen), reload the admin, re-do the edit. Long-term: store image values as `/images/<file>` full paths (see Image field note) |
 
 ## Images
 
@@ -216,6 +217,8 @@ All images in `public/images/`. Key images:
 ## Deployment
 
 Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Vercel project settings.
+
+⚠️ **Vercel Hobby + private repo**: Vercel only builds commits whose author is a member of the Vercel team. Eileen's Keystatic commits are SKIPPED ("not a member of the team" email). `.github/workflows/deploy-cms-commits.yml` fixes this by hitting a Vercel **Deploy Hook** for every main-push by someone other than DannyVisnak. Setup: Vercel → Settings → Git → Deploy Hooks → create hook for `main`, then add its URL as GitHub Actions secret `VERCEL_DEPLOY_HOOK_URL`. Without the secret the workflow logs a warning and does nothing.
 
 **Do not commit** `.vercel/` directory.
 

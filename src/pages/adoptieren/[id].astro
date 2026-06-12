@@ -34,7 +34,8 @@ const dog = {
   geimpft: entry.geimpft ?? true,
   gechipt: entry.gechipt ?? true,
 };
-const dogImage = img(dog.image);
+// Hunde ohne Foto (frisch angelegt) bekommen das Gruppenfoto als Platzhalter
+const dogImage = img(dog.image, '/images/fynneileen dogs.jpeg');
 
 // Steckbrief — leere Felder werden automatisch ausgeblendet
 const steckbrief = [

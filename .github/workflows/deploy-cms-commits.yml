@@ -1,0 +1,36 @@
+# Vercel (Hobby-Plan + privates Repo) baut nur Commits, deren Autor Mitglied
+# des Vercel-Teams ist. Eileens Keystatic-Commits werden deshalb ignoriert
+# ("eileenmedved12 attempted to deploy ... but they're not a member").
+#
+# Dieser Workflow stößt für solche Commits einen Vercel Deploy Hook an, der
+# den aktuellen main-Stand baut — unabhängig vom Commit-Autor.
+#
+# Einrichtung (einmalig):
+# 1. Vercel → Projekt travel2rescue → Settings → Git → Deploy Hooks
+#    → Hook anlegen (Name egal, Branch: main) → URL kopieren.
+# 2. GitHub → Repo → Settings → Secrets and variables → Actions
+#    → New repository secret: Name VERCEL_DEPLOY_HOOK_URL, Wert = Hook-URL.
+
+name: Deploy CMS commits to Vercel
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  trigger-vercel:
+    # Dannys eigene Pushes baut Vercel bereits über die Git-Integration —
+    # der Hook würde sie nur doppelt bauen.
+    if: github.actor != 'DannyVisnak'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel deploy hook
+        env:
+          DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "::warning::Secret VERCEL_DEPLOY_HOOK_URL fehlt — Deployment wird nicht angestoßen. Siehe Kommentar oben in dieser Datei."
+            exit 0
+          fi
+          curl -sf -X POST "$DEPLOY_HOOK" > /dev/null
+          echo "Vercel-Build für main angestoßen."
