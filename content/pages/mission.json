@@ -3,7 +3,7 @@
   "heroTitle": "Wir kämpfen für Hunde,",
   "heroTitleAccent": "die sonst niemand sieht.",
   "heroSub": "Schätzungsweise 100.000 Straßenhunde leben auf Lombok. Viele von ihnen krank, hungrig, völlig auf sich allein gestellt. Unsere Mission: diesen Kreislauf aus Elend zu durchbrechen.",
-  "heroImage": "/images/heroImage.jpg",
+  "heroImage": "/images/mission/heroImage.jpg",
   "introEyebrow": "Warum wir tun, was wir tun",
   "introHeadline": "Hinschauen,\nwo andere wegsehen.",
   "introText": "Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.",
@@ -14,25 +14,25 @@
       "title": "Unkontrollierte Vermehrung",
       "desc": "Eine einzige unkastrierte Hündin kann in nur sechs Jahren bis zu 60.000 Nachkommen verursachen. Jeder neue Wurf wird in dasselbe Elend geboren – der Kreislauf aus Hunger, Krankheit und Leid beginnt von vorn.",
       "solution": "Flächendeckende Kastrationsprogramme – wir stoppen das Leid, bevor es entsteht.",
-      "image": "/images/problems/0/image.jpg"
+      "image": "/images/mission/problems/0/image.jpg"
     },
     {
       "title": "Der ständige Hunger",
       "desc": "Für die meisten Hunde auf Lombok gibt es niemanden, der hinsieht. Aus purer Verzweiflung fressen viele Steine, Müll oder Plastik – das führt zu inneren Verletzungen, Vergiftungen und oft einem qualvollen Tod.",
       "solution": "Tägliche Fütterungsrunden, sauberes Wasser, Aufklärung der Gemeinden über artgerechte Ernährung.",
-      "image": "/images/problems/1/image.jpg"
+      "image": "/images/mission/problems/1/image.jpg"
     },
     {
       "title": "Gezielte Tötungen & Krankheiten",
       "desc": "Dazu kommt die Gefahr durch Vergiftungen, wenn versucht wird, das „Straßenhundeproblem\" auf grausame Weise zu lösen. Unbehandelte Wunden, Parasiten und Hautkrankheiten schwächen die Tiere täglich.",
       "solution": "Impf- und Entwurmungsprogramme, Behandlung von Hautkrankheiten, Aufklärung über humanen Tierschutz.",
-      "image": "/images/problems/2/image.jpg"
+      "image": "/images/mission/problems/2/image.jpg"
     },
     {
       "title": "Gefahr auf der Straße",
       "desc": "Unfälle mit Rollern oder Autos sind Alltag. Viele Hunde bleiben schwer verletzt oder gelähmt am Straßenrand zurück – ohne jede medizinische Hilfe, ohne dass jemand kommt.",
       "solution": "Mobile Tierarztteams, Rettung und Transport zu Tierkliniken, Rehabilitationsprogramme.",
-      "image": "/images/problems/3/image.jpg"
+      "image": "/images/mission/problems/3/image.jpg"
     }
   ],
   "quote": "Jeder Bissen zählt, um diesen Seelen Hoffnung zu geben.",
@@ -46,28 +46,28 @@
       "desc": "Nur durch flächendeckende Kastrationen stoppen wir das Leid, bevor es entsteht. Eine einzige unkastrierte Hündin kann in 6 Jahren durch unkontrollierte Vermehrung bis zu 60.000 Nachkommen verursachen.",
       "stat": "2.500+",
       "statLabel": "Kastrationen durchgeführt",
-      "image": "/images/pillars/0/image.jpg"
+      "image": "/images/mission/pillars/0/image.jpg"
     },
     {
       "title": "Fütterungen",
       "desc": "Futter bedeutet Leben – und Vertrauen. Wir versorgen die Straßenhunde täglich mit nahrhaftem Futter und frischem Wasser. Diese Fütterungsrunden bewahren vor giftigem Müll und bauen das Vertrauen auf, das wir für medizinische Hilfe brauchen.",
       "stat": "3,7 Tonnen",
       "statLabel": "Futter verteilt",
-      "image": "/images/pillars/1/image.jpg"
+      "image": "/images/mission/pillars/1/image.jpg"
     },
     {
       "title": "Medizinische Versorgung",
       "desc": "Schon kleine Verletzungen können ohne Hilfe tödlich enden. Jeder von uns kastrierte Hund erhält automatisch eine Parasitenbehandlung. Auf der Straße versorgen wir tiefe Wunden und stoppen lebensgefährlichen Madenbefall.",
       "stat": "100+",
       "statLabel": "Hunde monatlich operiert",
-      "image": "/images/pillars/2/image.jpg"
+      "image": "/images/mission/pillars/2/image.jpg"
     },
     {
       "title": "Rettungen",
       "desc": "Wenn ein Hund angefahren, ausgesetzt oder in akuter Lebensgefahr ist, handeln wir sofort. Wir fokussieren uns auf den Süden Lomboks, holen Notfälle von der Straße und geben ihnen ein Zuhause auf Zeit.",
       "stat": "0 €",
       "statLabel": "Verwaltungskosten",
-      "image": "/images/pillars/3/image.jpg"
+      "image": "/images/mission/pillars/3/image.jpg"
     }
   ],
   "catsEyebrow": "Auch sie brauchen uns",
@@ -75,7 +75,7 @@
   "catsText1": "Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.",
   "catsText2": "In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!",
   "catsLinkLabel": "Projekt Wing NGO Sumatra",
-  "catsImage": "/images/catsImage.jpg",
+  "catsImage": "/images/mission/catsImage.jpg",
   "visionEyebrow": "Unsere Vision",
   "visionHeadline": "Größer als\nwir selbst.",
   "visionText1": "Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.",

@@ -13,11 +13,17 @@ const faqArray = (label: string) =>
     },
   );
 
-const sectionImage = (label: string, description?: string) =>
+// Jede Singleton-Seite bekommt ihr eigenes Upload-Verzeichnis. Vorher teilten
+// sich alle Seiten public/images/ — Keystatic kanonisiert Dateien beim
+// Speichern auf <directory>/<feldpfad>.<ext> und VERSCHIEBT sie dorthin.
+// Mit geteiltem Verzeichnis hat das (a) Dateien umbenannt, die andere Seiten
+// referenzieren (Juni 2026: Mission-Save zerbrach Projekt-/Helfen-Bilder),
+// und (b) kollidierten gleichnamige Felder (home.heroImage vs mission.heroImage).
+const sectionImage = (scope: string) => (label: string, description?: string) =>
   fields.image({
     label,
-    directory: 'public/images',
-    publicPath: '/images/',
+    directory: `public/images/${scope}`,
+    publicPath: `/images/${scope}/`,
     description: description ?? 'Foto direkt hier hochladen – kein GitHub nötig',
   });
 
@@ -84,7 +90,7 @@ export default config({
           multiline: true,
           description: 'Text unter der Überschrift',
         }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('home')('Hero – Hintergrundbild'),
 
         // Trust strip
         trustItems: fields.array(fields.text({ label: 'Eintrag' }), {
@@ -97,7 +103,7 @@ export default config({
         missionHeadline: fields.text({ label: 'Mission-Teaser – Überschrift', multiline: true }),
         missionText1: fields.text({ label: 'Mission-Teaser – Absatz 1', multiline: true }),
         missionText2: fields.text({ label: 'Mission-Teaser – Absatz 2', multiline: true }),
-        missionImage: sectionImage('Mission-Teaser – Foto (rechte Seite)'),
+        missionImage: sectionImage('home')('Mission-Teaser – Foto (rechte Seite)'),
 
         // Projekte-Teaser
         projectsEyebrow: fields.text({ label: 'Projekte-Teaser – kleine Zeile' }),
@@ -109,7 +115,7 @@ export default config({
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
         storyText1: fields.text({ label: 'Geschichte – Absatz 1', multiline: true }),
         storyText2: fields.text({ label: 'Geschichte – Absatz 2', multiline: true }),
-        storyImage: sectionImage('Geschichte – Foto'),
+        storyImage: sectionImage('home')('Geschichte – Foto'),
         storyPostcard: fields.text({ label: 'Geschichte – Postkarten-Text (auf dem Foto)', multiline: true }),
 
         // Was wir tun
@@ -130,7 +136,7 @@ export default config({
         dogsEyebrow: fields.text({ label: 'Hunde-Teaser – kleine Zeile' }),
         dogsHeadline: fields.text({ label: 'Hunde-Teaser – Überschrift' }),
         dogsSub: fields.text({ label: 'Hunde-Teaser – Untertext', multiline: true }),
-        dogsImage: sectionImage('Hunde-Teaser – grosses Hintergrundfoto'),
+        dogsImage: sectionImage('home')('Hunde-Teaser – grosses Hintergrundfoto'),
 
         // Zitat
         founderQuote: fields.text({
@@ -155,7 +161,7 @@ export default config({
         heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('mission')('Hero – Hintergrundbild'),
 
         introEyebrow: fields.text({ label: 'Intro – kleine Zeile' }),
         introHeadline: fields.text({ label: 'Intro – Überschrift', multiline: true }),
@@ -172,7 +178,7 @@ export default config({
             title: fields.text({ label: 'Titel' }),
             desc: fields.text({ label: 'Beschreibung', multiline: true }),
             solution: fields.text({ label: 'Unsere Lösung', multiline: true }),
-            image: sectionImage('Foto'),
+            image: sectionImage('mission')('Foto'),
           }),
           {
             label: 'Problem – Karten',
@@ -192,7 +198,7 @@ export default config({
             desc: fields.text({ label: 'Beschreibung', multiline: true }),
             stat: fields.text({ label: 'Statistik-Zahl' }),
             statLabel: fields.text({ label: 'Statistik-Bezeichnung' }),
-            image: sectionImage('Foto'),
+            image: sectionImage('mission')('Foto'),
           }),
           {
             label: 'Die vier Säulen',
@@ -205,7 +211,7 @@ export default config({
         catsText1: fields.text({ label: 'Katzen – Absatz 1', multiline: true }),
         catsText2: fields.text({ label: 'Katzen – Absatz 2', multiline: true }),
         catsLinkLabel: fields.text({ label: 'Katzen – Button-Text' }),
-        catsImage: sectionImage('Katzen – Foto'),
+        catsImage: sectionImage('mission')('Katzen – Foto'),
 
         visionEyebrow: fields.text({ label: 'Vision – kleine Zeile' }),
         visionHeadline: fields.text({ label: 'Vision – Überschrift', multiline: true }),
@@ -224,7 +230,7 @@ export default config({
         heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('help')('Hero – Hintergrundbild'),
 
         tiersEyebrow: fields.text({ label: 'Spenden-Beträge – kleine Zeile' }),
         tiersHeadline: fields.text({ label: 'Spenden-Beträge – Überschrift', multiline: true }),
@@ -247,7 +253,7 @@ export default config({
             label: fields.text({ label: 'Nummer/Label, z.B. 01 · Spenden' }),
             title: fields.text({ label: 'Titel' }),
             desc: fields.text({ label: 'Beschreibung', multiline: true }),
-            image: sectionImage('Foto'),
+            image: sectionImage('help')('Foto'),
           }),
           {
             label: 'Drei Wege (Karten)',
@@ -262,7 +268,7 @@ export default config({
           label: 'Volunteer – Aufgaben (Symbole bleiben fest)',
           itemLabel: (props) => props.value || 'Aufgabe',
         }),
-        volunteerImage: sectionImage('Volunteer – Foto'),
+        volunteerImage: sectionImage('help')('Volunteer – Foto'),
 
         adoptStepsEyebrow: fields.text({ label: 'Adoptions-Weg – kleine Zeile' }),
         adoptStepsHeadline: fields.text({ label: 'Adoptions-Weg – Überschrift', multiline: true }),
@@ -271,7 +277,7 @@ export default config({
           label: 'Adoptions-Weg – Schritte',
           itemLabel: (props) => props.value || 'Schritt',
         }),
-        adoptStepsImage: sectionImage('Adoptions-Weg – Foto'),
+        adoptStepsImage: sectionImage('help')('Adoptions-Weg – Foto'),
 
         faqEyebrow: fields.text({ label: 'FAQ – kleine Zeile' }),
         faqHeadline: fields.text({ label: 'FAQ – Überschrift' }),
@@ -289,7 +295,7 @@ export default config({
         heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('adoption')('Hero – Hintergrundbild'),
 
         commitmentEyebrow: fields.text({ label: 'Dauer-Block – kleine Zeile' }),
         commitmentText: fields.text({ label: 'Dauer-Block – grosser Text', multiline: true }),
@@ -318,7 +324,7 @@ export default config({
         benefitsHeadline: fields.text({ label: 'Vorteile – Überschrift', multiline: true }),
         benefitsHeadlineAccent: fields.text({ label: 'Vorteile – Überschrift farbiger Teil' }),
         benefitsSub: fields.text({ label: 'Vorteile – Untertext', multiline: true }),
-        benefitsImage: sectionImage('Vorteile – Foto'),
+        benefitsImage: sectionImage('adoption')('Vorteile – Foto'),
         benefits: fields.array(
           fields.object({
             title: fields.text({ label: 'Titel' }),
@@ -346,7 +352,7 @@ export default config({
         heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('about')('Hero – Hintergrundbild'),
 
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
@@ -354,7 +360,7 @@ export default config({
           fields.object({
             title: fields.text({ label: 'Kapitel-Titel' }),
             text: fields.text({ label: 'Text', multiline: true }),
-            image: sectionImage('Foto'),
+            image: sectionImage('about')('Foto'),
           }),
           {
             label: 'Geschichte – Kapitel',
@@ -368,7 +374,7 @@ export default config({
 
         realityEyebrow: fields.text({ label: 'Realität – kleine Zeile' }),
         realityHeadline: fields.text({ label: 'Realität – Überschrift', multiline: true }),
-        realityImage: sectionImage('Realität – Foto'),
+        realityImage: sectionImage('about')('Realität – Foto'),
         realityPoints: fields.array(
           fields.object({
             title: fields.text({ label: 'Titel' }),
@@ -398,8 +404,8 @@ export default config({
         eileenBio2: fields.text({ label: 'Eileens Bio – 2. Absatz', multiline: true }),
         eileenImage: fields.image({
           label: 'Eileens Profilfoto',
-          directory: 'public/images',
-          publicPath: '/images/',
+          directory: 'public/images/team',
+          publicPath: '/images/team/',
           description: 'Foto direkt hier hochladen – kein GitHub nötig',
         }),
         fynnRole: fields.text({
@@ -410,8 +416,8 @@ export default config({
         fynnBio2: fields.text({ label: 'Fynns Bio – 2. Absatz', multiline: true }),
         fynnImage: fields.image({
           label: 'Fynns Profilfoto',
-          directory: 'public/images',
-          publicPath: '/images/',
+          directory: 'public/images/team',
+          publicPath: '/images/team/',
           description: 'Foto direkt hier hochladen – kein GitHub nötig',
         }),
 
@@ -425,8 +431,8 @@ export default config({
         }),
         showcaseImage: fields.image({
           label: 'Team-Showcase – Foto vom ganzen Team',
-          directory: 'public/images',
-          publicPath: '/images/',
+          directory: 'public/images/team',
+          publicPath: '/images/team/',
           description: 'Gruppenfoto direkt hier hochladen',
         }),
       },
@@ -441,7 +447,7 @@ export default config({
         heroTitle: fields.text({ label: 'Hero – Überschrift', multiline: true }),
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
-        heroImage: sectionImage('Hero – Hintergrundbild'),
+        heroImage: sectionImage('projekte-seite')('Hero – Hintergrundbild'),
 
         outroEyebrow: fields.text({ label: 'Abschluss – kleine Zeile' }),
         outroHeadline: fields.text({ label: 'Abschluss – Überschrift', multiline: true }),
