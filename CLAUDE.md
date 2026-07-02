@@ -218,7 +218,7 @@ All images in `public/images/`. Key images:
 
 Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Vercel project settings.
 
-⚠️ **Vercel Hobby + private repo**: Vercel only builds commits whose author is a member of the Vercel team. Eileen's Keystatic commits are SKIPPED ("not a member of the team" email). `.github/workflows/deploy-cms-commits.yml` fixes this by hitting a Vercel **Deploy Hook** for every main-push by someone other than DannyVisnak. Setup: Vercel → Settings → Git → Deploy Hooks → create hook for `main`, then add its URL as GitHub Actions secret `VERCEL_DEPLOY_HOOK_URL`. Without the secret the workflow logs a warning and does nothing.
+⚠️ **CMS commits by collaborators**: On Vercel Hobby with a PRIVATE repo, commits authored by non-owners were BLOCKED — even via Deploy Hook (Vercel attributes the head commit's author regardless of trigger; the deploy-hook workflow was removed as ineffective in Juli 2026). The repo is public now, which makes Vercel build Eileen's Keystatic commits natively. Do not make the repo private again without solving this.
 
 **Do not commit** `.vercel/` directory.
 
