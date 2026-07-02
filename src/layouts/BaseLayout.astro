@@ -77,6 +77,7 @@ const BREADCRUMB_LABELS: Record<string, string> = {
 // GDPR-friendly (no banner required). Self-hosted instances override via
 // PUBLIC_PLAUSIBLE_SRC.
 const plausibleDomain = import.meta.env.PUBLIC_PLAUSIBLE_DOMAIN;
+const gtmId = import.meta.env.PUBLIC_GTM_ID;
 const plausibleSrc =
   import.meta.env.PUBLIC_PLAUSIBLE_SRC || 'https://plausible.io/js/script.js';
 
@@ -167,6 +168,22 @@ const breadcrumbJsonLd = segments.length
         });
       });
     </script>
+
+    <!-- GTM-Container — lädt nur, wenn PUBLIC_GTM_ID gesetzt ist (GTM-XXXXXXX).
+         Ohne Container verpuffen die dataLayer-Events oben wirkungslos. -->
+    {gtmId && (
+      <script is:inline define:vars={{ gtmId }}>
+        (function (w, d, s, l, i) {
+          w[l] = w[l] || [];
+          w[l].push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+          var f = d.getElementsByTagName(s)[0],
+            j = d.createElement(s);
+          j.async = true;
+          j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + '&l=' + l;
+          f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', gtmId);
+      </script>
+    )}
   </head>
   <body>
     <a href="#main-content" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-amber-500 focus:text-black focus:font-bold focus:rounded-lg">

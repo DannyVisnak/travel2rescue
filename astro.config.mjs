@@ -18,11 +18,12 @@ const keystaticContentFiles = readdirSync('content', { recursive: true })
 
 export default defineConfig({
   // output: 'server' routes every page through the SSR function so the
-  // SITE_PASSWORD middleware can actually gate them. Pages still cached
-  // hard by Vercel's CDN on a per-URL basis once warm. Without this, the
-  // adapter defaults to static prerendering, and prerendered HTML bypasses
-  // Astro middleware entirely — so a password set in Vercel would only
-  // protect dynamic API routes, not the public site.
+  // SITE_PASSWORD middleware can actually gate them. NOTE: Vercel does NOT
+  // CDN-cache SSR responses by default (cache-control: max-age=0) — the
+  // middleware sets s-maxage=300 on pages, but only while SITE_PASSWORD is
+  // unset. Without output:'server', the adapter defaults to static
+  // prerendering, and prerendered HTML bypasses Astro middleware entirely —
+  // so a password set in Vercel would only protect dynamic API routes.
   output: 'server',
   adapter: vercel({ includeFiles: keystaticContentFiles }),
   site: 'https://www.travel2rescue.de',

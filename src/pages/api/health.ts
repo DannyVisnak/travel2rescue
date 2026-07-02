@@ -9,18 +9,13 @@ export const prerender = false;
  * has the bits we expect (Resend key present, in production).
  */
 export async function GET(_context: APIContext): Promise<Response> {
+  // Bewusst minimal: der Endpoint ist öffentlich (vom Site-Lock ausgenommen),
+  // Konfigurationsdetails (welche Keys gesetzt sind, Node-Version) wären
+  // kostenlose Recon für Angreifer.
   const body = {
     ok: true,
     service: 'travel2rescue',
     time: new Date().toISOString(),
-    runtime: {
-      node: typeof process !== 'undefined' ? process.version : null,
-      env: process.env.VERCEL_ENV || process.env.NODE_ENV || 'unknown',
-    },
-    config: {
-      resend: Boolean(process.env.RESEND_API_KEY),
-      keystaticAuth: Boolean(process.env.KEYSTATIC_GITHUB_CLIENT_ID),
-    },
   };
   return new Response(JSON.stringify(body), {
     status: 200,

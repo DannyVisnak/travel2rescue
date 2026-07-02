@@ -1,6 +1,7 @@
 import type { APIContext } from 'astro';
 import { resend, MAIL_FROM, MAIL_TO, escapeHtml } from '@/lib/email';
 import { appendToSheet } from '@/lib/sheets';
+import { isRateLimited } from '@/lib/ratelimit';
 
 export const prerender = false;
 
@@ -92,6 +93,10 @@ const SECTIONS: Section[] = [
 export async function POST(context: APIContext): Promise<Response> {
   const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
 
+  if (isRateLimited(context.request, 'adoption')) {
+    return respond(context, wantsJson, false, 'Zu viele Anfragen. Bitte versuch es später erneut.', 429);
+  }
+
   if (!resend) {
     console.error('[adoption] RESEND_API_KEY not configured');
     return respond(context, wantsJson, false, 'Mailversand nicht konfiguriert.', 500);
@@ -168,8 +173,12 @@ function respond(
   if (ok) {
     return new Response(null, { status: 303, headers: { location: '/danke/?typ=adoption' } });
   }
-  const referer = context.request.headers.get('referer');
-  const back = referer ? new URL(referer) : new URL('/adoptieren/formular/', context.url);
+  let back: URL;
+  try {
+    back = new URL(context.request.headers.get('referer') || '/adoptieren/formular/', context.url);
+  } catch {
+    back = new URL('/adoptieren/formular/', context.url);
+  }
   back.searchParams.set('error', '1');
   return new Response(null, { status: 303, headers: { location: back.pathname + back.search } });
 }

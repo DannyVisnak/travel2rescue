@@ -1,5 +1,17 @@
 import type { APIContext } from 'astro';
 import { resend, MAIL_FROM, MAIL_TO, escapeHtml, isValidEmail } from '@/lib/email';
+import { isRateLimited } from '@/lib/ratelimit';
+
+// Nur diese Betreff-Werte kommen von unseren eigenen Seiten — alles andere
+// wäre ein manipuliertes Hidden-Field (Spoofing-Versuch) und fällt auf den
+// Default zurück.
+const ALLOWED_SUBJECTS = new Set([
+  'Anfrage über travel2rescue.de',
+  'Helfen – Anfrage',
+  'Anfrage zu Mission / Projekt',
+  'Anfrage – Über uns',
+  'Adoptionsanfrage',
+]);
 
 export const prerender = false;
 
@@ -9,6 +21,10 @@ export async function POST(context: APIContext): Promise<Response> {
   // and back to the page with ?error=1 on failure, so users never see raw
   // JSON. Fetch callers always set Accept and get JSON.
   const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
+
+  if (isRateLimited(context.request, 'contact')) {
+    return respond(context, wantsJson, false, 'Zu viele Anfragen. Bitte versuch es später erneut.', 429, 'kontakt');
+  }
 
   if (!resend) {
     console.error('[contact] RESEND_API_KEY not configured');
@@ -32,7 +48,8 @@ export async function POST(context: APIContext): Promise<Response> {
   const telefon = String(data.get('telefon') || '').trim();
   const betreff = String(data.get('betreff') || '').trim();
   const nachricht = String(data.get('nachricht') || '').trim();
-  const subject = String(data.get('subject') || 'Anfrage über travel2rescue.de').trim();
+  const rawSubject = String(data.get('subject') || '').trim();
+  const subject = ALLOWED_SUBJECTS.has(rawSubject) ? rawSubject : 'Anfrage über travel2rescue.de';
 
   if (!vorname || !email || !nachricht) {
     return respond(context, wantsJson, false, 'Pflichtfelder fehlen.', 400, 'kontakt');
@@ -110,8 +127,12 @@ function respond(
   if (ok) {
     return new Response(null, { status: 303, headers: { location: `/danke/?typ=${typ}` } });
   }
-  const referer = context.request.headers.get('referer');
-  const back = referer ? new URL(referer) : new URL('/', context.url);
+  let back: URL;
+  try {
+    back = new URL(context.request.headers.get('referer') || '/', context.url);
+  } catch {
+    back = new URL('/', context.url);
+  }
   back.searchParams.set('error', error ? '1' : '1');
   return new Response(null, { status: 303, headers: { location: back.pathname + back.search } });
 }
