@@ -16,6 +16,12 @@ const keystaticContentFiles = readdirSync('content', { recursive: true })
   .filter((f) => f.endsWith('.json'))
   .map((f) => join('content', f));
 
+// Dynamische SSR-Routen tauchen nicht automatisch in der Sitemap auf —
+// die Hunde-Detailseiten (Long-Tail-Conversion-Seiten) müssen explizit rein.
+const dogSitemapUrls = readdirSync('content/dogs')
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => `https://travel2rescue.de/adoptieren/${f.replace(/\.json$/, '')}/`);
+
 export default defineConfig({
   // output: 'server' routes every page through the SSR function so the
   // SITE_PASSWORD middleware can actually gate them. NOTE: Vercel does NOT
@@ -26,10 +32,20 @@ export default defineConfig({
   // so a password set in Vercel would only protect dynamic API routes.
   output: 'server',
   adapter: vercel({ includeFiles: keystaticContentFiles }),
-  site: 'https://www.travel2rescue.de',
+  // Live-Domain ist die Apex-Domain OHNE www — Kanonicals/Sitemap/JSON-LD
+  // müssen auf denselben Host zeigen, sonst meldet Google "canonical is a
+  // redirect" für jede Seite.
+  site: 'https://travel2rescue.de',
   trailingSlash: 'always',
   build: {
     format: 'directory',
+  },
+  // Alt-URLs der Vorgängerseite. (Die frühere public/_redirects-Datei war
+  // Netlify-Syntax — auf Vercel wirkungslos.)
+  redirects: {
+    '/home': '/',
+    '/uber-uns': '/ueber-uns/',
+    '/link-tree': '/linktree/',
   },
   security: {
     // Trust x-forwarded-host from Vercel so Astro.url.origin reflects the
@@ -46,7 +62,8 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Keep noindex / utility pages out of the sitemap.
-      filter: (page) => !/\/danke\/?$|\/404\/?$/.test(page),
+      filter: (page) => !/\/danke\/?$|\/404\/?$|\/impressum\/?$|\/datenschutz\/?$/.test(page),
+      customPages: dogSitemapUrls,
     }),
     react(),
     keystatic(),

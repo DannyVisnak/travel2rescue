@@ -27,6 +27,7 @@ const URGENCY_OPTIONS = [
 ---
 
 <BaseLayout
+  lang="en"
   title="Medical Report – Report an animal in need"
   description="Report sick, injured, abandoned or urgent animal cases on Lombok to Travel2Rescue e.V. Photos and exact location help us prioritize the most critical emergencies."
 >
@@ -68,7 +69,7 @@ const URGENCY_OPTIONS = [
           </div>
 
           <div>
-            <label for="mr-email" class="form-label">Your email * <span class="text-white/40 font-normal">(you'll get a confirmation)</span></label>
+            <label for="mr-email" class="form-label">Your email * <span class="text-white/55 font-normal">(you'll get a confirmation)</span></label>
             <input type="email" id="mr-email" name="email" required class="input-field" placeholder="you@example.com" />
           </div>
 
@@ -87,7 +88,7 @@ const URGENCY_OPTIONS = [
           <div>
             <label for="mr-location" class="form-label">Location – please copy-paste the Google Maps link *</label>
             <input type="text" id="mr-location" name="location" required class="input-field" placeholder="https://maps.app.goo.gl/..." />
-            <p class="mt-1.5 text-xs text-white/40">In Google Maps: long-press the spot → share → copy link.</p>
+            <p class="mt-1.5 text-xs text-white/55">In Google Maps: long-press the spot → share → copy link.</p>
           </div>
 
           <fieldset>
@@ -137,7 +138,7 @@ const URGENCY_OPTIONS = [
           </div>
 
           <div>
-            <label for="mr-photos" class="form-label">Photos * <span class="text-white/40 font-normal">(up to 4 — full body + close-up of the injury)</span></label>
+            <label for="mr-photos" class="form-label">Photos * <span class="text-white/55 font-normal">(up to 4 — full body + close-up of the injury)</span></label>
             <input
               type="file"
               id="mr-photos"
@@ -147,7 +148,7 @@ const URGENCY_OPTIONS = [
               required
               class="block w-full text-sm text-white/70 file:mr-4 file:rounded-full file:border-0 file:bg-amber-500 file:px-5 file:py-2.5 file:text-xs file:font-semibold file:uppercase file:tracking-wider file:text-black hover:file:bg-amber-400 file:cursor-pointer"
             />
-            <p class="mt-1.5 text-xs text-white/40">Photos are compressed automatically before upload. Videos: please send via <a href={REPORT_WHATSAPP_LINK} class="text-amber-400 underline">WhatsApp {REPORT_WHATSAPP}</a>.</p>
+            <p class="mt-1.5 text-xs text-white/55">Photos are compressed automatically before upload. Videos: please send via <a href={REPORT_WHATSAPP_LINK} class="text-amber-400 underline">WhatsApp {REPORT_WHATSAPP}</a>.</p>
           </div>
 
           <button type="submit" class="btn-primary w-full justify-center py-4 text-base">Submit report</button>
@@ -156,7 +157,7 @@ const URGENCY_OPTIONS = [
         </form>
       </div>
 
-      <p class="mt-8 text-center text-white/40 text-xs leading-relaxed max-w-md mx-auto">
+      <p class="mt-8 text-center text-white/55 text-xs leading-relaxed max-w-md mx-auto">
         Submitting this form does not guarantee immediate rescue. We are a small team and prioritize the most critical emergencies first.
       </p>
     </div>

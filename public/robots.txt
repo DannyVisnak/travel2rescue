@@ -33,4 +33,4 @@ Disallow: /
 User-agent: meta-externalagent
 Disallow: /
 
-Sitemap: https://www.travel2rescue.de/sitemap-index.xml
+Sitemap: https://travel2rescue.de/sitemap-index.xml

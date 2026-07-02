@@ -13,6 +13,8 @@ interface Props {
   ogImage?: string;
   ogType?: 'website' | 'article';
   noIndex?: boolean;
+  /** Seitensprache — /medical-report/ ist englisch (WCAG 3.1.1) */
+  lang?: string;
 }
 
 const {
@@ -21,6 +23,7 @@ const {
   ogImage = SITE.og.image,
   ogType = 'website',
   noIndex = false,
+  lang = 'de',
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url);
@@ -102,7 +105,7 @@ const breadcrumbJsonLd = segments.length
 ---
 
 <!doctype html>
-<html lang="de">
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
