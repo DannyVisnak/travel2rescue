@@ -33,10 +33,12 @@ const donationTiers = helpData?.donationTiers?.length
 
 const waysEyebrow = helpData?.waysEyebrow || 'Wie du helfen kannst';
 const waysHeadline = helpData?.waysHeadline || 'Drei Wege.\nEin Ziel.';
+// Karten-IDs mit way-Präfix — das nackte id="volunteer" kollidierte mit der
+// echten Volunteer-Sektion weiter unten, /helfen/#volunteer sprang zur Karte.
 const WAY_META = [
-  { id: 'spenden', iconKey: 'heart', image: '/images/IMG_2977.jpg' },
-  { id: 'adoption', iconKey: 'home', image: '/images/IMG_9452.jpg' },
-  { id: 'volunteer', iconKey: 'hand-helping', image: '/images/fynn eileen walking.jpeg' },
+  { id: 'way-spenden', iconKey: 'heart', image: '/images/IMG_2977.jpg' },
+  { id: 'way-adoption', iconKey: 'home', image: '/images/IMG_9452.jpg' },
+  { id: 'way-volunteer', iconKey: 'hand-helping', image: '/images/fynn eileen walking.jpeg' },
 ];
 const defaultWays = [
   { label: '01 · Spenden', title: 'Deine Spende rettet Leben', desc: 'Jeder Euro zählt – ob für Medizin, Futter oder Rettungseinsätze. Keine Verwaltungskosten, keine Umwege. Dein Geld kommt bei den Hunden an.' },

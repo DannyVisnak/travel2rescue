@@ -28,7 +28,8 @@ const {
 
 const canonicalURL = new URL(Astro.url.pathname, SITE.url);
 const fullTitle = title === SITE.name ? title : `${title} | ${SITE.name}`;
-const ogImageURL = ogImage.startsWith('http') ? ogImage : `${SITE.url}${ogImage}`;
+// encodeURI: Dateinamen mit Leerzeichen ergäben sonst invalide og:image-URLs
+const ogImageURL = encodeURI(ogImage.startsWith('http') ? ogImage : `${SITE.url}${ogImage}`);
 // Only the default share card has known 1200×630 dimensions. Custom images
 // (e.g. a dog's portrait) leave dims off so scrapers infer the real ratio.
 const isDefaultOg = ogImage === SITE.og.image;

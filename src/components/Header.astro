@@ -3,7 +3,7 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
 const cmsSettings = await reader.singletons.settings.read();
-const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
+const ctaHref = cmsSettings?.paypalUrl || NAV_CTA.href;
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">

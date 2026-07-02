@@ -52,7 +52,10 @@ const medChecks = [
   dog.gechipt && 'Gechipt',
 ].filter(Boolean) as string[];
 
-const metaDescription = `${dog.name} (${dog.age}, ${dog.breed}) sucht ein Zuhause in Deutschland. ${dog.story}`.slice(0, 155);
+// Sparse Einträge (frisch angelegte Hunde ohne Alter/Rasse/Story) dürfen
+// keine "(, )"-Artefakte in Meta/JSON-LD erzeugen.
+const factLine = [dog.age, dog.breed].filter(Boolean).join(', ');
+const metaDescription = `${dog.name}${factLine ? ` (${factLine})` : ''} sucht ein Zuhause in Deutschland. ${dog.story || ''}`.trim().slice(0, 155);
 
 // Rich-results: Article-style schema for the dog adoption profile so Google
 // can show name + photo + summary in search results. Animal isn't a standard
@@ -60,9 +63,9 @@ const metaDescription = `${dog.name} (${dog.age}, ${dog.breed}) sucht ein Zuhaus
 const dogJsonLd = {
   '@context': 'https://schema.org',
   '@type': 'Article',
-  headline: `${dog.name} – ${dog.breed} sucht ein Zuhause`,
+  headline: `${dog.name} – ${[dog.breed, 'sucht ein Zuhause'].filter(Boolean).join(' ')}`,
   description: metaDescription,
-  image: `${SITE.url}${dogImage}`,
+  image: encodeURI(`${SITE.url}${dogImage}`),
   inLanguage: 'de-DE',
   author: { '@type': 'NGO', name: SITE.name, url: SITE.url },
   publisher: {
@@ -73,7 +76,7 @@ const dogJsonLd = {
   mainEntityOfPage: `${SITE.url}/adoptieren/${dog.id}/`,
   about: {
     '@type': 'Thing',
-    name: `${dog.name}, ${dog.age}, ${dog.breed}`,
+    name: [dog.name, dog.age, dog.breed].filter(Boolean).join(', '),
   },
 };
 ---
@@ -99,11 +102,17 @@ const dogJsonLd = {
       </a>
       {dog.tag && <p class="eyebrow mb-4">{dog.tag}</p>}
       <h1 class="text-5xl md:text-6xl font-black mb-4">{dog.name}</h1>
-      <p class="text-lg text-white/70 mb-2">{dog.age} · {dog.breed}</p>
+      {factLine && <p class="text-lg text-white/70 mb-2">{[dog.age, dog.breed].filter(Boolean).join(' · ')}</p>}
       <p class="text-amber-400 font-semibold mb-8">{dog.character}</p>
-      <a href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`} class="btn-primary btn-large">
-        Adoptionsanfrage für {dog.name}
-      </a>
+      {dog.available ? (
+        <a href={`/adoptieren/formular/?hund=${dog.id}#adoption-form`} class="btn-primary btn-large">
+          Adoptionsanfrage für {dog.name}
+        </a>
+      ) : (
+        <p class="inline-flex items-center gap-2 rounded-full bg-forest/40 border border-forest px-5 py-3 text-sm font-semibold">
+          🎉 {dog.name} wurde bereits vermittelt
+        </p>
+      )}
     </div>
   </section>
 
@@ -128,7 +137,7 @@ const dogJsonLd = {
               ))}
               <div class="flex items-center gap-3 text-sm">
                 <span class="text-white/55 w-24 shrink-0">Status</span>
-                <span class="pill bg-amber-500/20 text-amber-400">{dog.tag || 'Verfügbar'}</span>
+                <span class="pill bg-amber-500/20 text-amber-400">{dog.tag || (dog.available ? 'Verfügbar' : 'Vermittelt')}</span>
               </div>
             </div>
             {medChecks.length > 0 && (

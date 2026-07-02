@@ -7,8 +7,13 @@ import { reader } from '@/lib/keystatic';
 // Komplette Hunde-Übersicht — /adoptieren/ zeigt nur einen Ausschnitt und
 // verlinkt hierher. Neue Hunde aus Keystatic erscheinen automatisch.
 const dogEntries = await reader.collections.dogs.all();
-const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
-const availableCount = DOGS.filter((d) => d.available).length;
+// Grid und Zähler müssen dieselbe Menge meinen: nur verfügbare Hunde.
+// (Vermittelte feiert der VermitteltStrip auf /adoptieren/.)
+const DOGS = dogEntries
+  .filter(({ entry }) => entry.available)
+  .map(({ slug, entry }) => ({ id: slug, ...entry }))
+  .sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)));
+const availableCount = DOGS.length;
 ---
 
 <BaseLayout

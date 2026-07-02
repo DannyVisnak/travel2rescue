@@ -11,9 +11,14 @@ import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
 const dogEntries = await reader.collections.dogs.all();
-const DOGS = dogEntries.map(({ slug, entry }) => ({ id: slug, ...entry }));
-// Nur ein Ausschnitt — die komplette Übersicht lebt auf /adoptieren/hunde/
-const TEASER_DOGS = DOGS.slice(0, 6);
+const DOGS = dogEntries
+  .filter(({ entry }) => entry.available)
+  .map(({ slug, entry }) => ({ id: slug, ...entry }));
+// Nur ein Ausschnitt — die komplette Übersicht lebt auf /adoptieren/hunde/.
+// Profile mit Foto zuerst.
+const TEASER_DOGS = [...DOGS]
+  .sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)))
+  .slice(0, 6);
 
 const a = await reader.singletons.adoptionContent.read();
 const helpData = await reader.singletons.helpContent.read();
