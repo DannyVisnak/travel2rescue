@@ -71,7 +71,7 @@ const links: LinkItem[] = linktreeData?.links?.length
         </div>
         <img src="/logo.avif" alt={SITE.name} class="h-8 w-auto mx-auto mb-3" loading="eager" />
         <p class="font-serif text-white/75 text-base italic"><Lines text={tagline} /></p>
-        <p class="text-white/40 text-xs mt-2">{SITE.location}</p>
+        <p class="text-white/55 text-xs mt-2">{SITE.location}</p>
       </div>
 
       <!-- Links -->
@@ -124,7 +124,7 @@ const links: LinkItem[] = linktreeData?.links?.length
             </span>
             <div class="flex-1 min-w-0">
               <div class={`font-bold text-sm ${link.primary ? 'text-black' : 'text-white'}`}>{link.label}</div>
-              <div class={`text-xs truncate ${link.primary ? 'text-black/70' : 'text-white/40'}`}>{link.desc}</div>
+              <div class={`text-xs truncate ${link.primary ? 'text-black/70' : 'text-white/55'}`}>{link.desc}</div>
             </div>
             <svg class={`w-4 h-4 shrink-0 opacity-50 group-hover:opacity-100 transition-opacity ${link.primary ? 'text-black' : 'text-white'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -134,7 +134,7 @@ const links: LinkItem[] = linktreeData?.links?.length
       </div>
 
       <!-- Footer -->
-      <div class="text-center mt-10 text-xs text-white/20">
+      <div class="text-center mt-10 text-xs text-white/55">
         <p>{SITE.name} · {SITE.address.street}, {SITE.address.zip} {SITE.address.city}</p>
         <p class="mt-1">{SITE.email}</p>
       </div>

@@ -62,9 +62,26 @@ export const onRequest = defineMiddleware(async (context, next) => {
   // time with the build env's value (usually empty), so the lock would never
   // actually activate even when the var is set in Vercel.
   const password = (typeof process !== 'undefined' && process.env.SITE_PASSWORD) || '';
-  if (!password) return next();
 
   const path = new URL(context.request.url).pathname;
+
+  if (!password) {
+    // Ohne Site-Lock: SSR-Seiten am Vercel-CDN cachen. Mit output:'server'
+    // liefert Vercel sonst max-age=0 — jeder Besuch trifft die Lambda,
+    // obwohl sich der Inhalt nur bei Deploys ändert. NIEMALS setzen, wenn
+    // der Passwort-Lock aktiv ist (Authorization-gegated Antworten dürfen
+    // nicht im CDN landen).
+    const res = await next();
+    const isPage =
+      context.request.method === 'GET' &&
+      !path.startsWith('/api/') &&
+      !path.startsWith('/keystatic') &&
+      !res.headers.has('cache-control');
+    if (isPage && res.status === 200) {
+      res.headers.set('cache-control', 'public, s-maxage=300, stale-while-revalidate=86400');
+    }
+    return res;
+  }
 
   if (PUBLIC_EXACT_PATHS.has(path)) return next();
   for (const prefix of PUBLIC_PATH_PREFIXES) {

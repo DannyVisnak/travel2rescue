@@ -3,7 +3,7 @@ import { SITE, NAV, NAV_CTA } from '@/data/site';
 import { reader } from '@/lib/keystatic';
 
 const cmsSettings = await reader.singletons.settings.read();
-const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
+const ctaHref = cmsSettings?.paypalUrl || NAV_CTA.href;
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-md border-b border-white/5">
@@ -43,7 +43,9 @@ const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
     </div>
   </div>
 
-  <div id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-black" role="dialog" aria-label="Mobilmenü">
+  <!-- Disclosure-Pattern (aria-expanded am Button), KEIN Dialog: role="dialog"
+       ohne Fokus-Trap/aria-modal wäre für Screenreader irreführend -->
+  <nav id="mobile-menu" class="hidden md:hidden border-t border-white/5 bg-black" aria-label="Mobilmenü">
     <div class="container-x py-4 flex flex-col gap-3">
       {NAV.map((item) => (
         <a href={item.href} class="text-sm text-white/70 hover:text-white py-2 font-medium focus:outline-none focus:text-amber-400">
@@ -54,7 +56,7 @@ const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
         {NAV_CTA.label}
       </a>
     </div>
-  </div>
+  </nav>
 </header>
 
 <script>
@@ -76,9 +78,13 @@ const ctaHref = cmsSettings?.paypalUrl ?? NAV_CTA.href;
       const target = e.target as HTMLElement;
       if (target.closest('a')) setOpen(false);
     });
-    // Esc closes the menu.
+    // Esc closes the menu — and returns focus to the toggle button so
+    // keyboard/screen-reader users don't strand on <body>.
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && !menu.classList.contains('hidden')) setOpen(false);
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        setOpen(false);
+        btn.focus();
+      }
     });
   }
 </script>

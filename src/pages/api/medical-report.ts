@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { resend, MAIL_FROM, MAIL_TO, escapeHtml, isValidEmail } from '@/lib/email';
+import { isRateLimited } from '@/lib/ratelimit';
 
 export const prerender = false;
 
@@ -25,6 +26,10 @@ const FIELDS: Array<{ label: string; name: string }> = [
 
 export async function POST(context: APIContext): Promise<Response> {
   const wantsJson = (context.request.headers.get('accept') || '').includes('application/json');
+
+  if (isRateLimited(context.request, 'medical-report')) {
+    return respond(context, wantsJson, false, 'Too many requests. Please try again later or contact us via WhatsApp.', 429);
+  }
 
   if (!resend) {
     console.error('[medical-report] RESEND_API_KEY not configured');
@@ -58,9 +63,12 @@ export async function POST(context: APIContext): Promise<Response> {
   }
 
   // Fotos sind Pflicht — Eileen braucht Bilder, um Notfälle zu priorisieren.
+  // Nur echte Bild-MIME-Typen: accept="image/*" ist rein clientseitig, und
+  // beliebige Anhänge (HTML/Makro-Dateien) würden sonst als vertrauenswürdige
+  // Mail von der eigenen Domain in Eileens Postfach landen.
   const photos = data
     .getAll('photos')
-    .filter((p): p is File => p instanceof File && p.size > 0)
+    .filter((p): p is File => p instanceof File && p.size > 0 && p.type.startsWith('image/'))
     .slice(0, MAX_PHOTOS);
   if (photos.length === 0) {
     return respond(context, wantsJson, false, 'Please attach at least one photo.', 400);
@@ -70,9 +78,10 @@ export async function POST(context: APIContext): Promise<Response> {
     return respond(context, wantsJson, false, 'Photos are too large. Please attach fewer or smaller photos.', 413);
   }
 
+  // Server-generierte Dateinamen — der User-Dateiname ist Angreifer-Input.
   const attachments = await Promise.all(
     photos.map(async (photo, i) => ({
-      filename: photo.name && photo.name !== 'blob' ? photo.name : `photo-${i + 1}.jpg`,
+      filename: `photo-${i + 1}.${photo.type === 'image/png' ? 'png' : 'jpg'}`,
       content: Buffer.from(await photo.arrayBuffer()),
     })),
   );

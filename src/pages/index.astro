@@ -14,8 +14,11 @@ const dogEntries = await reader.collections.dogs.all();
 const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));
-// Teaser zeigt 3 Hunde — alle weiteren auf /adoptieren/
-const TEASER_DOGS = DOGS.slice(0, 3);
+// Teaser zeigt 3 Hunde — Profile mit Foto zuerst, damit frisch angelegte
+// Einträge ohne Bild die Startseite nicht anführen.
+const TEASER_DOGS = [...DOGS]
+  .sort((a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)))
+  .slice(0, 3);
 
 const projectEntries = await reader.collections.projects.all();
 const TEASER_PROJECTS = projectEntries

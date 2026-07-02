@@ -1,7 +1,7 @@
 export const SITE = {
   name: 'Travel2Rescue e.V.',
   shortName: 'Travel2Rescue',
-  url: 'https://www.travel2rescue.de',
+  url: 'https://travel2rescue.de',
   description: 'Tierschutz auf Lombok, Indonesien. Wir retten, behandeln und vermitteln Straßenhunde. Kastration, Fütterung, Medizin – 100% transparent, 0% Verwaltungskosten.',
   email: 'travel2rescue@gmail.com',
   phone: '+62 853-5380-7785',
