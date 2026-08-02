@@ -2,8 +2,9 @@
   "heroEyebrow": "Travel2Rescue e.V. · Kuta, Lombok",
   "heroTitleTop": "100.000",
   "heroTitleAccent": "Straßenhunde.",
-  "heroTitleBottom": "Wir sehen hin.",
+  "heroTitleBottom": "Wir sehen hin. alter",
   "heroSub": "Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.",
+  "heroImage": "/images/home/heroImage.jpeg",
   "trustItems": [
     "e.V. seit 2023",
     "Vereinsregister Hof",
@@ -58,6 +59,5 @@
       "question": "Wie funktioniert eine Adoption aus Indonesien?",
       "answer": "Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess."
     }
-  ],
-  "heroImage": "/images/home/heroImage.jpeg"
+  ]
 }
