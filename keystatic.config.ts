@@ -116,6 +116,12 @@ const sectionImage = (scope: string) => (label: string, description?: string) =>
     description: description ?? 'Foto direkt hier hochladen – kein GitHub nötig',
   });
 
+// Basis für die „Ansehen"-Links im Admin. In der Produktion liegt der Admin
+// auf derselben Domain wie die Seite, lokal auf dem Dev-Server.
+const siteUrl = process.env.NODE_ENV === 'production'
+  ? 'https://travel2rescue.de'
+  : 'http://localhost:4321';
+
 export default config({
   storage: process.env.NODE_ENV === 'production'
     ? { kind: 'github', repo: { owner: 'DannyVisnak', name: 'travel2rescue' } }
@@ -123,12 +129,25 @@ export default config({
 
   // `url` isn't in the public Keystatic config type but is read at runtime
   // by the admin UI to build absolute links; cast keeps type checking quiet.
-  ...({ url: process.env.NODE_ENV === 'production'
-    ? 'https://travel2rescue.de'
-    : 'http://localhost:4321' } as { url: string }),
+  ...({ url: siteUrl } as { url: string }),
 
   ui: {
     brand: { name: 'Travel2Rescue Admin' },
+    // Gruppierte Seitenleiste statt einer langen flachen Liste — auf dem Handy
+    // war sonst kaum zu erkennen, welcher Eintrag welche Seite bearbeitet.
+    navigation: {
+      'Häufig gebraucht': ['dogs', 'projects', 'settings'],
+      Seiten: [
+        'homeContent',
+        'missionContent',
+        'adoptionContent',
+        'helpContent',
+        'aboutContent',
+        'projectsPage',
+        'linktreeContent',
+      ],
+      'Team & Allgemein': ['team', 'siteContent'],
+    },
   },
 
   // ─── Singletons (einmalige Inhalte) ───────────────────────────────────────
@@ -136,6 +155,7 @@ export default config({
     settings: singleton({
       label: '⚙️ Statistiken & Kontakt',
       path: 'content/settings',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         statsKastrationen: fields.text({
@@ -164,6 +184,7 @@ export default config({
     homeContent: singleton({
       label: '🏠 Startseite',
       path: 'content/pages/home',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         // Hero
@@ -277,6 +298,7 @@ export default config({
     missionContent: singleton({
       label: '🎯 Mission-Seite',
       path: 'content/pages/mission',
+      previewUrl: `${siteUrl}/mission/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -345,6 +367,7 @@ export default config({
     helpContent: singleton({
       label: '💝 Helfen-Seite',
       path: 'content/pages/help',
+      previewUrl: `${siteUrl}/helfen/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -412,6 +435,7 @@ export default config({
     adoptionContent: singleton({
       label: '🐕 Adoptions-Seite',
       path: 'content/pages/adoption',
+      previewUrl: `${siteUrl}/adoptieren/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -471,6 +495,7 @@ export default config({
     aboutContent: singleton({
       label: '📖 Über-uns-Seite (Texte)',
       path: 'content/pages/about',
+      previewUrl: `${siteUrl}/ueber-uns/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -521,6 +546,7 @@ export default config({
     team: singleton({
       label: '👥 Team – Bios & Fotos',
       path: 'content/team',
+      previewUrl: `${siteUrl}/ueber-uns/`,
       format: { data: 'json' },
       schema: {
         eileenRole: fields.text({
@@ -565,6 +591,7 @@ export default config({
     projectsPage: singleton({
       label: '🏗️ Projekte-Seite (Texte)',
       path: 'content/pages/projects',
+      previewUrl: `${siteUrl}/projekte/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -583,6 +610,7 @@ export default config({
     linktreeContent: singleton({
       label: '🔗 Linktree-Seite',
       path: 'content/pages/linktree',
+      previewUrl: `${siteUrl}/linktree/`,
       format: { data: 'json' },
       schema: {
         tagline: fields.text({ label: 'Spruch unter dem Logo', multiline: true }),
@@ -621,6 +649,7 @@ export default config({
     siteContent: singleton({
       label: '🌐 Footer & Allgemein',
       path: 'content/site',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         footerTagline: fields.text({
@@ -643,19 +672,41 @@ export default config({
       label: '🐾 Hunde zur Adoption',
       slugField: 'name',
       path: 'content/dogs/*',
+      previewUrl: `${siteUrl}/adoptieren/{slug}/`,
+      // Listenansicht als sortierbare Tabelle — auf einen Blick sichtbar,
+      // welcher Hund noch kein Foto/Alter hat oder schon vermittelt ist.
+      columns: ['name', 'age', 'tag', 'available'],
       format: { data: 'json' },
       schema: {
         name: fields.slug({
           name: { label: 'Name (Emojis ok, z.B. Flummi 🎾)' },
           slug: { label: 'URL-Kürzel', description: 'Wird automatisch generiert – keine Emojis' },
         }),
+        // Foto und Kurzbeschreibung stehen bewusst weit oben: das sind die
+        // Felder, die beim Anlegen eines neuen Hundes zuerst gebraucht werden.
+        image: fields.image({
+          label: 'Foto',
+          directory: 'public/images',
+          publicPath: '/images/',
+          description: 'Foto direkt hochladen – kein GitHub-Wissen nötig',
+        }),
+        imageFocus: imageFocusField('Bildausschnitt des Fotos'),
+        character: fields.text({
+          label: 'Kurzbeschreibung (1 Zeile)',
+          description: 'Slogan, z.B. Kleiner Wirbelwind',
+        }),
         age: fields.text({
           label: 'Alter',
           description: 'z.B. 1 Jahr, 8 Monate',
         }),
-        geschlecht: fields.text({
+        geschlecht: fields.select({
           label: 'Geschlecht',
-          description: 'z.B. Hündin oder Rüde — leer lassen, wenn unbekannt',
+          options: [
+            { label: 'Unbekannt', value: '' },
+            { label: 'Hündin', value: 'Hündin' },
+            { label: 'Rüde', value: 'Rüde' },
+          ],
+          defaultValue: '',
         }),
         breed: fields.text({
           label: 'Rasse',
@@ -668,10 +719,6 @@ export default config({
         gewicht: fields.text({
           label: 'Gewicht (optional)',
           description: 'z.B. ca. 12 kg',
-        }),
-        character: fields.text({
-          label: 'Kurzbeschreibung (1 Zeile)',
-          description: 'Slogan, z.B. Kleiner Wirbelwind',
         }),
         kastriert: fields.checkbox({
           label: 'Kastriert',
@@ -689,13 +736,6 @@ export default config({
           'Geschichte',
           'Die Lebensgeschichte des Hundes. Jeder Eintrag ist ein Absatz – erzähl ruhig ausführlich, das ist der Text, der Menschen zur Adoption bewegt.',
         ),
-        image: fields.image({
-          label: 'Foto',
-          directory: 'public/images',
-          publicPath: '/images/',
-          description: 'Foto direkt hochladen – kein GitHub-Wissen nötig',
-        }),
-        imageFocus: imageFocusField('Bildausschnitt des Fotos'),
         available: fields.checkbox({
           label: 'Verfügbar zur Adoption',
           defaultValue: true,
@@ -703,7 +743,8 @@ export default config({
         }),
         tag: fields.text({
           label: 'Status-Tag (optional)',
-          description: 'z.B. Sucht Zuhause, Welpe, Aktiver Hund, Vermittelt',
+          description:
+            'Kleines farbiges Etikett auf dem Foto, z.B. Sucht Zuhause, Welpe, Besondere Fürsorge. Leer lassen für kein Etikett.',
         }),
       },
     }),
@@ -712,6 +753,7 @@ export default config({
       label: '🏗️ Projekte',
       slugField: 'title',
       path: 'content/projects/*',
+      previewUrl: `${siteUrl}/projekte/`,
       format: { data: 'json' },
       schema: {
         title: fields.slug({

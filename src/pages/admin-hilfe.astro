@@ -1,0 +1,123 @@
+---
+// Kurzanleitung für Eileen — welcher Admin-Eintrag bearbeitet was, und was
+// seit dem Absatz-/Layout-Update alles möglich ist.
+//
+// noindex: interne Seite, gehört nicht in die Google-Suche. Sie ist zusätzlich
+// aus der Sitemap gefiltert (astro.config.mjs).
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const adminUrl = 'https://travel2rescue.de/keystatic/';
+
+const entries = [
+  { icon: '🐾', name: 'Hunde zur Adoption', what: 'Hunde anlegen, Fotos hochladen, Geschichte schreiben, „vermittelt" setzen.', where: 'Startseite, /adoptieren/, /adoptieren/hunde/ und die eigene Hunde-Seite' },
+  { icon: '🏗️', name: 'Projekte', what: 'Projekte anlegen, Beschreibung, Wirkung, Foto, Status.', where: '/projekte/ und der Projekte-Block auf der Startseite' },
+  { icon: '⚙️', name: 'Statistiken & Kontakt', what: 'Die drei grossen Zahlen, PayPal-Link, WhatsApp-Nummer.', where: 'Zahlen-Leiste auf allen Seiten' },
+  { icon: '🏠', name: 'Startseite', what: 'Alle Texte, Fotos, die Reihenfolge der Sektionen und was ein- oder ausgeblendet wird.', where: '/' },
+  { icon: '🎯', name: 'Mission-Seite', what: 'Hero, Intro, Problem-Karten, Zitat, die vier Säulen, Katzen, Vision.', where: '/mission/' },
+  { icon: '🐕', name: 'Adoptions-Seite', what: 'Hero, 6–7-Monate-Block, Zeitstrahl, Vorteile, Anfrage-Text.', where: '/adoptieren/' },
+  { icon: '💝', name: 'Helfen-Seite', what: 'Hero, Spendenbeträge, drei Wege, Volunteer, Adoptions-Schritte, FAQ.', where: '/helfen/ (die FAQ auch auf /adoptieren/)' },
+  { icon: '📖', name: 'Über-uns-Seite', what: 'Hero, Kapitel eurer Geschichte, Team-Überschriften, Kontakt.', where: '/ueber-uns/' },
+  { icon: '👥', name: 'Team – Bios & Fotos', what: 'Eure beiden Bios und Profilfotos, Team-Gruppenfoto.', where: '/ueber-uns/ und /mission/' },
+  { icon: '🔗', name: 'Linktree-Seite', what: 'Die Linkliste für Instagram.', where: '/linktree/' },
+  { icon: '🌐', name: 'Footer & Allgemein', what: 'Footer-Text und das wiederkehrende Spenden-Banner.', where: 'Unten auf jeder Seite' },
+];
+
+const skills = [
+  {
+    title: 'Einen Absatz hinzufügen',
+    body: 'Fließtexte sind jetzt eine Liste von Absätzen. Unter dem letzten Absatz auf „+" tippen – fertig. Zum Umsortieren am Griff links ziehen, zum Löschen das Papierkorb-Symbol.',
+  },
+  {
+    title: 'Fett, kursiv, Link',
+    body: 'Wort oder Satz markieren – es erscheint eine kleine Leiste. Damit kannst du fett und kursiv setzen oder einen Link einfügen (z.B. auf euer Instagram). Überschriften und Bilder sind im Text bewusst gesperrt, damit das Design nicht verrutscht.',
+  },
+  {
+    title: 'Text über dem Foto verschieben',
+    body: 'Bei jeder grossen Kopf-Sektion gibt es „Hero – Textposition": links, mitte oder rechts. Steht der Text rechts, wird der dunkle Verlauf automatisch mitgespiegelt, damit er lesbar bleibt – und links im Foto ist wieder etwas zu sehen.',
+  },
+  {
+    title: 'Bildausschnitt korrigieren',
+    body: 'Wird ein Kopf abgeschnitten? „Bildausschnitt" auf oben, unten, links oder rechts stellen. „Automatisch" lässt alles wie bisher. Das gibt es für die grossen Fotos und für jedes Hundefoto.',
+  },
+  {
+    title: 'Sektionen sortieren und ausblenden',
+    body: 'Unter 🏠 Startseite ganz unten: „Reihenfolge der Sektionen" per Drag & Drop ändern. Darunter die Haken zum Ein- und Ausblenden. Ausblenden löscht nichts – der Text bleibt gespeichert.',
+  },
+  {
+    title: 'Änderungen ansehen',
+    body: 'Nach dem Speichern baut die Seite sich neu. Warte etwa eine Minute, dann oben rechts im Admin auf „Preview" tippen oder die Seite neu laden. Erscheint die Änderung nicht sofort: einmal ganz neu laden.',
+  },
+];
+---
+
+<BaseLayout
+  title="Admin-Hilfe"
+  description="Kurzanleitung für die Pflege der Travel2Rescue-Website."
+  noIndex={true}
+>
+  <section class="py-16 bg-black">
+    <div class="container-x max-w-3xl">
+      <p class="eyebrow mb-4">Nur für uns</p>
+      <h1 class="text-4xl md:text-5xl font-black mb-6">
+        So pflegst du die <span class="text-amber-500">Website.</span>
+      </h1>
+      <p class="prose-dark text-lg mb-8">
+        Alles, was du hier änderst, geht direkt auf die echte Seite. Du kannst nichts
+        kaputt machen: Wenn ein Feld leer bleibt, erscheint automatisch wieder der
+        ursprüngliche Text.
+      </p>
+      <a href={adminUrl} class="btn-primary btn-large">Zum Admin</a>
+    </div>
+  </section>
+
+  <section class="py-16 bg-gray-dark">
+    <div class="container-x max-w-3xl">
+      <h2 class="section-heading mb-8">Was du jetzt selbst kannst</h2>
+      <div class="space-y-4">
+        {skills.map((skill) => (
+          <div class="card p-6">
+            <h3 class="text-xl font-bold mb-2 text-amber-400">{skill.title}</h3>
+            <p class="text-white/70 leading-relaxed">{skill.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-black">
+    <div class="container-x max-w-3xl">
+      <h2 class="section-heading mb-3">Welcher Eintrag bearbeitet was?</h2>
+      <p class="prose-dark mb-8">
+        Die Seitenleiste im Admin ist in drei Gruppen sortiert: „Häufig gebraucht",
+        „Seiten" und „Team &amp; Allgemein".
+      </p>
+      <div class="space-y-3">
+        {entries.map((entry) => (
+          <div class="rounded-2xl bg-card border border-white/5 p-5">
+            <p class="font-bold mb-1">
+              <span class="mr-2">{entry.icon}</span>{entry.name}
+            </p>
+            <p class="text-white/70 text-sm leading-relaxed">{entry.what}</p>
+            <p class="text-white/45 text-xs mt-2">Erscheint auf: {entry.where}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 bg-beige">
+    <div class="container-x max-w-3xl">
+      <h2 class="text-3xl font-black mb-4 text-black">Was weiterhin über Danny läuft</h2>
+      <p class="text-black/70 leading-relaxed mb-4">
+        Neue Sektionen oder Seiten, Farben und Schriften, das Adoptionsformular mit
+        seinen Fragen sowie Impressum und Datenschutz. Wenn du dort etwas ändern
+        möchtest oder eine Layout-Idee hast, die sich mit den Einstellungen oben
+        nicht umsetzen lässt: einfach melden.
+      </p>
+      <p class="text-black/70 leading-relaxed">
+        Ist doch mal etwas verrutscht, lässt sich jede Änderung rückgängig machen –
+        es wird jede Bearbeitung einzeln gespeichert.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
