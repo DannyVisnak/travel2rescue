@@ -50,6 +50,14 @@ const classFor = (index: number) =>
   ]
     .filter(Boolean)
     .join(' ');
+
+// Eine Liste darf nicht in einem <p> stehen — der Browser würde den Absatz
+// davor schliessen und das Markup zerreissen. Solche Blöcke bekommen ein <div>.
+const isBlock = (html: string) => /^<(ul|ol)\b/.test(html);
 ---
 
-{paragraphs.map((html, index) => <p class={classFor(index)} set:html={html} />)}
+{paragraphs.map((html, index) =>
+  isBlock(html)
+    ? <div class={classFor(index)} set:html={html} />
+    : <p class={classFor(index)} set:html={html} />,
+)}

@@ -12,9 +12,18 @@ import { config, collection, fields, singleton } from '@keystatic/core';
 // Separate Content-Dateien würden am `includeFiles`-Bundling vorbeilaufen und
 // in der Produktion leer ankommen (siehe CLAUDE.md Quirk 0).
 //
-// Bewusst NICHT freigeschaltet: Überschriften, Bilder, Trennlinien, Tabellen,
-// Code. Die Typografie der Seite soll aus dem Design kommen, nicht aus dem
-// Editor — freigegeben sind nur fett, kursiv und Links.
+// Überschriften, Bilder und Tabellen bleiben gesperrt — die Typografie der
+// Seite soll aus dem Design kommen, nicht aus dem Editor.
+//
+// ⚠️ Listen, Trennlinie, durchgestrichen und Code sind bewusst ERLAUBT, obwohl
+// sie niemand braucht. Grund: Keystatic speichert einen Absatz als Markdown und
+// escaped dabei „-", „+", „3." am Zeilenanfang NICHT. Ein völlig normaler Satz
+// wie „3. September 2024: Chika kam zu uns." wird deshalb als nummerierte Liste
+// zurückgelesen. Wären Listen gesperrt, würde der Eintrag beim nächsten Öffnen
+// gegen das Schema laufen und Eileen käme im Admin nicht mehr an den Hund
+// heran. Der Lese-Pfad muss also mindestens alles akzeptieren, was der
+// Schreib-Pfad erzeugen kann. RichText rendert diese Knoten mit (siehe
+// src/lib/richtext.ts) — nichts geht still verloren.
 const richParagraphs = (label: string, description?: string) =>
   fields.array(
     fields.markdoc.inline({
@@ -23,15 +32,15 @@ const richParagraphs = (label: string, description?: string) =>
         bold: true,
         italic: true,
         link: true,
-        strikethrough: false,
-        code: false,
+        strikethrough: true,
+        code: true,
         heading: false,
         blockquote: false,
-        orderedList: false,
-        unorderedList: false,
+        orderedList: true,
+        unorderedList: true,
         table: false,
         image: false,
-        divider: false,
+        divider: true,
         codeBlock: false,
       },
     }),
@@ -50,9 +59,9 @@ const heroTextPositionField = (defaultValue: 'links' | 'mitte' | 'rechts' = 'lin
   fields.select({
     label: 'Hero – Textposition',
     description:
-      'Wo steht der Text über dem Foto? „Rechts" schiebt den Text nach rechts – gut, wenn links im Foto etwas zu sehen sein soll.',
+      'Wo steht der Text über dem Foto? „Rechts" schiebt den Text an den rechten Rand – gut, wenn links im Foto etwas zu sehen sein soll.',
     options: [
-      { label: 'Links', value: 'links' },
+      { label: 'Standard', value: 'links' },
       { label: 'Mitte', value: 'mitte' },
       { label: 'Rechts', value: 'rechts' },
     ],
@@ -699,14 +708,14 @@ export default config({
           label: 'Alter',
           description: 'z.B. 1 Jahr, 8 Monate',
         }),
-        geschlecht: fields.select({
+        // Bewusst ein Freitextfeld geblieben: Ein Auswahlfeld würde jeden
+        // Eintrag mit einem abweichenden Wert („Weiblich", „männlich" …) beim
+        // Öffnen gegen das Schema laufen lassen — Eileen käme dann im Admin
+        // nicht mehr an den Hund heran. Der Gewinn wäre minimal, das Risiko
+        // nicht.
+        geschlecht: fields.text({
           label: 'Geschlecht',
-          options: [
-            { label: 'Unbekannt', value: '' },
-            { label: 'Hündin', value: 'Hündin' },
-            { label: 'Rüde', value: 'Rüde' },
-          ],
-          defaultValue: '',
+          description: 'Hündin oder Rüde — leer lassen, wenn unbekannt',
         }),
         breed: fields.text({
           label: 'Rasse',

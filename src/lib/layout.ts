@@ -22,15 +22,23 @@ type HeroLayout = {
   gradientDirection: string;
 };
 
+// ACHTUNG `mr-0` / `ml-0`: Auf vier der fünf Seiten sitzt die Textbox auf
+// demselben Element wie `container-x`, und das setzt `margin-inline: auto`.
+// `ml-auto` allein bestätigt dann nur margin-left:auto — margin-right bleibt
+// auto und der Block steht weiter mittig. Ohne das Gegenstück verschiebt sich
+// der Text nicht, während der Verlauf schon kippt: die Option sähe für Eileen
+// schlicht kaputt aus.
 const HERO_LAYOUTS: Record<HeroTextPosition, HeroLayout> = {
-  // Standard: Text links, Verlauf dunkelt links ab.
+  // Standard = die bisherige Position der jeweiligen Seite. Bewusst ohne
+  // eigene Margin-Klasse: die vier Unterseiten zentrieren ihren Textblock über
+  // `container-x` (mx-auto), und genau so sah der Hero dort schon immer aus.
   links: { box: '', buttons: '', gradientDirection: 'bg-gradient-to-r' },
   // Mitte: symmetrisch, deshalb kein gerichteter Verlauf (siehe heroOverlay).
   mitte: { box: 'mx-auto text-center', buttons: 'justify-center', gradientDirection: '' },
   // Rechts: Text rechts, Verlauf gespiegelt — sonst steht heller Text auf
   // hellem Foto. Genau dieser Fall ist Eileens Wunsch („damit man mich auf
   // dem Bild sieht").
-  rechts: { box: 'ml-auto', buttons: '', gradientDirection: 'bg-gradient-to-l' },
+  rechts: { box: 'ml-auto mr-0', buttons: '', gradientDirection: 'bg-gradient-to-l' },
 };
 
 export function heroLayout(position: HeroTextPosition | null | undefined): HeroLayout {

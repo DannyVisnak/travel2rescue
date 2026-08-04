@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 
-const dogEntries = await reader.collections.dogs.all();
+const dogEntries = await readDogs();
 // Carry { slug, name } so the client script can match by either. Nur
 // verfügbare Hunde — vermittelte sollen nicht mehr anfragbar sein.
 const dogIndex = dogEntries

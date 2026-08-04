@@ -13,10 +13,10 @@ import QuoteSection from '@/components/home/Quote.astro';
 import FaqSection from '@/components/home/Faq.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
-const dogEntries = await reader.collections.dogs.all();
+const dogEntries = await readDogs();
 const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));

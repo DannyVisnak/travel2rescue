@@ -2,11 +2,11 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import DogCard from '@/components/DogCard.astro';
 import CTABand from '@/components/CTABand.astro';
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 
 // Komplette Hunde-Übersicht — /adoptieren/ zeigt nur einen Ausschnitt und
 // verlinkt hierher. Neue Hunde aus Keystatic erscheinen automatisch.
-const dogEntries = await reader.collections.dogs.all();
+const dogEntries = await readDogs();
 // Grid und Zähler müssen dieselbe Menge meinen: nur verfügbare Hunde.
 // (Vermittelte feiert der VermitteltStrip auf /adoptieren/.)
 const DOGS = dogEntries

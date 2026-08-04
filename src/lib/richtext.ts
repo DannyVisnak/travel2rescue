@@ -99,12 +99,56 @@ function renderNode(node: MarkdocNode, opts: RichTextOptions): string {
   }
 }
 
-/** Ein Markdoc-Dokument kann mehrere Absätze enthalten — jeden einzeln zurückgeben. */
+/**
+ * Ein Markdoc-Dokument kann mehrere Blöcke enthalten — jeden einzeln zurückgeben.
+ *
+ * Listen bekommen hier besondere Aufmerksamkeit: Keystatic escaped beim
+ * Speichern kein „3." am Zeilenanfang, weshalb ein Satz wie „3. September
+ * 2024: …" als nummerierte Liste zurückkommt. Würden wir nur die Kinder
+ * durchreichen, verschwände die „3." (sie steckt im `start`-Attribut der Liste,
+ * nicht im Text). Deshalb wird sie explizit mitgerendert.
+ */
 function paragraphsFromMarkdoc(node: MarkdocNode, opts: RichTextOptions): string[] {
   if (node.type === 'paragraph') {
     const html = renderNode(node, opts).trim();
     return html ? [html] : [];
   }
+
+  if (node.type === 'list') {
+    const ordered = node.attributes?.ordered === true;
+    const start = Number(node.attributes?.start ?? 1);
+    const items = (node.children ?? []).map((item) =>
+      (item.children ?? [])
+        .flatMap((child) => paragraphsFromMarkdoc(child, opts))
+        .join('<br/>')
+        .trim(),
+    );
+    const filled = items.filter(Boolean);
+    if (!filled.length) return [];
+
+    // Einzelner Eintrag ohne echte Aufzählungsabsicht — fast immer ein
+    // fehlinterpretierter Satz („3. September 2024: …"). Als Absatz rendern
+    // und die Zahl wieder voranstellen, damit der Text unverändert dasteht.
+    if (ordered && filled.length === 1) {
+      return [`${escapeHtml(String(start))}. ${filled[0]}`];
+    }
+
+    const tag = ordered ? 'ol' : 'ul';
+    const startAttr = ordered && start !== 1 ? ` start="${escapeHtml(String(start))}"` : '';
+    const listClass = ordered
+      ? 'list-decimal list-outside pl-5 space-y-1'
+      : 'list-disc list-outside pl-5 space-y-1';
+    return [
+      `<${tag}${startAttr} class="${listClass}">${filled.map((i) => `<li>${i}</li>`).join('')}</${tag}>`,
+    ];
+  }
+
+  // Trennlinie: kein Text, aber auch kein Grund, den ganzen Absatz zu
+  // verlieren (sonst fiele die Sektion still auf die Fallback-Copy zurück).
+  if (node.type === 'hr') {
+    return ['<span class="block h-px w-16 bg-white/20" role="presentation"></span>'];
+  }
+
   if (node.children?.length) {
     const nested = node.children.flatMap((child) => paragraphsFromMarkdoc(child, opts));
     if (nested.length) return nested;

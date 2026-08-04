@@ -8,10 +8,10 @@ import VermitteltStrip from '@/components/VermitteltStrip.astro';
 import Lines from '@/components/Lines.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { heroLayout, heroOverlay, heroSubClass, imageFocusClass } from '@/lib/layout';
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
-const dogEntries = await reader.collections.dogs.all();
+const dogEntries = await readDogs();
 const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));

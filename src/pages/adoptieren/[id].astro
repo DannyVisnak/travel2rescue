@@ -4,7 +4,7 @@ import CTABand from '@/components/CTABand.astro';
 import RichText from '@/components/RichText.astro';
 import { richTextToPlain } from '@/lib/richtext';
 import { imageFocusClass } from '@/lib/layout';
-import { reader } from '@/lib/keystatic';
+import { reader, readDog } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
 
@@ -15,7 +15,7 @@ const cmsSettings = await reader.singletons.settings.read();
 const paypalUrl = cmsSettings?.paypalUrl || SITE.social.paypal;
 
 const { id } = Astro.params as { id: string };
-const entry = id ? await reader.collections.dogs.read(id) : null;
+const entry = id ? await readDog(id) : null;
 if (!entry) {
   return Astro.redirect('/adoptieren/');
 }
