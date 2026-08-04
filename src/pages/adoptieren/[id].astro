@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTABand from '@/components/CTABand.astro';
+import RichText from '@/components/RichText.astro';
+import { richTextToPlain } from '@/lib/richtext';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
@@ -55,7 +57,10 @@ const medChecks = [
 // Sparse Einträge (frisch angelegte Hunde ohne Alter/Rasse/Story) dürfen
 // keine "(, )"-Artefakte in Meta/JSON-LD erzeugen.
 const factLine = [dog.age, dog.breed].filter(Boolean).join(', ');
-const metaDescription = `${dog.name}${factLine ? ` (${factLine})` : ''} sucht ein Zuhause in Deutschland. ${dog.story || ''}`.trim().slice(0, 155);
+// Die Geschichte ist Rich-Text (Absatz-Liste) — für Meta/JSON-LD brauchen wir
+// reinen Text ohne Markup.
+const storyPlain = richTextToPlain(dog.story).replace(/\s+/g, ' ').trim();
+const metaDescription = `${dog.name}${factLine ? ` (${factLine})` : ''} sucht ein Zuhause in Deutschland. ${storyPlain}`.trim().slice(0, 155);
 
 // Rich-results: Article-style schema for the dog adoption profile so Google
 // can show name + photo + summary in search results. Animal isn't a standard
@@ -123,7 +128,7 @@ const dogJsonLd = {
         <div>
           <p class="eyebrow mb-4">Die Geschichte</p>
           <h2 class="text-3xl font-black mb-6">Wer ist <span class="text-amber-500">{dog.name}?</span></h2>
-          <p class="text-white/70 leading-relaxed text-lg">{dog.story}</p>
+          <RichText value={dog.story} class="text-white/70 leading-relaxed text-lg" lastSpacing="mb-0" />
 
           <!-- Steckbrief -->
           <div class="mt-8 rounded-2xl bg-card border border-white/5 p-6">

@@ -1,5 +1,6 @@
 ---
 import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -9,7 +10,7 @@ const team = await reader.singletons.team.read();
 
 const eyebrow = team?.showcaseEyebrow || 'Unser Team';
 const headline = team?.showcaseHeadline || 'Mehr als\nnur wir zwei.';
-const text = team?.showcaseText || 'Hinter jeder Rettung steht ein ganzes Team: lokale Tierärztinnen und Tierärzte, angestellte Helfer und Pflegestellen, die unsere Notfälle rund um die Uhr versorgen. Gemeinsam stemmen wir, was zu zweit unmöglich wäre.';
+const textFallback = 'Hinter jeder Rettung steht ein ganzes Team: lokale Tierärztinnen und Tierärzte, angestellte Helfer und Pflegestellen, die unsere Notfälle rund um die Uhr versorgen. Gemeinsam stemmen wir, was zu zweit unmöglich wäre.';
 const image = img(team?.showcaseImage, '/images/fynn eileen dogs horizontal.jpg');
 ---
 
@@ -27,7 +28,12 @@ const image = img(team?.showcaseImage, '/images/fynn eileen dogs horizontal.jpg'
       <div>
         <p class="eyebrow mb-4">{eyebrow}</p>
         <h2 class="text-4xl font-black mb-6"><Lines text={headline} /></h2>
-        <p class="prose-dark text-lg"><Lines text={text} /></p>
+        <RichText
+          value={team?.showcaseBody}
+          fallback={textFallback}
+          class="prose-dark text-lg"
+          lastSpacing="mb-0"
+        />
       </div>
     </div>
   </div>

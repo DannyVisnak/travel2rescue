@@ -1,12 +1,17 @@
 ---
 import type { Dog } from '@/data/dogs';
 import { img } from '@/lib/img';
+import { richTextToPlain } from '@/lib/richtext';
 
 interface Props {
   dog: Dog;
 }
 
 const { dog } = Astro.props;
+
+// Auf der Karte steht nur ein Anreisser (line-clamp-3) — die Absatz-Struktur
+// der Geschichte wird hier bewusst zu einer Zeile eingeebnet.
+const storyTeaser = richTextToPlain(dog.story).replace(/\s+/g, ' ').trim();
 ---
 
 <article class="card group overflow-hidden flex flex-col">
@@ -32,7 +37,7 @@ const { dog } = Astro.props;
       </div>
       <span class="text-xs text-amber-400 font-semibold uppercase tracking-wide mt-1">{dog.character}</span>
     </div>
-    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
+    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{storyTeaser}</p>
     <!-- mt-auto pinnt die Buttons an den Kartenboden — so liegen sie in jeder
          Reihe auf gleicher Höhe, egal wie der Text darüber umbricht -->
     <div class="mt-auto pt-4">

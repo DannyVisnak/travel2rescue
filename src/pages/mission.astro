@@ -4,6 +4,7 @@ import StatsBand from '@/components/StatsBand.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -17,7 +18,7 @@ const heroImage = img(m?.heroImage, '/images/IMG_2977.jpg');
 
 const introEyebrow = m?.introEyebrow || 'Warum wir tun, was wir tun';
 const introHeadline = m?.introHeadline || 'Hinschauen,\nwo andere wegsehen.';
-const introText = m?.introText || 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
+const introBodyFallback = 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
 
 const problemEyebrow = m?.problemEyebrow || 'Das Problem';
 const problemHeadline = m?.problemHeadline || 'Der tägliche\nÜberlebenskampf.';
@@ -51,15 +52,13 @@ const pillars = m?.pillars?.length
 
 const catsEyebrow = m?.catsEyebrow || 'Auch sie brauchen uns';
 const catsHeadline = m?.catsHeadline || 'Die Straßenkatzen –\nwir schauen nicht weg.';
-const catsText1 = m?.catsText1 || 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.';
-const catsText2 = m?.catsText2 || 'In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
+const catsBodyFallback = 'Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.\n\nIn den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!';
 const catsLinkLabel = m?.catsLinkLabel || 'Projekt Wing NGO Sumatra';
 const catsImage = img(m?.catsImage, '/images/IMG_5371.jpg');
 
 const visionEyebrow = m?.visionEyebrow || 'Unsere Vision';
 const visionHeadline = m?.visionHeadline || 'Größer als\nwir selbst.';
-const visionText1 = m?.visionText1 || 'Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.';
-const visionText2 = m?.visionText2 || 'Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.';
+const visionBodyFallback = 'Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.\n\nUm das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.';
 const visionButton = m?.visionButton || 'Teil der Lösung werden';
 ---
 
@@ -102,7 +101,12 @@ const visionButton = m?.visionButton || 'Teil der Lösung werden';
     <div class="container-x text-center max-w-3xl mx-auto">
       <p class="eyebrow mb-4">{introEyebrow}</p>
       <h2 class="text-3xl md:text-4xl font-black mb-6 text-black"><Lines text={introHeadline} /></h2>
-      <p class="text-lg text-black/70 leading-relaxed"><Lines text={introText} /></p>
+      <RichText
+        value={m?.introBody}
+        fallback={introBodyFallback}
+        class="text-lg text-black/70 leading-relaxed"
+        lastSpacing="mb-0"
+      />
     </div>
   </section>
 
@@ -185,12 +189,12 @@ const visionButton = m?.visionButton || 'Teil der Lösung werden';
         <div>
           <p class="eyebrow mb-4">{catsEyebrow}</p>
           <h2 class="text-4xl font-black mb-4"><Lines text={catsHeadline} /></h2>
-          <p class="prose-dark mb-4">
-            {catsText1}
-          </p>
-          <p class="prose-dark mb-6">
-            {catsText2}
-          </p>
+          <RichText
+            value={m?.catsBody}
+            fallback={catsBodyFallback}
+            class="prose-dark"
+            lastSpacing="mb-6"
+          />
           <a href="/projekte/" class="btn-ghost">{catsLinkLabel}</a>
         </div>
         <div class="relative">
@@ -213,12 +217,14 @@ const visionButton = m?.visionButton || 'Teil der Lösung werden';
     <div class="container-x text-center max-w-3xl mx-auto">
       <p class="eyebrow mb-5">{visionEyebrow}</p>
       <h2 class="section-heading mb-6 text-black"><Lines text={visionHeadline} /></h2>
-      <p class="text-xl text-black/70 leading-relaxed mb-8">
-        {visionText1}
-      </p>
-      <p class="text-black/60 mb-10">
-        {visionText2}
-      </p>
+      <RichText
+        value={m?.visionBody}
+        fallback={visionBodyFallback}
+        class="text-black/60"
+        leadClass="text-xl text-black/70 leading-relaxed"
+        spacing="mb-8"
+        lastSpacing="mb-10"
+      />
       <a href="/helfen/" class="btn-primary btn-large">{visionButton}</a>
     </div>
   </section>

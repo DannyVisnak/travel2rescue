@@ -5,6 +5,7 @@ import CTABand from '@/components/CTABand.astro';
 import DogCard from '@/components/DogCard.astro';
 import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
 import { reader } from '@/lib/keystatic';
@@ -43,8 +44,7 @@ const trustItems = homeData?.trustItems?.length
 // Mission Teaser (Foto rechts — gespiegelt zur Über-uns-Sektion)
 const missionEyebrow = homeData?.missionEyebrow || 'Unsere Mission';
 const missionHeadline = homeData?.missionHeadline || 'Den Kreislauf aus Elend\ndurchbrechen.';
-const missionText1 = homeData?.missionText1 || 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.';
-const missionText2 = homeData?.missionText2 || 'Kastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
+const missionBodyFallback = 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.\n\nKastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
 const missionImage = img(homeData?.missionImage, '/images/IMG_2977.jpg');
 
 // Was wir tun — icons stay fixed, text editable
@@ -79,8 +79,7 @@ const dogsImage = img(homeData?.dogsImage, '/images/fynneileen dogs.jpeg');
 // Über-uns Teaser
 const storyEyebrow = homeData?.storyEyebrow || 'Unsere Geschichte';
 const storyHeadline = homeData?.storyHeadline || 'Aus Mitleid wurde Verantwortung.';
-const storyText1 = homeData?.storyText1 || 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
-const storyText2 = homeData?.storyText2 || 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
+const storyBodyFallback = 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.\n\nWas als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
 const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
 const storyPostcard = homeData?.storyPostcard || 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
 
@@ -175,12 +174,13 @@ const faqs = homeData?.homeFaqs?.length
         <h2 class="section-heading mb-6">
           <Lines text={missionHeadline} />
         </h2>
-        <p class="prose-dark text-lg mb-4">
-          {missionText1}
-        </p>
-        <p class="prose-dark mb-8">
-          {missionText2}
-        </p>
+        <RichText
+          value={homeData?.missionBody}
+          fallback={missionBodyFallback}
+          class="prose-dark"
+          leadClass="text-lg"
+          lastSpacing="mb-8"
+        />
         <a href="/mission/" class="btn-ghost">Unsere Mission</a>
       </div>
 
@@ -298,12 +298,13 @@ const faqs = homeData?.homeFaqs?.length
         <h2 class="section-heading mb-6">
           <Lines text={storyHeadline} />
         </h2>
-        <p class="prose-dark text-lg mb-4">
-          {storyText1}
-        </p>
-        <p class="prose-dark mb-8">
-          {storyText2}
-        </p>
+        <RichText
+          value={homeData?.storyBody}
+          fallback={storyBodyFallback}
+          class="prose-dark"
+          leadClass="text-lg"
+          lastSpacing="mb-8"
+        />
         <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
       </div>
     </div>
@@ -364,7 +365,9 @@ const faqs = homeData?.homeFaqs?.length
                 </svg>
               </span>
             </summary>
-            <p class="mt-4 pr-11 text-white/70 leading-relaxed">{faq.answer}</p>
+            <div class="mt-4 pr-11">
+              <RichText value={faq.answer} class="text-white/70 leading-relaxed" spacing="mb-3" lastSpacing="mb-0" />
+            </div>
           </details>
         ))}
       </div>
