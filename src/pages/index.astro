@@ -14,6 +14,7 @@ import FaqSection from '@/components/home/Faq.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
 import { readDogs, reader } from '@/lib/keystatic';
+import { tinaPreview } from '@/lib/tina-preview';
 import { img } from '@/lib/img';
 
 const dogEntries = await readDogs();
@@ -32,7 +33,14 @@ const TEASER_PROJECTS = projectEntries
   .sort((a, b) => (a.nummer ?? 0) - (b.nummer ?? 0))
   .slice(0, 3);
 
-const homeData = await reader.singletons.homeContent.read();
+// Normalfall: Inhalte aus dem Keystatic-Reader. Kommt die Anfrage aus dem
+// Tina-Admin-Iframe, liefert tinaPreview() stattdessen die Tina-Daten samt
+// Metadaten für die Live-Vorschau — und bei jedem Problem stumm wieder den
+// Keystatic-Stand. Für normale Besucher ändert sich dadurch nichts.
+const homeFromCms = await reader.singletons.homeContent.read();
+const preview = await tinaPreview(Astro.request, 'home', { relativePath: 'home.json' }, homeFromCms);
+const homeData: any = preview.data;
+const tinaField = preview.field;
 
 // Hero
 const heroEyebrow = homeData?.heroEyebrow || 'Travel2Rescue e.V. · Kuta, Lombok';
@@ -169,13 +177,16 @@ const sections = resolveSectionOrder(homeData?.sectionOrder).filter((key) => SEC
 
     <div class="container-x relative z-10 py-20">
       <div class:list={['max-w-2xl', hero.box]}>
-        <p class="eyebrow mb-5">{heroEyebrow}</p>
-        <h1 class="text-5xl md:text-7xl font-black leading-[0.95] tracking-normal mb-6">
+        <p class="eyebrow mb-5" data-tina-field={tinaField('heroEyebrow')}>{heroEyebrow}</p>
+        <h1 class="text-5xl md:text-7xl font-black leading-[0.95] tracking-normal mb-6" data-tina-field={tinaField('heroTitleTop')}>
           {heroTitleTop}<br />
-          <span class="text-amber-500">{heroTitleAccent}</span><br />
+          <span class="text-amber-500" data-tina-field={tinaField('heroTitleAccent')}>{heroTitleAccent}</span><br />
           {heroTitleBottom}
         </h1>
-        <p class:list={['text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg', heroSubClass(heroPosition)]}>
+        <p
+          class:list={['text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg', heroSubClass(heroPosition)]}
+          data-tina-field={tinaField('heroSub')}
+        >
           <Lines text={heroSub} />
         </p>
         <div class:list={['flex flex-wrap gap-4', hero.buttons]}>

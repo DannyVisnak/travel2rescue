@@ -3,6 +3,7 @@ import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 import vercel from '@astrojs/vercel';
 import keystatic from '@keystatic/astro';
+import tina from '@tinacms/astro/integration';
 import react from '@astrojs/react';
 import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -67,6 +68,11 @@ export default defineConfig({
     }),
     react(),
     keystatic(),
+    // Zweiter Admin zum Vergleich (siehe docs/tina-setup.md). Die Integration
+    // hängt nur Middleware ein und legt /admin/bridge.js ab; für normale
+    // Besucher ändert sich am ausgelieferten HTML nichts. Sie greift
+    // ausschliesslich auf Anfragen aus dem Admin-Iframe.
+    tina(),
   ],
   vite: {
     plugins: [tailwindcss()],

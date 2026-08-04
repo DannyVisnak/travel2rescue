@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "check": "astro check",
-    "og": "node scripts/generate-og.mjs"
+    "og": "node scripts/generate-og.mjs",
+    "tina:dev": "tinacms dev -c \"astro dev\"",
+    "tina:build": "tinacms build"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.9",
@@ -18,9 +20,14 @@
     "@keystatic/astro": "^5.0.6",
     "@keystatic/core": "^0.5.50",
     "@tailwindcss/vite": "^4.1.6",
+    "@tinacms/astro": "^0.6.1",
     "astro": "^5.7.10",
     "resend": "^6.12.4",
     "tailwindcss": "^4.1.6",
+    "tinacms": "^3.11.0",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@tinacms/cli": "^2.5.6"
   }
 }

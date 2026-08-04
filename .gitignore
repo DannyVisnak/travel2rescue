@@ -10,3 +10,9 @@ dist/
 .netlify/
 .vercel/
 media/
+
+# TinaCMS (Vergleichs-Admin, siehe docs/tina-setup.md).
+# Alles hier wird von `npm run tina:build` erzeugt — client.ts enthält u.a.
+# einen absoluten Pfad der Build-Maschine, gehört also nicht ins Repo.
+tina/__generated__/
+public/admin/
