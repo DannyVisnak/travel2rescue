@@ -1,12 +1,18 @@
 ---
 import type { Dog } from '@/data/dogs';
 import { img } from '@/lib/img';
+import { richTextToPlain } from '@/lib/richtext';
+import { imageFocusClass } from '@/lib/layout';
 
 interface Props {
   dog: Dog;
 }
 
 const { dog } = Astro.props;
+
+// Auf der Karte steht nur ein Anreisser (line-clamp-3) — die Absatz-Struktur
+// der Geschichte wird hier bewusst zu einer Zeile eingeebnet.
+const storyTeaser = richTextToPlain(dog.story).replace(/\s+/g, ' ').trim();
 ---
 
 <article class="card group overflow-hidden flex flex-col">
@@ -14,7 +20,7 @@ const { dog } = Astro.props;
     <img
       src={img(dog.image, '/images/fynneileen dogs.jpeg')}
       alt={`${dog.name} – zur Adoption`}
-      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      class:list={['w-full h-full object-cover group-hover:scale-105 transition-transform duration-500', imageFocusClass(dog.imageFocus, '')]}
       loading="lazy"
     />
     <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
@@ -32,7 +38,7 @@ const { dog } = Astro.props;
       </div>
       <span class="text-xs text-amber-400 font-semibold uppercase tracking-wide mt-1">{dog.character}</span>
     </div>
-    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{dog.story}</p>
+    <p class="text-white/60 text-sm leading-relaxed line-clamp-3">{storyTeaser}</p>
     <!-- mt-auto pinnt die Buttons an den Kartenboden — so liegen sie in jeder
          Reihe auf gleicher Höhe, egal wie der Text darüber umbricht -->
     <div class="mt-auto pt-4">

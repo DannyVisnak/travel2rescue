@@ -9,22 +9,30 @@
   "storyChapters": [
     {
       "title": "Der Plan war einfach.",
-      "text": "Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien.",
+      "text": [
+        "Fynn und Eileen – beide aus Deutschland, frisch verliebt, voller Abenteuerlust. Mit etwas Erspartem und einem Rucksack beschlossen sie, gemeinsam aufzubrechen. Plan: eine einjährige Reise durch Südostasien."
+      ],
       "image": "/images/about/storyChapters/0/image.jpg"
     },
     {
       "title": "Dann kam dieser Welpe.",
-      "text": "Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit.",
+      "text": [
+        "Schon nach zwei Monaten nahm alles eine unerwartete Wendung. Mitten auf der Straße. Allein. Vor ihren Augen wurde er geschlagen und getreten. Sie schauten sich an – kein Wort war nötig. Sie nahmen ihn mit."
+      ],
       "image": "/images/about/storyChapters/1/image.jpg"
     },
     {
       "title": "Aus einer Schüssel Futter wurde eine Bewegung.",
-      "text": "Statt weiterzureisen, blieben sie auf Bali, dann Lombok. Was mit gelegentlichem Futter vor der Tür begann, sprach sich herum. Bald warteten immer mehr hungrige Schnauzen. Medizinische Notfälle kamen hinzu. Die Reise war vorbei. Die Mission hatte begonnen.",
+      "text": [
+        "Statt weiterzureisen, blieben sie auf Bali, dann Lombok. Was mit gelegentlichem Futter vor der Tür begann, sprach sich herum. Bald warteten immer mehr hungrige Schnauzen. Medizinische Notfälle kamen hinzu. Die Reise war vorbei. Die Mission hatte begonnen."
+      ],
       "image": "/images/about/storyChapters/2/image.jpg"
     },
     {
       "title": "Travel2Rescue e.V. war geboren.",
-      "text": "Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V.",
+      "text": [
+        "Der Gedanke, nach Deutschland zurückzugehen und die Tiere im Stich zu lassen, war unerträglich. Sie entschieden sich gegen die Rückreise – und für die Hunde. So entstand der gemeinnützige Verein Travel2Rescue e.V."
+      ],
       "image": "/images/about/storyChapters/3/image.jpg"
     }
   ],

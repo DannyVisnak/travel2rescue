@@ -1,13 +1,19 @@
+import type { RichTextValue } from '@/lib/richtext';
+
 export interface Dog {
   id: string;
   name: string;
   age: string;
   breed: string;
   character: string;
-  story: string;
+  // Seit der Absatz-Migration eine Liste von Absätzen (fields.array +
+  // markdoc.inline); Alt-Einträge können noch ein einfacher String sein.
+  story: RichTextValue;
   // Keystatic image fields are optional, so the bare filename can be null;
   // always pipe through src/lib/img.ts before rendering.
   image: string | null;
+  /** Bildausschnitt aus dem Admin ('auto' = wie bisher). */
+  imageFocus?: string | null;
   available: boolean;
   tag?: string;
   // Steckbrief-Felder (optional — ältere Einträge haben sie noch nicht)

@@ -1,9 +1,14 @@
 ---
 // Emits FAQPage JSON-LD so FAQ entries are eligible for Google rich results.
 // Pass the same faqs array a page renders.
+//
+// Antworten sind seit der Absatz-Migration Rich-Text (Absatz-Liste), JSON-LD
+// braucht aber reinen Text — deshalb läuft jede Antwort durch richTextToPlain.
+import { richTextToPlain, type RichTextValue } from '@/lib/richtext';
+
 interface FaqEntry {
   question: string;
-  answer: string;
+  answer: RichTextValue;
 }
 interface Props {
   // Accept readonly arrays (Keystatic readers return readonly arrays).
@@ -11,6 +16,7 @@ interface Props {
 }
 const { faqs } = Astro.props;
 const mainEntity = (faqs ?? [])
+  .map((f) => ({ question: f.question, answer: richTextToPlain(f.answer) }))
   .filter((f) => f.question && f.answer)
   .map((f) => ({
     '@type': 'Question',

@@ -6,7 +6,6 @@
   "heroImage": "/images/mission/heroImage.jpg",
   "introEyebrow": "Warum wir tun, was wir tun",
   "introHeadline": "Hinschauen,\nwo andere wegsehen.",
-  "introText": "Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.",
   "problemEyebrow": "Das Problem",
   "problemHeadline": "Der tägliche\nÜberlebenskampf.",
   "problems": [
@@ -72,13 +71,20 @@
   ],
   "catsEyebrow": "Auch sie brauchen uns",
   "catsHeadline": "Die Straßenkatzen –\nwir schauen nicht weg.",
-  "catsText1": "Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.",
-  "catsText2": "In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!",
   "catsLinkLabel": "Projekt Wing NGO Sumatra",
   "catsImage": "/images/mission/catsImage.jpg",
   "visionEyebrow": "Unsere Vision",
   "visionHeadline": "Größer als\nwir selbst.",
-  "visionText1": "Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.",
-  "visionText2": "Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer.",
-  "visionButton": "Teil der Lösung werden"
+  "visionButton": "Teil der Lösung werden",
+  "introBody": [
+    "Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln."
+  ],
+  "catsBody": [
+    "Unser Hauptfokus liegt auf den Hunden, aber wir schauen nicht weg, wenn Katzen Hilfe brauchen. Sie werden von den Locals zwar eher toleriert, doch auch sie leiden massiv unter Krankheiten und Unterernährung.",
+    "In den letzten Monaten haben wir über 30 Katzen kastriert, medizinisch versorgt und ausgesetzte Babys aufgenommen – eine Samtpfote hat sogar schon ein Zuhause in Deutschland gefunden!"
+  ],
+  "visionBody": [
+    "Wir träumen von einer Insel, auf der kein Welpe mehr auf der Straße geboren wird. Auf der kein Hund mehr leiden muss, nur weil niemand hingesehen hat.",
+    "Um das Problem langfristig zu lösen, brauchen wir mobile Kliniken, mehr Kastrationsaktionen und starke Teams vor Ort. Das können wir nicht alleine stemmen. Jeder Rupiah, jede Spende und jede geteilte Geschichte macht diesen Traum realer."
+  ]
 }

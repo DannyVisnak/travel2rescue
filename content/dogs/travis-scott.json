@@ -2,7 +2,9 @@
   "name": "Travis Scott",
   "age": "3 Monate",
   "character": "ein kleiner Fettklops der absolut kein Spaß am laufen hat",
-  "story": "Travis Scott wurde zusammen mit seinen 5 Geschwistern ausgesetzt",
+  "story": [
+    "Travis Scott wurde zusammen mit seinen 5 Geschwistern ausgesetzt"
+  ],
   "image": "/images/travis-scott/image.jpeg",
   "available": true
 }

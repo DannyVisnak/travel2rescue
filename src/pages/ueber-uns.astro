@@ -4,6 +4,8 @@ import CTABand from '@/components/CTABand.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
+import { heroLayout, heroOverlay, imageFocusClass } from '@/lib/layout';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -15,6 +17,12 @@ const heroTitle = c?.heroTitle || 'Wer sind';
 const heroTitleAccent = c?.heroTitleAccent || 'wir eigentlich?';
 const heroSub = c?.heroSub || 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
 const heroImage = img(c?.heroImage, '/images/fynn eileen dogs horizontal.jpg');
+const aboutHeroPosition = c?.heroTextPosition;
+const aboutHero = heroLayout(aboutHeroPosition);
+// Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
+// zeigte nur Himmel und schnitt die Köpfe ab. Deshalb dieser Standard.
+const aboutHeroImageClass = imageFocusClass(c?.heroImageFocus, 'object-[center_40%]');
+const aboutHeroOverlay = heroOverlay(aboutHeroPosition, 'from-black/85 via-black/60 to-black/20');
 
 const storyEyebrow = c?.storyEyebrow || 'Wie alles begann';
 const storyHeadline = c?.storyHeadline || 'Der Weg\nzum Verein.';
@@ -55,12 +63,10 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <!-- Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
-           zeigte nur Himmel und schnitt die Köpfe ab -->
-      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-[center_40%]" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
+      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class:list={['w-full h-full object-cover', aboutHeroImageClass]} width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
+      <div class:list={['absolute inset-0', aboutHeroOverlay]} />
     </div>
-    <div class="container-x relative z-10 max-w-2xl">
+    <div class:list={['container-x relative z-10 max-w-2xl', aboutHero.box]}>
       <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold leading-[1.05] tracking-tight mb-6">
         <Lines text={heroTitle} /><br />
@@ -88,7 +94,7 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
             </div>
             <div class={i % 2 === 1 ? 'lg:order-1' : ''}>
               <h3 class="text-2xl font-black mb-4 text-amber-500">{item.title}</h3>
-              <p class="prose-dark text-lg">{item.text}</p>
+              <RichText value={item.text} class="prose-dark text-lg" lastSpacing="mb-0" />
             </div>
           </div>
         ))}
@@ -114,12 +120,12 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
             <h3 class="text-2xl font-black">Eileen</h3>
             <p class="text-amber-500 font-semibold">{team?.eileenRole || 'Die unermüdliche Hundemama'}</p>
           </div>
-          <p class="text-white/60 text-sm leading-relaxed mb-4">
-            {team?.eileenBio1 || 'Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.'}
-          </p>
-          <p class="text-white/60 text-sm leading-relaxed">
-            {team?.eileenBio2 || 'Ihr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.'}
-          </p>
+          <RichText
+            value={team?.eileenBody}
+            fallback={'Mit 21 Jahren tauschte Eileen das beschauliche Bayern gegen das Chaos auf Indonesiens Straßen – und könnte nicht glücklicher sein. Sie ist die, die nachts aus dem Bett springt, weil sie das Bellen eines bestimmten Hundes zwei Straßen weiter erkennt.\n\nIhr meistgesagter Satz: „Schatz, bitte nur noch der eine Welpe?" Wäre sie selbst ein Hund, wäre sie ein Straßenhund: unzerstörbar, eigenwillig und mit verdammt viel Liebe zu geben.'}
+            class="text-white/60 text-sm leading-relaxed"
+            lastSpacing="mb-0"
+          />
           <div class="mt-5 pill bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs">
             HERZBLUT
           </div>
@@ -134,12 +140,12 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
             <h3 class="text-2xl font-black">Fynn</h3>
             <p class="text-amber-500 font-semibold">{team?.fynnRole || 'Der Ruhepol & Baumeister'}</p>
           </div>
-          <p class="text-white/60 text-sm leading-relaxed mb-4">
-            {team?.fynnBio1 || '25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.'}
-          </p>
-          <p class="text-white/60 text-sm leading-relaxed">
-            {team?.fynnBio2 || 'Sein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.'}
-          </p>
+          <RichText
+            value={team?.fynnBody}
+            fallback={'25, ursprünglich aus Berlin. In ihrem wilden Alltag ist er der Baumeister, der Futtermeister und vor allem der Ruhepol. Er erkennt am Geruch, welcher Hund gerade gepupst hat – und liebt Welpen-Mundgeruch.\n\nSein Leben lässt sich in drei Worten beschreiben: chaotisch, spontan, nervenberaubend. Und auch wenn Eileen den fremden Hunden manchmal mehr Liebe zeigt als ihm – er ist immer an ihrer Seite.'}
+            class="text-white/60 text-sm leading-relaxed"
+            lastSpacing="mb-0"
+          />
           <div class="mt-5 pill bg-forest/40 text-green-400 border border-green-500/20 text-xs">
             RUHEPOL
           </div>

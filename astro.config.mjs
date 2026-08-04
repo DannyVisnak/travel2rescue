@@ -62,7 +62,7 @@ export default defineConfig({
   integrations: [
     sitemap({
       // Keep noindex / utility pages out of the sitemap.
-      filter: (page) => !/\/danke\/?$|\/404\/?$|\/impressum\/?$|\/datenschutz\/?$/.test(page),
+      filter: (page) => !/\/danke\/?$|\/404\/?$|\/impressum\/?$|\/datenschutz\/?$|\/admin-hilfe\/?$/.test(page),
       customPages: dogSitemapUrls,
     }),
     react(),

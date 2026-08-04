@@ -4,6 +4,8 @@ import StatsBand from '@/components/StatsBand.astro';
 import FAQItem from '@/components/FAQItem.astro';
 import ContactForm from '@/components/ContactForm.astro';
 import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
+import { heroLayout, heroOverlay, heroSubClass, imageFocusClass } from '@/lib/layout';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
@@ -55,7 +57,12 @@ const ways = waysSource.map((w, i) => ({
 
 const volunteerEyebrow = helpData?.volunteerEyebrow || 'Freiwilligenarbeit';
 const volunteerHeadline = helpData?.volunteerHeadline || 'Komm vorbei und\nunterstütz uns.';
-const volunteerText = helpData?.volunteerText || 'Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.';
+const helpHeroPosition = helpData?.heroTextPosition;
+const helpHero = heroLayout(helpHeroPosition);
+const helpHeroImageClass = imageFocusClass(helpData?.heroImageFocus, '');
+const helpHeroOverlay = heroOverlay(helpHeroPosition, 'from-black/90 to-black/50');
+
+const volunteerBodyFallback = 'Als Volunteer bist du mittendrin: Du fütterst die Hunde, gehst Gassi, kuschelst und hilfst bei Projekten. Keine Vorkenntnisse nötig – nur Herz.';
 const VOLUNTEER_ICONS = ['bone', 'paw', 'hammer', 'heart-handshake'];
 const volunteerLabels = helpData?.volunteerTasks?.length
   ? helpData.volunteerTasks
@@ -95,19 +102,19 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src={heroImage} alt="Fütterungsaktion auf Lombok" class="w-full h-full object-cover" width="1170" height="1560" fetchpriority="high" loading="eager" decoding="async" />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/90 to-black/50" />
+      <img src={heroImage} alt="Fütterungsaktion auf Lombok" class:list={['w-full h-full object-cover', helpHeroImageClass]} width="1170" height="1560" fetchpriority="high" loading="eager" decoding="async" />
+      <div class:list={['absolute inset-0', helpHeroOverlay]} />
     </div>
-    <div class="container-x relative z-10 max-w-3xl">
+    <div class:list={['container-x relative z-10 max-w-3xl', helpHero.box]}>
       <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="text-5xl md:text-7xl font-black mb-6">
         <Lines text={heroTitle} /><br />
         <span class="text-amber-500">{heroTitleAccent}</span>
       </h1>
-      <p class="text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
+      <p class:list={['text-xl text-white/70 leading-relaxed mb-8 max-w-lg', heroSubClass(helpHeroPosition)]}>
         {heroSub}
       </p>
-      <div class="flex flex-wrap gap-4">
+      <div class:list={['flex flex-wrap gap-4', helpHero.buttons]}>
         <a href="#spenden-wege" class="btn-primary btn-large">Jetzt spenden</a>
       </div>
     </div>
@@ -271,9 +278,12 @@ const faqs = helpData?.helpFaqs?.length ? helpData.helpFaqs : fallbackFaqs;
         <div>
           <p class="eyebrow mb-4">{volunteerEyebrow}</p>
           <h2 class="text-4xl font-black mb-6"><Lines text={volunteerHeadline} /></h2>
-          <p class="prose-dark mb-6">
-            {volunteerText}
-          </p>
+          <RichText
+            value={helpData?.volunteerBody}
+            fallback={volunteerBodyFallback}
+            class="prose-dark"
+            lastSpacing="mb-6"
+          />
           <div class="grid grid-cols-2 gap-4 mb-8">
             {volunteerTasks.map((item) => (
               <div class="bg-card rounded-xl p-4 flex items-center gap-3 border border-white/5">

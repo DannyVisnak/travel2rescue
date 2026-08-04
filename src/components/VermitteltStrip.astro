@@ -1,5 +1,5 @@
 ---
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 import { img as resolveImg } from '@/lib/img';
 
 interface Adopted {
@@ -35,7 +35,7 @@ if (explicit) {
 } else {
   // Pull adopted dogs from the Keystatic collection: any dog whose
   // "Verfügbar zur Adoption" checkbox is unchecked (or tag includes "vermittelt").
-  const entries = await reader.collections.dogs.all();
+  const entries = await readDogs();
   const adoptedEntries = entries.filter(({ entry }) =>
     !entry.available || /vermittelt/i.test(entry.tag || ''),
   );

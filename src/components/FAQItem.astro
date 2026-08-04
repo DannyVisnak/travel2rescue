@@ -1,7 +1,11 @@
 ---
+import RichText from '@/components/RichText.astro';
+import type { RichTextValue } from '@/lib/richtext';
+
 interface Props {
   question: string;
-  answer: string;
+  /** Aus dem CMS eine Absatz-Liste, im Fallback ein einfacher String. */
+  answer: RichTextValue;
 }
 const { question, answer } = Astro.props;
 ---
@@ -15,5 +19,12 @@ const { question, answer } = Astro.props;
       </svg>
     </span>
   </summary>
-  <p class="mt-4 text-white/60 text-sm leading-relaxed pr-10">{answer}</p>
+  <div class="mt-4 pr-10">
+    <RichText
+      value={answer}
+      class="text-white/60 text-sm leading-relaxed"
+      spacing="mb-3"
+      lastSpacing="mb-0"
+    />
+  </div>
 </details>

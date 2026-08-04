@@ -1,11 +1,109 @@
 import { config, collection, fields, singleton } from '@keystatic/core';
 
 // ─── Reusable field helpers ────────────────────────────────────────────────
+
+// Fließtext als Absatz-LISTE: jeder Eintrag ist genau EIN Absatz. Damit kann
+// Eileen Absätze hinzufügen, löschen und per Drag & Drop sortieren — das war
+// mit den alten festen Feldern (…Text1 / …Text2) nicht möglich.
+//
+// Technisch wichtig: fields.markdoc.inline ist ein 'assets'-Feld, KEIN
+// 'content'-Feld. Der Absatz wird deshalb als Markdown-String direkt in die
+// JSON-Datei geschrieben und NICHT in eine separate .mdoc-Datei ausgelagert.
+// Separate Content-Dateien würden am `includeFiles`-Bundling vorbeilaufen und
+// in der Produktion leer ankommen (siehe CLAUDE.md Quirk 0).
+//
+// Überschriften, Bilder und Tabellen bleiben gesperrt — die Typografie der
+// Seite soll aus dem Design kommen, nicht aus dem Editor.
+//
+// ⚠️ Listen, Trennlinie, durchgestrichen und Code sind bewusst ERLAUBT, obwohl
+// sie niemand braucht. Grund: Keystatic speichert einen Absatz als Markdown und
+// escaped dabei „-", „+", „3." am Zeilenanfang NICHT. Ein völlig normaler Satz
+// wie „3. September 2024: Chika kam zu uns." wird deshalb als nummerierte Liste
+// zurückgelesen. Wären Listen gesperrt, würde der Eintrag beim nächsten Öffnen
+// gegen das Schema laufen und Eileen käme im Admin nicht mehr an den Hund
+// heran. Der Lese-Pfad muss also mindestens alles akzeptieren, was der
+// Schreib-Pfad erzeugen kann. RichText rendert diese Knoten mit (siehe
+// src/lib/richtext.ts) — nichts geht still verloren.
+const richParagraphs = (label: string, description?: string) =>
+  fields.array(
+    fields.markdoc.inline({
+      label: 'Absatz',
+      options: {
+        bold: true,
+        italic: true,
+        link: true,
+        strikethrough: true,
+        code: true,
+        heading: false,
+        blockquote: false,
+        orderedList: true,
+        unorderedList: true,
+        table: false,
+        image: false,
+        divider: true,
+        codeBlock: false,
+      },
+    }),
+    {
+      label,
+      description:
+        description ??
+        'Jeder Eintrag ist ein Absatz. Mit „+" einen Absatz hinzufügen, am Griff ziehen zum Sortieren. Text markieren für fett, kursiv oder einen Link.',
+    },
+  );
+
+// Textposition im Hero. Genau Eileens Wunsch: „Nehmen wir an ich will den Text
+// auf Startseite nach rechts positionieren damit man mich auf dem Bild sieht."
+// Der Abdunkel-Verlauf hinter dem Text wird automatisch mitgespiegelt.
+const heroTextPositionField = (defaultValue: 'links' | 'mitte' | 'rechts' = 'links') =>
+  fields.select({
+    label: 'Hero – Textposition',
+    description:
+      'Wo steht der Text über dem Foto? „Rechts" schiebt den Text an den rechten Rand – gut, wenn links im Foto etwas zu sehen sein soll.',
+    options: [
+      { label: 'Standard', value: 'links' },
+      { label: 'Mitte', value: 'mitte' },
+      { label: 'Rechts', value: 'rechts' },
+    ],
+    defaultValue,
+  });
+
+// Bildausschnitt. „Automatisch" behält den handgesetzten Ausschnitt der Seite —
+// nur wenn Eileen aktiv etwas anderes wählt, ändert sich der Bildausschnitt.
+const imageFocusField = (label = 'Bildausschnitt') =>
+  fields.select({
+    label,
+    description:
+      'Welcher Teil des Fotos soll zu sehen sein, wenn es beschnitten wird? Hilft, wenn Köpfe abgeschnitten werden.',
+    options: [
+      { label: 'Automatisch (wie bisher)', value: 'auto' },
+      { label: 'Mitte', value: 'mitte' },
+      { label: 'Links', value: 'links' },
+      { label: 'Rechts', value: 'rechts' },
+      { label: 'Oben', value: 'oben' },
+      { label: 'Unten', value: 'unten' },
+      { label: 'Links oben', value: 'links-oben' },
+      { label: 'Rechts oben', value: 'rechts-oben' },
+    ],
+    defaultValue: 'auto',
+  });
+
+// Sektion ein-/ausblenden, ohne dass Inhalt verloren geht.
+const showSectionField = (label: string) =>
+  fields.checkbox({
+    label,
+    defaultValue: true,
+    description: 'Haken entfernen, um diese Sektion auf der Seite auszublenden. Die Texte bleiben erhalten.',
+  });
+
 const faqArray = (label: string) =>
   fields.array(
     fields.object({
       question: fields.text({ label: 'Frage' }),
-      answer: fields.text({ label: 'Antwort', multiline: true }),
+      answer: richParagraphs(
+        'Antwort',
+        'Die Antwort. Mehrere Absätze möglich – und du kannst Wörter verlinken (z.B. auf Instagram).',
+      ),
     }),
     {
       label,
@@ -27,6 +125,12 @@ const sectionImage = (scope: string) => (label: string, description?: string) =>
     description: description ?? 'Foto direkt hier hochladen – kein GitHub nötig',
   });
 
+// Basis für die „Ansehen"-Links im Admin. In der Produktion liegt der Admin
+// auf derselben Domain wie die Seite, lokal auf dem Dev-Server.
+const siteUrl = process.env.NODE_ENV === 'production'
+  ? 'https://travel2rescue.de'
+  : 'http://localhost:4321';
+
 export default config({
   storage: process.env.NODE_ENV === 'production'
     ? { kind: 'github', repo: { owner: 'DannyVisnak', name: 'travel2rescue' } }
@@ -34,12 +138,25 @@ export default config({
 
   // `url` isn't in the public Keystatic config type but is read at runtime
   // by the admin UI to build absolute links; cast keeps type checking quiet.
-  ...({ url: process.env.NODE_ENV === 'production'
-    ? 'https://travel2rescue.de'
-    : 'http://localhost:4321' } as { url: string }),
+  ...({ url: siteUrl } as { url: string }),
 
   ui: {
     brand: { name: 'Travel2Rescue Admin' },
+    // Gruppierte Seitenleiste statt einer langen flachen Liste — auf dem Handy
+    // war sonst kaum zu erkennen, welcher Eintrag welche Seite bearbeitet.
+    navigation: {
+      'Häufig gebraucht': ['dogs', 'projects', 'settings'],
+      Seiten: [
+        'homeContent',
+        'missionContent',
+        'adoptionContent',
+        'helpContent',
+        'aboutContent',
+        'projectsPage',
+        'linktreeContent',
+      ],
+      'Team & Allgemein': ['team', 'siteContent'],
+    },
   },
 
   // ─── Singletons (einmalige Inhalte) ───────────────────────────────────────
@@ -47,6 +164,7 @@ export default config({
     settings: singleton({
       label: '⚙️ Statistiken & Kontakt',
       path: 'content/settings',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         statsKastrationen: fields.text({
@@ -75,6 +193,7 @@ export default config({
     homeContent: singleton({
       label: '🏠 Startseite',
       path: 'content/pages/home',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         // Hero
@@ -91,6 +210,8 @@ export default config({
           description: 'Text unter der Überschrift',
         }),
         heroImage: sectionImage('home')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         // Trust strip
         trustItems: fields.array(fields.text({ label: 'Eintrag' }), {
@@ -101,8 +222,7 @@ export default config({
         // Mission-Teaser
         missionEyebrow: fields.text({ label: 'Mission-Teaser – kleine Zeile' }),
         missionHeadline: fields.text({ label: 'Mission-Teaser – Überschrift', multiline: true }),
-        missionText1: fields.text({ label: 'Mission-Teaser – Absatz 1', multiline: true }),
-        missionText2: fields.text({ label: 'Mission-Teaser – Absatz 2', multiline: true }),
+        missionBody: richParagraphs('Mission-Teaser – Absätze'),
         missionImage: sectionImage('home')('Mission-Teaser – Foto (rechte Seite)'),
 
         // Projekte-Teaser
@@ -113,8 +233,7 @@ export default config({
         // Über-uns Teaser
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
-        storyText1: fields.text({ label: 'Geschichte – Absatz 1', multiline: true }),
-        storyText2: fields.text({ label: 'Geschichte – Absatz 2', multiline: true }),
+        storyBody: richParagraphs('Geschichte – Absätze'),
         storyImage: sectionImage('home')('Geschichte – Foto'),
         storyPostcard: fields.text({ label: 'Geschichte – Postkarten-Text (auf dem Foto)', multiline: true }),
 
@@ -139,6 +258,7 @@ export default config({
         dogsImage: sectionImage('home')('Hunde-Teaser – grosses Hintergrundfoto'),
 
         // Zitat
+        quoteImage: sectionImage('home')('Zitat – Hintergrundfoto'),
         founderQuote: fields.text({
           label: 'Gründer-Zitat',
           multiline: true,
@@ -149,12 +269,45 @@ export default config({
         faqEyebrow: fields.text({ label: 'FAQ – kleine Zeile' }),
         faqHeadline: fields.text({ label: 'FAQ – Überschrift' }),
         homeFaqs: faqArray('FAQ-Einträge (Startseite)'),
+
+        // ─── Aufbau der Seite ────────────────────────────────────────────
+        // Reihenfolge und Sichtbarkeit der Sektionen. Hero, Vertrauens-Leiste,
+        // Statistiken und das Spenden-Banner bleiben bewusst fest verankert.
+        sectionOrder: fields.array(
+          fields.select({
+            label: 'Sektion',
+            options: [
+              { label: 'Mission-Teaser', value: 'mission' },
+              { label: 'Was wir tun', value: 'services' },
+              { label: 'Projekte-Teaser', value: 'projects' },
+              { label: 'Hunde-Teaser', value: 'dogs' },
+              { label: 'Geschichte-Teaser', value: 'story' },
+              { label: 'Gründer-Zitat', value: 'quote' },
+              { label: 'FAQ', value: 'faq' },
+            ],
+            defaultValue: 'mission',
+          }),
+          {
+            label: 'Reihenfolge der Sektionen',
+            description:
+              'Am Griff ziehen, um die Reihenfolge auf der Startseite zu ändern. Nicht aufgeführte Sektionen erscheinen automatisch am Ende.',
+            itemLabel: (props) => props.value || 'Sektion',
+          },
+        ),
+        showMission: showSectionField('Mission-Teaser anzeigen'),
+        showServices: showSectionField('„Was wir tun" anzeigen'),
+        showProjects: showSectionField('Projekte-Teaser anzeigen'),
+        showDogs: showSectionField('Hunde-Teaser anzeigen'),
+        showStory: showSectionField('Geschichte-Teaser anzeigen'),
+        showQuote: showSectionField('Gründer-Zitat anzeigen'),
+        showFaq: showSectionField('FAQ anzeigen'),
       },
     }),
 
     missionContent: singleton({
       label: '🎯 Mission-Seite',
       path: 'content/pages/mission',
+      previewUrl: `${siteUrl}/mission/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -162,14 +315,15 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('mission')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField('mitte'),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         introEyebrow: fields.text({ label: 'Intro – kleine Zeile' }),
         introHeadline: fields.text({ label: 'Intro – Überschrift', multiline: true }),
-        introText: fields.text({
-          label: 'Intro – Absatz',
-          multiline: true,
-          description: 'Freier Text direkt vor den Problem-Karten — hier kannst du in eigenen Worten erzählen, worum es geht.',
-        }),
+        introBody: richParagraphs(
+          'Intro – Absätze',
+          'Freier Text direkt vor den Problem-Karten — hier kannst du in eigenen Worten erzählen, worum es geht. Beliebig viele Absätze.',
+        ),
 
         problemEyebrow: fields.text({ label: 'Problem – kleine Zeile' }),
         problemHeadline: fields.text({ label: 'Problem – Überschrift', multiline: true }),
@@ -208,15 +362,13 @@ export default config({
 
         catsEyebrow: fields.text({ label: 'Katzen – kleine Zeile' }),
         catsHeadline: fields.text({ label: 'Katzen – Überschrift', multiline: true }),
-        catsText1: fields.text({ label: 'Katzen – Absatz 1', multiline: true }),
-        catsText2: fields.text({ label: 'Katzen – Absatz 2', multiline: true }),
+        catsBody: richParagraphs('Katzen – Absätze'),
         catsLinkLabel: fields.text({ label: 'Katzen – Button-Text' }),
         catsImage: sectionImage('mission')('Katzen – Foto'),
 
         visionEyebrow: fields.text({ label: 'Vision – kleine Zeile' }),
         visionHeadline: fields.text({ label: 'Vision – Überschrift', multiline: true }),
-        visionText1: fields.text({ label: 'Vision – Absatz 1', multiline: true }),
-        visionText2: fields.text({ label: 'Vision – Absatz 2', multiline: true }),
+        visionBody: richParagraphs('Vision – Absätze'),
         visionButton: fields.text({ label: 'Vision – Button-Text' }),
       },
     }),
@@ -224,6 +376,7 @@ export default config({
     helpContent: singleton({
       label: '💝 Helfen-Seite',
       path: 'content/pages/help',
+      previewUrl: `${siteUrl}/helfen/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -231,6 +384,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('help')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         tiersEyebrow: fields.text({ label: 'Spenden-Beträge – kleine Zeile' }),
         tiersHeadline: fields.text({ label: 'Spenden-Beträge – Überschrift', multiline: true }),
@@ -263,7 +418,7 @@ export default config({
 
         volunteerEyebrow: fields.text({ label: 'Volunteer – kleine Zeile' }),
         volunteerHeadline: fields.text({ label: 'Volunteer – Überschrift', multiline: true }),
-        volunteerText: fields.text({ label: 'Volunteer – Text', multiline: true }),
+        volunteerBody: richParagraphs('Volunteer – Absätze'),
         volunteerTasks: fields.array(fields.text({ label: 'Aufgabe' }), {
           label: 'Volunteer – Aufgaben (Symbole bleiben fest)',
           itemLabel: (props) => props.value || 'Aufgabe',
@@ -289,6 +444,7 @@ export default config({
     adoptionContent: singleton({
       label: '🐕 Adoptions-Seite',
       path: 'content/pages/adoption',
+      previewUrl: `${siteUrl}/adoptieren/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -296,6 +452,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('adoption')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         commitmentEyebrow: fields.text({ label: 'Dauer-Block – kleine Zeile' }),
         commitmentText: fields.text({ label: 'Dauer-Block – grosser Text', multiline: true }),
@@ -346,6 +504,7 @@ export default config({
     aboutContent: singleton({
       label: '📖 Über-uns-Seite (Texte)',
       path: 'content/pages/about',
+      previewUrl: `${siteUrl}/ueber-uns/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -353,13 +512,15 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('about')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
         storyChapters: fields.array(
           fields.object({
             title: fields.text({ label: 'Kapitel-Titel' }),
-            text: fields.text({ label: 'Text', multiline: true }),
+            text: richParagraphs('Text'),
             image: sectionImage('about')('Foto'),
           }),
           {
@@ -394,14 +555,14 @@ export default config({
     team: singleton({
       label: '👥 Team – Bios & Fotos',
       path: 'content/team',
+      previewUrl: `${siteUrl}/ueber-uns/`,
       format: { data: 'json' },
       schema: {
         eileenRole: fields.text({
           label: 'Eileens Untertitel',
           description: 'z.B. Die unermüdliche Hundemama',
         }),
-        eileenBio1: fields.text({ label: 'Eileens Bio – 1. Absatz', multiline: true }),
-        eileenBio2: fields.text({ label: 'Eileens Bio – 2. Absatz', multiline: true }),
+        eileenBody: richParagraphs('Eileens Bio – Absätze'),
         eileenImage: fields.image({
           label: 'Eileens Profilfoto',
           directory: 'public/images/team',
@@ -412,8 +573,7 @@ export default config({
           label: 'Fynns Untertitel',
           description: 'z.B. Der Ruhepol & Baumeister',
         }),
-        fynnBio1: fields.text({ label: 'Fynns Bio – 1. Absatz', multiline: true }),
-        fynnBio2: fields.text({ label: 'Fynns Bio – 2. Absatz', multiline: true }),
+        fynnBody: richParagraphs('Fynns Bio – Absätze'),
         fynnImage: fields.image({
           label: 'Fynns Profilfoto',
           directory: 'public/images/team',
@@ -424,11 +584,10 @@ export default config({
         // Team-Showcase — erscheint auf /ueber-uns/ UND /mission/
         showcaseEyebrow: fields.text({ label: 'Team-Showcase – kleine Zeile' }),
         showcaseHeadline: fields.text({ label: 'Team-Showcase – Überschrift', multiline: true }),
-        showcaseText: fields.text({
-          label: 'Team-Showcase – Text',
-          multiline: true,
-          description: 'Text über das ganze Team (Tierärzte, Helfer, Pflegestellen …). Erscheint auf der Über-uns- und der Mission-Seite.',
-        }),
+        showcaseBody: richParagraphs(
+          'Team-Showcase – Absätze',
+          'Text über das ganze Team (Tierärzte, Helfer, Pflegestellen …). Erscheint auf der Über-uns- und der Mission-Seite.',
+        ),
         showcaseImage: fields.image({
           label: 'Team-Showcase – Foto vom ganzen Team',
           directory: 'public/images/team',
@@ -441,6 +600,7 @@ export default config({
     projectsPage: singleton({
       label: '🏗️ Projekte-Seite (Texte)',
       path: 'content/pages/projects',
+      previewUrl: `${siteUrl}/projekte/`,
       format: { data: 'json' },
       schema: {
         heroEyebrow: fields.text({ label: 'Hero – kleine Zeile' }),
@@ -459,6 +619,7 @@ export default config({
     linktreeContent: singleton({
       label: '🔗 Linktree-Seite',
       path: 'content/pages/linktree',
+      previewUrl: `${siteUrl}/linktree/`,
       format: { data: 'json' },
       schema: {
         tagline: fields.text({ label: 'Spruch unter dem Logo', multiline: true }),
@@ -497,6 +658,7 @@ export default config({
     siteContent: singleton({
       label: '🌐 Footer & Allgemein',
       path: 'content/site',
+      previewUrl: `${siteUrl}/`,
       format: { data: 'json' },
       schema: {
         footerTagline: fields.text({
@@ -519,19 +681,41 @@ export default config({
       label: '🐾 Hunde zur Adoption',
       slugField: 'name',
       path: 'content/dogs/*',
+      previewUrl: `${siteUrl}/adoptieren/{slug}/`,
+      // Listenansicht als sortierbare Tabelle — auf einen Blick sichtbar,
+      // welcher Hund noch kein Foto/Alter hat oder schon vermittelt ist.
+      columns: ['name', 'age', 'tag', 'available'],
       format: { data: 'json' },
       schema: {
         name: fields.slug({
           name: { label: 'Name (Emojis ok, z.B. Flummi 🎾)' },
           slug: { label: 'URL-Kürzel', description: 'Wird automatisch generiert – keine Emojis' },
         }),
+        // Foto und Kurzbeschreibung stehen bewusst weit oben: das sind die
+        // Felder, die beim Anlegen eines neuen Hundes zuerst gebraucht werden.
+        image: fields.image({
+          label: 'Foto',
+          directory: 'public/images',
+          publicPath: '/images/',
+          description: 'Foto direkt hochladen – kein GitHub-Wissen nötig',
+        }),
+        imageFocus: imageFocusField('Bildausschnitt des Fotos'),
+        character: fields.text({
+          label: 'Kurzbeschreibung (1 Zeile)',
+          description: 'Slogan, z.B. Kleiner Wirbelwind',
+        }),
         age: fields.text({
           label: 'Alter',
           description: 'z.B. 1 Jahr, 8 Monate',
         }),
+        // Bewusst ein Freitextfeld geblieben: Ein Auswahlfeld würde jeden
+        // Eintrag mit einem abweichenden Wert („Weiblich", „männlich" …) beim
+        // Öffnen gegen das Schema laufen lassen — Eileen käme dann im Admin
+        // nicht mehr an den Hund heran. Der Gewinn wäre minimal, das Risiko
+        // nicht.
         geschlecht: fields.text({
           label: 'Geschlecht',
-          description: 'z.B. Hündin oder Rüde — leer lassen, wenn unbekannt',
+          description: 'Hündin oder Rüde — leer lassen, wenn unbekannt',
         }),
         breed: fields.text({
           label: 'Rasse',
@@ -545,10 +729,6 @@ export default config({
           label: 'Gewicht (optional)',
           description: 'z.B. ca. 12 kg',
         }),
-        character: fields.text({
-          label: 'Kurzbeschreibung (1 Zeile)',
-          description: 'Slogan, z.B. Kleiner Wirbelwind',
-        }),
         kastriert: fields.checkbox({
           label: 'Kastriert',
           defaultValue: true,
@@ -561,17 +741,10 @@ export default config({
           label: 'Gechipt',
           defaultValue: true,
         }),
-        story: fields.text({
-          label: 'Geschichte',
-          multiline: true,
-          description: 'Die Lebensgeschichte des Hundes, 2–4 Sätze',
-        }),
-        image: fields.image({
-          label: 'Foto',
-          directory: 'public/images',
-          publicPath: '/images/',
-          description: 'Foto direkt hochladen – kein GitHub-Wissen nötig',
-        }),
+        story: richParagraphs(
+          'Geschichte',
+          'Die Lebensgeschichte des Hundes. Jeder Eintrag ist ein Absatz – erzähl ruhig ausführlich, das ist der Text, der Menschen zur Adoption bewegt.',
+        ),
         available: fields.checkbox({
           label: 'Verfügbar zur Adoption',
           defaultValue: true,
@@ -579,7 +752,8 @@ export default config({
         }),
         tag: fields.text({
           label: 'Status-Tag (optional)',
-          description: 'z.B. Sucht Zuhause, Welpe, Aktiver Hund, Vermittelt',
+          description:
+            'Kleines farbiges Etikett auf dem Foto, z.B. Sucht Zuhause, Welpe, Besondere Fürsorge. Leer lassen für kein Etikett.',
         }),
       },
     }),
@@ -588,6 +762,7 @@ export default config({
       label: '🏗️ Projekte',
       slugField: 'title',
       path: 'content/projects/*',
+      previewUrl: `${siteUrl}/projekte/`,
       format: { data: 'json' },
       schema: {
         title: fields.slug({

@@ -82,7 +82,7 @@ All content Eileen edits goes through Keystatic at `https://travel2rescue.de/key
 | `reader.singletons.siteContent.read()` | Footer tagline + recurring CTA-band headline/sub | `content/site.json` |
 | `reader.singletons.team.read()` | Eileen & Fynn bios + photo filenames | `content/team.json` |
 
-Always add `|| fallback` (NOT `??`) when using singleton **text** values — `read()` returns `null` if the file doesn't exist, but returns `''` (empty string) for text fields that are missing from the JSON or emptied in the admin, and `??` doesn't catch `''` (this once rendered whole homepage sections blank). Keep `??` only for booleans (e.g. `entry.kastriert ?? true`). **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line headings/paragraphs are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
+Always add `|| fallback` (NOT `??`) when using singleton **text** values — `read()` returns `null` if the file doesn't exist, but returns `''` (empty string) for text fields that are missing from the JSON or emptied in the admin, and `??` doesn't catch `''` (this once rendered whole homepage sections blank). Keep `??` only for booleans (e.g. `entry.kastriert ?? true`). **Every page keeps its original copy as an inline fallback**, so a missing/empty JSON field renders identically to before. Multi-line **headings** are stored with `\n` and rendered through `src/components/Lines.astro` (splits on `\n` → `<br/>`). **Body copy** is no longer plain strings — it moved to paragraph lists rendered by `RichText.astro`; see "Rich text (paragraph lists)" below. Headings with a coloured accent are split into `…Title` + `…TitleAccent`/`…Accent` fields that the template recomposes — this preserves the design while keeping both parts editable.
 
 **Image field note**: Image values in content JSON MUST be stored as full public paths (`/images/<file>` — for collection entries the admin writes `/images/<slug>/<field>.jpeg`). That's the format the Keystatic admin itself writes and the only one it can resolve when re-opening an entry. ⚠️ Bare filenames (`IMG_0991.jpeg`) break the admin: it shows the field as empty, silently REMOVES the image on the next save (this happened to Flummi), and can fail saves with a GraphQL "path requested for deletion" error. All values were migrated in Juni 2026. The `reader` returns values verbatim; keep wrapping with `img()` from `src/lib/img.ts` (`img(entry.image, '/images/fallback.jpg')`) — it passes `/...` through and still rescues any stray bare filename.
 
@@ -139,12 +139,46 @@ Eileen can now edit **essentially every visible text and most images** across th
 | 💝 Helfen-Seite | Hero, donation tiers, 3 ways, volunteer, adoption steps, all FAQs (helfen + adoptieren) |
 | 🐕 Adoptions-Seite | Hero, 6–7-month commitment block, timeline, benefits, form intro |
 | 📖 Über-uns-Seite (Texte) | Hero, 4 story chapters, team/reality section copy, contact heading |
-| 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, 2-paragraph bios, profile photos |
+| 👥 Team – Bios & Fotos | Eileen & Fynn: subtitles, bios (paragraph lists), profile photos |
 | 🏗️ Projekte-Seite (Texte) | Projects page hero + closing block (project cards live in 🏗️ Projekte) |
 | 🔗 Linktree-Seite | Tagline + the full list of links (label, description, URL, icon, highlight) |
 | 🌐 Footer & Allgemein | Footer tagline + the recurring "Wir brauchen Deine Hilfe" donation banner |
 
 **Still hardcoded (intentionally):** legal pages (Impressum/Datenschutz — keep verbatim), nav labels & bank details (`src/data/site.ts`), the adoption form's ~30 screening questions (`formular.astro` — battle-tested, change with a developer), decorative SVG icons, and the `StatsBand` labels (the numbers are editable in ⚙️). Icons on cards/links stay fixed by position — editing card text keeps the matching icon.
+
+### Layout controls Eileen can change (August 2026)
+
+Added after her feedback that she could edit words but "nicht deren Position oder einen kleinen Absatz hinzufügen":
+
+| Control | Where | Notes |
+|---|---|---|
+| **Absätze** (paragraph lists) | All body copy — see rich text below | Add / delete / drag-reorder paragraphs, plus **bold, italic, links** |
+| **Hero – Textposition** | All 5 hero pages | `links` / `mitte` / `rechts`. Picking `rechts` mirrors the darkening gradient automatically, otherwise light text lands on a bright photo |
+| **Bildausschnitt** | Every hero image + **per dog** | `auto` keeps each page's hand-tuned crop (`object-[40%_center]` on home, `object-[center_40%]` on ueber-uns) — the page renders byte-identically until she picks something else |
+| **Reihenfolge der Sektionen** | 🏠 Startseite | Drag-list over the 7 movable homepage sections. Hero, trust strip, StatsBand and CTABand stay fixed |
+| **Sektion anzeigen** | 🏠 Startseite | One checkbox per section; hiding never deletes content |
+
+`src/lib/layout.ts` owns all of this. **Tailwind v4 rule:** every class must appear as a complete literal string there — `object-${value}` would never reach the generated CSS and the option would silently do nothing. There's one shared stylesheet, so a build-time grep for `.object-left` / `.bg-gradient-to-l` is a valid check.
+
+`resolveSectionOrder()` drops unknown/duplicate keys and **appends missing sections at the end** — without that, an order list saved before a new section existed would silently delete it from the page. Visibility reads with `??` (not `||`), because `false` must survive.
+
+/admin-hilfe/ is a German cheat-sheet page for Eileen (noindex, filtered out of the sitemap) explaining these controls and which admin entry edits which page.
+
+### Rich text (paragraph lists)
+
+Body copy is `fields.array(fields.markdoc.inline())` via the `richParagraphs()` helper — a list where each item is one paragraph supporting **bold, italic and links**. Headings, images, dividers, tables and code are deliberately disabled so typography stays with the design.
+
+⚠️ **Use `markdoc.inline`, never `fields.document` or block `fields.markdoc`.** Inline is an `'assets'` field: it stores the paragraph as a plain **markdown string inside the entry's JSON**, and the reader returns it synchronously. The block variants are `'content'` fields that write **separate `.mdoc` files**, which would bypass the `includeFiles` bundling and arrive empty in production (Quirk 0). `fields.document` is also deprecated upstream.
+
+Converted: home (mission/story teasers, FAQs), mission (intro, cats, vision), helfen (volunteer, both FAQ lists), ueber-uns (chapters, both bios), team showcase, and dog stories.
+
+Rendering goes through `src/components/RichText.astro` + `src/lib/richtext.ts`, which accept **both** shapes:
+- a paragraph list from the CMS, and
+- a plain multiline string (all inline template fallbacks, plus any field not yet converted) where **a blank line starts a new paragraph** and a single `\n` becomes `<br/>`.
+
+So the `|| fallback` invariant still holds: an emptied field renders the original hardcoded copy. Anywhere plain text is required (FAQ JSON-LD in `FaqSchema.astro`, `<meta name="description">`, the DogCard teaser) use `richTextToPlain()` — never interpolate the raw value, or you'll print `[object Object]`.
+
+`scripts/migrate-richtext.mjs` migrated the existing content (idempotent; dry-run without `--write`; escapes markdown-significant characters so existing prose can't be reinterpreted as formatting). Run it again if more fields are converted.
 
 ### Env vars
 
@@ -261,6 +295,7 @@ Push to `main` → Vercel auto-deploys (~30s build). All env vars are set in Ver
 - [x] **Mission page pillars** — the 4 pillar cards on `/mission/` are now in `missionContent`.
 - [x] **Full page-text CMS** — every public page (home, mission, helfen, adoptieren, ueber-uns, projekte, linktree) plus footer/CTA now reads its copy from Keystatic singletons with inline fallbacks.
 - [ ] **Adoption form questions** — See evaluation below. (Still the one deliberately-hardcoded text block.)
+- [x] **Absätze + Layout-Kontrollen** (Aug 2026) — Eileen kann Absätze hinzufügen/sortieren/formatieren, die Hero-Textposition und den Bildausschnitt wählen sowie Startseiten-Sektionen sortieren und ausblenden. Siehe „Layout controls" oben.
 
 ### Nice to have (low priority)
 

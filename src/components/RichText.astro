@@ -1,0 +1,63 @@
+---
+/**
+ * Rendert einen CMS-Fließtext als <p>-Absätze.
+ *
+ * Nimmt sowohl die neuen „Absätze"-Felder (fields.array(fields.markdoc.inline))
+ * als auch einfache multiline-Textfelder entgegen — bei letzteren gilt
+ * Leerzeile = neuer Absatz. Ist der CMS-Wert leer, wird `fallback` gerendert,
+ * damit ein geleertes Feld nie eine leere Sektion hinterlässt.
+ *
+ * Die Klassen sind so aufgeteilt, dass das bisherige Layout 1:1 erhalten
+ * bleibt: erster Absatz optional grösser (`leadClass`), letzter Absatz mit
+ * eigenem Abstand (`lastSpacing`) — ohne dass sich zwei mb-Utilities in die
+ * Quere kommen.
+ */
+import { richTextToParagraphs, type RichTextValue } from '@/lib/richtext';
+
+interface Props {
+  value?: RichTextValue;
+  fallback?: string;
+  /** Basisklassen für jeden Absatz (ohne Abstand). */
+  class?: string;
+  /** Zusätzliche Klassen nur für den ersten Absatz, z.B. `text-lg`. */
+  leadClass?: string;
+  /** Abstand unter jedem Absatz. */
+  spacing?: string;
+  /** Abstand unter dem letzten Absatz (Standard: wie `spacing`). */
+  lastSpacing?: string;
+  /** Klassen für Links im Text. */
+  linkClass?: string;
+}
+
+const {
+  value,
+  fallback = '',
+  class: baseClass = '',
+  leadClass = '',
+  spacing = 'mb-4',
+  lastSpacing,
+  linkClass,
+} = Astro.props;
+
+const paragraphs = richTextToParagraphs(value, fallback, { linkClass });
+const lastIndex = paragraphs.length - 1;
+
+const classFor = (index: number) =>
+  [
+    baseClass,
+    index === 0 ? leadClass : '',
+    index === lastIndex ? (lastSpacing ?? spacing) : spacing,
+  ]
+    .filter(Boolean)
+    .join(' ');
+
+// Eine Liste darf nicht in einem <p> stehen — der Browser würde den Absatz
+// davor schliessen und das Markup zerreissen. Solche Blöcke bekommen ein <div>.
+const isBlock = (html: string) => /^<(ul|ol)\b/.test(html);
+---
+
+{paragraphs.map((html, index) =>
+  isBlock(html)
+    ? <div class={classFor(index)} set:html={html} />
+    : <p class={classFor(index)} set:html={html} />,
+)}

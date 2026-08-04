@@ -1,0 +1,43 @@
+---
+// Startseite → Mission-Teaser. Foto rechts (gespiegelt zur Über-uns-Sektion).
+import Lines from '@/components/Lines.astro';
+import RichText from '@/components/RichText.astro';
+import type { RichTextValue } from '@/lib/richtext';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  body?: RichTextValue;
+  bodyFallback: string;
+  image: string;
+}
+const { eyebrow, headline, body, bodyFallback, image } = Astro.props;
+---
+
+<section class="py-20 bg-gray-dark overflow-hidden">
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+    <div class="lg:col-span-5 lg:col-start-2 container-x lg:px-0">
+      <p class="eyebrow mb-4">{eyebrow}</p>
+      <h2 class="section-heading mb-6">
+        <Lines text={headline} />
+      </h2>
+      <RichText
+        value={body}
+        fallback={bodyFallback}
+        class="prose-dark"
+        leadClass="text-lg"
+        lastSpacing="mb-8"
+      />
+      <a href="/mission/" class="btn-ghost">Unsere Mission</a>
+    </div>
+
+    <div class="lg:col-span-6 relative">
+      <img
+        src={image}
+        alt="Straßenhund auf Lombok"
+        class="w-full aspect-[4/3] object-cover rounded-l-2xl"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>

@@ -13,8 +13,6 @@
   ],
   "storyEyebrow": "Unsere Geschichte",
   "storyHeadline": "Aus Mitleid wurde Verantwortung.",
-  "storyText1": "Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.",
-  "storyText2": "Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.",
   "storyPostcard": "Lombok, März 2023 — der eine Welpe, der alles veränderte.",
   "servicesEyebrow": "Was wir konkret tun",
   "servicesHeadline": "Direkt helfen. Nachhaltig verändern.",
@@ -45,19 +43,31 @@
   "homeFaqs": [
     {
       "question": "Kann ich mal vorbeikommen und die Hunde streicheln?",
-      "answer": "Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle."
+      "answer": [
+        "Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle."
+      ]
     },
     {
       "question": "Ich habe einen Hund gesehen, der Hilfe braucht – was tun?",
-      "answer": "Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach."
+      "answer": [
+        "Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach."
+      ]
     },
     {
       "question": "Wo genau geht mein Geld hin?",
-      "answer": "Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind."
+      "answer": [
+        "Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind."
+      ]
     },
     {
       "question": "Wie funktioniert eine Adoption aus Indonesien?",
-      "answer": "Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess."
+      "answer": [
+        "Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess."
+      ]
     }
+  ],
+  "storyBody": [
+    "Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.",
+    "Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht."
   ]
 }

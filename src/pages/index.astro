@@ -2,15 +2,21 @@
 import BaseLayout from '@/layouts/BaseLayout.astro';
 import StatsBand from '@/components/StatsBand.astro';
 import CTABand from '@/components/CTABand.astro';
-import DogCard from '@/components/DogCard.astro';
-import ProjectCard from '@/components/ProjectCard.astro';
 import Lines from '@/components/Lines.astro';
+import { heroLayout, heroOverlay, heroSubClass, imageFocusClass, resolveSectionOrder } from '@/lib/layout';
+import MissionSection from '@/components/home/Mission.astro';
+import ServicesSection from '@/components/home/Services.astro';
+import ProjectsSection from '@/components/home/Projects.astro';
+import DogsSection from '@/components/home/Dogs.astro';
+import StorySection from '@/components/home/Story.astro';
+import QuoteSection from '@/components/home/Quote.astro';
+import FaqSection from '@/components/home/Faq.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
 import { SITE } from '@/data/site';
-import { reader } from '@/lib/keystatic';
+import { readDogs, reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
-const dogEntries = await reader.collections.dogs.all();
+const dogEntries = await readDogs();
 const DOGS = dogEntries
   .filter(({ entry }) => entry.available)
   .map(({ slug, entry }) => ({ id: slug, ...entry }));
@@ -35,6 +41,12 @@ const heroTitleAccent = homeData?.heroTitleAccent || 'Straßenhunde.';
 const heroTitleBottom = homeData?.heroTitleBottom || 'Nur wir sehen hin.';
 const heroSub = homeData?.heroSub || 'Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.';
 const heroImage = img(homeData?.heroImage, '/images/new_hero.jpeg');
+// Textposition + Bildausschnitt kommen aus dem CMS. Ohne Auswahl bleibt alles
+// exakt wie bisher: Text links, Foto auf 40% von links beschnitten.
+const heroPosition = homeData?.heroTextPosition;
+const hero = heroLayout(heroPosition);
+const heroImageClass = imageFocusClass(homeData?.heroImageFocus, 'object-[40%_center]');
+const heroOverlayClass = heroOverlay(heroPosition, 'from-black/90 via-black/60 to-black/20');
 
 const trustItems = homeData?.trustItems?.length
   ? homeData.trustItems
@@ -43,8 +55,7 @@ const trustItems = homeData?.trustItems?.length
 // Mission Teaser (Foto rechts — gespiegelt zur Über-uns-Sektion)
 const missionEyebrow = homeData?.missionEyebrow || 'Unsere Mission';
 const missionHeadline = homeData?.missionHeadline || 'Den Kreislauf aus Elend\ndurchbrechen.';
-const missionText1 = homeData?.missionText1 || 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.';
-const missionText2 = homeData?.missionText2 || 'Kastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
+const missionBodyFallback = 'Schätzungsweise 50.000 Straßenhunde leben auf Lombok – krank, hungrig, völlig auf sich allein gestellt. Wir bekämpfen nicht nur die Symptome, wir packen das Problem an der Wurzel.\n\nKastrationen, Fütterungen, medizinische Versorgung und Rettungen: vier Säulen, ein Ziel – eine Insel, auf der kein Welpe mehr auf der Straße geboren wird.';
 const missionImage = img(homeData?.missionImage, '/images/IMG_2977.jpg');
 
 // Was wir tun — icons stay fixed, text editable
@@ -79,8 +90,7 @@ const dogsImage = img(homeData?.dogsImage, '/images/fynneileen dogs.jpeg');
 // Über-uns Teaser
 const storyEyebrow = homeData?.storyEyebrow || 'Unsere Geschichte';
 const storyHeadline = homeData?.storyHeadline || 'Aus Mitleid wurde Verantwortung.';
-const storyText1 = homeData?.storyText1 || 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.';
-const storyText2 = homeData?.storyText2 || 'Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
+const storyBodyFallback = 'Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.\n\nWas als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.';
 const storyImage = img(homeData?.storyImage, '/images/fynn eileen walking.jpeg');
 const storyPostcard = homeData?.storyPostcard || 'Lombok, März 2023 — der eine Welpe, der alles veränderte.';
 
@@ -96,6 +106,45 @@ const faqs = homeData?.homeFaqs?.length
       { question: 'Wo genau geht mein Geld hin?', answer: 'Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind.' },
       { question: 'Wie funktioniert eine Adoption aus Indonesien?', answer: 'Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess.' },
     ];
+
+// ─── Aufbau der Seite ───────────────────────────────────────────────────────
+// Reihenfolge und Sichtbarkeit kommen aus dem CMS. resolveSectionOrder()
+// ergänzt fehlende Sektionen am Ende, damit eine veraltete gespeicherte Liste
+// niemals stillschweigend eine Sektion von der Seite entfernt.
+const quoteImage = img(homeData?.quoteImage, '/images/fynn eileen dogs horizontal.jpg');
+
+const SECTION_COMPONENTS = {
+  mission: MissionSection,
+  services: ServicesSection,
+  projects: ProjectsSection,
+  dogs: DogsSection,
+  story: StorySection,
+  quote: QuoteSection,
+  faq: FaqSection,
+} as const;
+
+const SECTION_PROPS = {
+  mission: { eyebrow: missionEyebrow, headline: missionHeadline, body: homeData?.missionBody, bodyFallback: missionBodyFallback, image: missionImage },
+  services: { eyebrow: servicesEyebrow, headline: servicesHeadline, services },
+  projects: { eyebrow: projectsEyebrow, headline: projectsHeadline, sub: projectsSub, projects: TEASER_PROJECTS },
+  dogs: { eyebrow: dogsEyebrow, headline: dogsHeadline, sub: dogsSub, image: dogsImage, teaserDogs: TEASER_DOGS, totalDogs: DOGS.length },
+  story: { eyebrow: storyEyebrow, headline: storyHeadline, body: homeData?.storyBody, bodyFallback: storyBodyFallback, image: storyImage, postcard: storyPostcard },
+  quote: { quote: founderQuote, image: quoteImage },
+  faq: { eyebrow: faqEyebrow, headline: faqHeadline, faqs },
+} as const;
+
+// `?? true` statt `|| true` — bei Booleans muss false erhalten bleiben.
+const SECTION_VISIBLE: Record<keyof typeof SECTION_COMPONENTS, boolean> = {
+  mission: homeData?.showMission ?? true,
+  services: homeData?.showServices ?? true,
+  projects: homeData?.showProjects ?? true,
+  dogs: homeData?.showDogs ?? true,
+  story: homeData?.showStory ?? true,
+  quote: homeData?.showQuote ?? true,
+  faq: homeData?.showFaq ?? true,
+};
+
+const sections = resolveSectionOrder(homeData?.sectionOrder).filter((key) => SECTION_VISIBLE[key]);
 ---
 
 <BaseLayout
@@ -108,28 +157,28 @@ const faqs = homeData?.homeFaqs?.length
       <img
         src={heroImage}
         alt="Eileen auf der Müllhaide auf Lombok – Travel2Rescue e.V."
-        class="w-full h-full object-cover object-[40%_center]"
+        class:list={['w-full h-full object-cover', heroImageClass]}
         width="1200"
         height="857"
         fetchpriority="high"
         loading="eager"
         decoding="async"
       />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-black/20" />
+      <div class:list={['absolute inset-0', heroOverlayClass]} />
     </div>
 
     <div class="container-x relative z-10 py-20">
-      <div class="max-w-2xl">
+      <div class:list={['max-w-2xl', hero.box]}>
         <p class="eyebrow mb-5">{heroEyebrow}</p>
         <h1 class="text-5xl md:text-7xl font-black leading-[0.95] tracking-normal mb-6">
           {heroTitleTop}<br />
           <span class="text-amber-500">{heroTitleAccent}</span><br />
           {heroTitleBottom}
         </h1>
-        <p class="text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg">
+        <p class:list={['text-lg md:text-xl text-white/70 leading-relaxed mb-8 max-w-lg', heroSubClass(heroPosition)]}>
           <Lines text={heroSub} />
         </p>
-        <div class="flex flex-wrap gap-4">
+        <div class:list={['flex flex-wrap gap-4', hero.buttons]}>
           <a href="/helfen/" class="btn-primary btn-large">Jetzt helfen</a>
           <a href="/mission/" class="btn-ghost btn-large">Unsere Mission</a>
         </div>
@@ -162,214 +211,14 @@ const faqs = homeData?.homeFaqs?.length
   <StatsBand />
 
   <!--
-    Die folgenden Sektionen spiegeln die Navigation in ihrer Reihenfolge:
+    Die Reihenfolge dieser Sektionen kommt aus dem CMS (🏠 Startseite →
+    „Reihenfolge der Sektionen"). Standard spiegelt die Navigation:
     Unsere Mission → Projekte → Adoptieren → Helfen → Über uns.
-    Jede Sektion verlinkt auf die zugehörige Unterseite.
   -->
-
-  <!-- 1) Unsere Mission — Foto rechts (gespiegelt zur Über-uns-Sektion unten) -->
-  <section class="py-20 bg-gray-dark overflow-hidden">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-      <div class="lg:col-span-5 lg:col-start-2 container-x lg:px-0">
-        <p class="eyebrow mb-4">{missionEyebrow}</p>
-        <h2 class="section-heading mb-6">
-          <Lines text={missionHeadline} />
-        </h2>
-        <p class="prose-dark text-lg mb-4">
-          {missionText1}
-        </p>
-        <p class="prose-dark mb-8">
-          {missionText2}
-        </p>
-        <a href="/mission/" class="btn-ghost">Unsere Mission</a>
-      </div>
-
-      <div class="lg:col-span-6 relative">
-        <img
-          src={missionImage}
-          alt="Straßenhund auf Lombok"
-          class="w-full aspect-[4/3] object-cover rounded-l-2xl"
-          loading="lazy"
-        />
-      </div>
-    </div>
-  </section>
-
-  <!-- Was wir tun — vertieft die Mission; 2x2 grid, Lucide outline icons -->
-  <section class="relative py-20 bg-black overflow-hidden">
-    <!-- Punkteraster wie auf der Adoptions-Timeline — Eileens Liebling -->
-    <div class="absolute inset-0 pointer-events-none opacity-[0.06]" style="background-image: radial-gradient(circle at 1px 1px, #E8D4BB 1px, transparent 0); background-size: 28px 28px;"></div>
-    <div class="container-x relative">
-      <div class="text-center mb-14">
-        <p class="eyebrow mb-3">{servicesEyebrow}</p>
-        <h2 class="section-heading"><Lines text={servicesHeadline} /></h2>
-      </div>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
-        {services.map((item) => (
-          <div class="rounded-2xl bg-amber-500/5 border border-amber-500/10 p-7 hover:bg-amber-500/10 transition-colors">
-            <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center mb-5 text-amber-500">
-              <svg class="w-6 h-6 stroke-current" fill="none" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24" set:html={item.svg} />
-            </div>
-            <h3 class="text-xl font-bold mb-2">{item.title}</h3>
-            <p class="text-white/65 text-sm leading-relaxed">{item.desc}</p>
-          </div>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- 2) Projekte Teaser -->
-  <section class="py-20 bg-gray-dark">
-    <div class="container-x">
-      <div class="text-center mb-12">
-        <p class="eyebrow mb-3">{projectsEyebrow}</p>
-        <h2 class="section-heading"><Lines text={projectsHeadline} /></h2>
-        <p class="section-subheading mx-auto mt-4">{projectsSub}</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {TEASER_PROJECTS.map((project) => (
-          <ProjectCard project={project} />
-        ))}
-      </div>
-      <div class="text-center">
-        <a href="/projekte/" class="btn-primary btn-large">Alle Projekte ansehen</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 3) Adoptieren Teaser — grosses Hintergrundfoto, damit die Sektion nicht untergeht -->
-  <section class="relative py-20 overflow-hidden">
-    <div class="absolute inset-0">
-      <img src={dogsImage} alt="" class="w-full h-full object-cover object-center" loading="lazy" />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black/90" />
-    </div>
-    <div class="container-x relative z-10">
-      <div class="text-center mb-12">
-        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
-          Aktuell warten {DOGS.length} {DOGS.length === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
-        </p>
-        <p class="eyebrow mb-3">{dogsEyebrow}</p>
-        <h2 class="section-heading">{dogsHeadline}</h2>
-        <p class="section-subheading mx-auto mt-4">{dogsSub}</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        {TEASER_DOGS.map((dog) => (
-          <DogCard dog={dog} />
-        ))}
-      </div>
-      <div class="text-center">
-        <a href="/adoptieren/" class="btn-primary btn-large">Alle {DOGS.length} Hunde ansehen</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- 4) Helfen = die vertraute beige "Wir brauchen Deine Hilfe"-Band (CTABand
-       ganz unten). Der separate Helfen-Teaser wurde auf Wunsch entfernt. -->
-
-  <!-- 5) Über uns Teaser — asymmetric, photo bleeds to left edge -->
-  <section class="py-20 bg-gray-dark overflow-hidden">
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-      <div class="lg:col-span-6 relative">
-        <div class="relative">
-          <img
-            src={storyImage}
-            alt="Fynn und Eileen auf Lombok"
-            class="w-full aspect-[4/3] object-cover rounded-r-2xl"
-            loading="lazy"
-          />
-          <!-- Postcard caption overlay -->
-          <div class="absolute bottom-6 right-6 max-w-xs bg-cream text-black/80 px-5 py-4 shadow-2xl rotate-[-1.5deg]">
-            <p class="font-serif italic text-base leading-snug">
-              {storyPostcard}
-            </p>
-            <div class="mt-2 h-px w-10 bg-black/30" />
-            <p class="mt-1 text-[10px] uppercase tracking-widest text-black/50">Fynn &amp; Eileen</p>
-          </div>
-          <!-- e.V. badge -->
-          <div class="absolute top-6 right-6 bg-amber-500 text-black rounded-2xl p-3 text-center shadow-xl">
-            <div class="text-2xl font-black leading-none">e.V.</div>
-            <div class="text-[10px] font-bold uppercase mt-1">seit 2023</div>
-          </div>
-        </div>
-      </div>
-
-      <div class="lg:col-span-5 container-x lg:px-0 lg:pr-8">
-        <p class="eyebrow mb-4">{storyEyebrow}</p>
-        <h2 class="section-heading mb-6">
-          <Lines text={storyHeadline} />
-        </h2>
-        <p class="prose-dark text-lg mb-4">
-          {storyText1}
-        </p>
-        <p class="prose-dark mb-8">
-          {storyText2}
-        </p>
-        <a href="/ueber-uns/" class="btn-ghost">Unsere Geschichte</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Zitat — full-bleed photo backdrop -->
-  <section class="relative py-28 md:py-36 overflow-hidden">
-    <div class="absolute inset-0">
-      <img
-        src="/images/fynn eileen dogs horizontal.jpg"
-        alt=""
-        class="w-full h-full object-cover object-center"
-        loading="lazy"
-      />
-      <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/75 to-black/85" />
-    </div>
-    <div class="container-x relative z-10">
-      <div class="max-w-4xl mx-auto text-center">
-        <svg class="w-12 h-12 mx-auto mb-8 text-amber-500/70" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M9.13 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L11.83 19s7.3-3.9 7.3-11.5c0-2.8-1.9-4.7-4.5-4.7-2.8 0-5.5 2-5.5 6.7zM0 9.5c0 2.3 1.6 4.1 3.7 4.1.4 0 .8-.1 1.1-.2-1.3 2.3-3.5 3.6-3.5 3.6L2.7 19S10 15.1 10 7.5C10 4.7 8.1 2.8 5.5 2.8 2.7 2.8 0 4.8 0 9.5z" />
-        </svg>
-        <blockquote class="font-serif italic text-3xl md:text-5xl text-white leading-[1.25] mb-10">
-          „{founderQuote}"
-        </blockquote>
-        <div class="flex items-center justify-center gap-4">
-          <img
-            src="/images/fynn eileen dogs horizontal.jpg"
-            alt="Fynn & Eileen"
-            class="w-12 h-12 rounded-full object-cover object-top border-2 border-amber-500/40"
-            loading="lazy"
-          />
-          <div class="text-left">
-            <div class="text-white font-semibold text-sm">Fynn &amp; Eileen</div>
-            <div class="text-white/60 text-xs uppercase tracking-wider">Gründer, Travel2Rescue e.V.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ — single column, serif questions -->
-  <section class="py-20 bg-black">
-    <div class="container-x max-w-2xl mx-auto">
-      <div class="text-center mb-12">
-        <p class="eyebrow mb-3">{faqEyebrow}</p>
-        <h2 class="section-heading">{faqHeadline}</h2>
-      </div>
-      <div class="divide-y divide-white/5 border-y border-white/5">
-        {faqs.map((faq) => (
-          <details class="group py-5">
-            <summary class="flex items-start justify-between gap-4 cursor-pointer list-none">
-              <h3 class="font-serif text-lg md:text-xl text-white leading-snug">
-                {faq.question}
-              </h3>
-              <span class="shrink-0 mt-1 w-7 h-7 rounded-full border border-white/15 flex items-center justify-center text-white/60 group-open:bg-amber-500 group-open:text-black group-open:border-amber-500 transition-colors">
-                <svg class="w-3.5 h-3.5 transition-transform group-open:rotate-45" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                  <path d="M12 5v14M5 12h14" />
-                </svg>
-              </span>
-            </summary>
-            <p class="mt-4 pr-11 text-white/70 leading-relaxed">{faq.answer}</p>
-          </details>
-        ))}
-      </div>
-    </div>
-  </section>
+  {sections.map((key) => {
+    const Section = SECTION_COMPONENTS[key];
+    return <Section {...(SECTION_PROPS[key] as any)} />;
+  })}
 
   <CTABand
     primary={{ label: 'Jetzt spenden', href: '/helfen/' }}
