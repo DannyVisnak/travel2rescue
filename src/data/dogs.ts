@@ -12,6 +12,8 @@ export interface Dog {
   // Keystatic image fields are optional, so the bare filename can be null;
   // always pipe through src/lib/img.ts before rendering.
   image: string | null;
+  /** Bildausschnitt aus dem Admin ('auto' = wie bisher). */
+  imageFocus?: string | null;
   available: boolean;
   tag?: string;
   // Steckbrief-Felder (optional — ältere Einträge haben sie noch nicht)

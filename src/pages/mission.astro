@@ -5,6 +5,7 @@ import ContactForm from '@/components/ContactForm.astro';
 import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
 import RichText from '@/components/RichText.astro';
+import { heroLayout, heroOverlay, imageFocusClass } from '@/lib/layout';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -18,6 +19,13 @@ const heroImage = img(m?.heroImage, '/images/IMG_2977.jpg');
 
 const introEyebrow = m?.introEyebrow || 'Warum wir tun, was wir tun';
 const introHeadline = m?.introHeadline || 'Hinschauen,\nwo andere wegsehen.';
+// Der Mission-Hero steht standardmässig mittig — deshalb 'mitte' als Fallback
+// und ein gleichmässiges Overlay statt eines gerichteten Verlaufs.
+const missionHeroPosition = m?.heroTextPosition || 'mitte';
+const missionHero = heroLayout(missionHeroPosition);
+const missionHeroImageClass = imageFocusClass(m?.heroImageFocus, '');
+const missionHeroOverlay = heroOverlay(missionHeroPosition, 'from-black/90 via-black/75 to-black/40', 'bg-black/75');
+
 const introBodyFallback = 'Hinter jeder Zahl steht ein Hund, der ohne Hilfe keine Chance hätte. Auf dieser Seite zeigen wir dir, womit die Tiere auf Lombok täglich kämpfen – und wie wir das Problem an der Wurzel packen, statt nur Symptome zu behandeln.';
 
 const problemEyebrow = m?.problemEyebrow || 'Das Problem';
@@ -72,16 +80,16 @@ const visionButton = m?.visionButton || 'Teil der Lösung werden';
       <img
         src={heroImage}
         alt="Straßenhund auf Lombok"
-        class="w-full h-full object-cover"
+        class:list={['w-full h-full object-cover', missionHeroImageClass]}
         width="1200"
         height="1600"
         fetchpriority="high"
         loading="eager"
         decoding="async"
       />
-      <div class="absolute inset-0 bg-black/75" />
+      <div class:list={['absolute inset-0', missionHeroOverlay]} />
     </div>
-    <div class="container-x relative z-10 text-center max-w-3xl mx-auto">
+    <div class:list={['container-x relative z-10 max-w-3xl', missionHero.box]}>
       <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-7xl font-semibold leading-[1.05] tracking-tight mb-6">
         <Lines text={heroTitle} /><br />

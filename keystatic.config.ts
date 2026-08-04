@@ -43,6 +43,50 @@ const richParagraphs = (label: string, description?: string) =>
     },
   );
 
+// Textposition im Hero. Genau Eileens Wunsch: „Nehmen wir an ich will den Text
+// auf Startseite nach rechts positionieren damit man mich auf dem Bild sieht."
+// Der Abdunkel-Verlauf hinter dem Text wird automatisch mitgespiegelt.
+const heroTextPositionField = (defaultValue: 'links' | 'mitte' | 'rechts' = 'links') =>
+  fields.select({
+    label: 'Hero – Textposition',
+    description:
+      'Wo steht der Text über dem Foto? „Rechts" schiebt den Text nach rechts – gut, wenn links im Foto etwas zu sehen sein soll.',
+    options: [
+      { label: 'Links', value: 'links' },
+      { label: 'Mitte', value: 'mitte' },
+      { label: 'Rechts', value: 'rechts' },
+    ],
+    defaultValue,
+  });
+
+// Bildausschnitt. „Automatisch" behält den handgesetzten Ausschnitt der Seite —
+// nur wenn Eileen aktiv etwas anderes wählt, ändert sich der Bildausschnitt.
+const imageFocusField = (label = 'Bildausschnitt') =>
+  fields.select({
+    label,
+    description:
+      'Welcher Teil des Fotos soll zu sehen sein, wenn es beschnitten wird? Hilft, wenn Köpfe abgeschnitten werden.',
+    options: [
+      { label: 'Automatisch (wie bisher)', value: 'auto' },
+      { label: 'Mitte', value: 'mitte' },
+      { label: 'Links', value: 'links' },
+      { label: 'Rechts', value: 'rechts' },
+      { label: 'Oben', value: 'oben' },
+      { label: 'Unten', value: 'unten' },
+      { label: 'Links oben', value: 'links-oben' },
+      { label: 'Rechts oben', value: 'rechts-oben' },
+    ],
+    defaultValue: 'auto',
+  });
+
+// Sektion ein-/ausblenden, ohne dass Inhalt verloren geht.
+const showSectionField = (label: string) =>
+  fields.checkbox({
+    label,
+    defaultValue: true,
+    description: 'Haken entfernen, um diese Sektion auf der Seite auszublenden. Die Texte bleiben erhalten.',
+  });
+
 const faqArray = (label: string) =>
   fields.array(
     fields.object({
@@ -136,6 +180,8 @@ export default config({
           description: 'Text unter der Überschrift',
         }),
         heroImage: sectionImage('home')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         // Trust strip
         trustItems: fields.array(fields.text({ label: 'Eintrag' }), {
@@ -182,6 +228,7 @@ export default config({
         dogsImage: sectionImage('home')('Hunde-Teaser – grosses Hintergrundfoto'),
 
         // Zitat
+        quoteImage: sectionImage('home')('Zitat – Hintergrundfoto'),
         founderQuote: fields.text({
           label: 'Gründer-Zitat',
           multiline: true,
@@ -192,6 +239,38 @@ export default config({
         faqEyebrow: fields.text({ label: 'FAQ – kleine Zeile' }),
         faqHeadline: fields.text({ label: 'FAQ – Überschrift' }),
         homeFaqs: faqArray('FAQ-Einträge (Startseite)'),
+
+        // ─── Aufbau der Seite ────────────────────────────────────────────
+        // Reihenfolge und Sichtbarkeit der Sektionen. Hero, Vertrauens-Leiste,
+        // Statistiken und das Spenden-Banner bleiben bewusst fest verankert.
+        sectionOrder: fields.array(
+          fields.select({
+            label: 'Sektion',
+            options: [
+              { label: 'Mission-Teaser', value: 'mission' },
+              { label: 'Was wir tun', value: 'services' },
+              { label: 'Projekte-Teaser', value: 'projects' },
+              { label: 'Hunde-Teaser', value: 'dogs' },
+              { label: 'Geschichte-Teaser', value: 'story' },
+              { label: 'Gründer-Zitat', value: 'quote' },
+              { label: 'FAQ', value: 'faq' },
+            ],
+            defaultValue: 'mission',
+          }),
+          {
+            label: 'Reihenfolge der Sektionen',
+            description:
+              'Am Griff ziehen, um die Reihenfolge auf der Startseite zu ändern. Nicht aufgeführte Sektionen erscheinen automatisch am Ende.',
+            itemLabel: (props) => props.value || 'Sektion',
+          },
+        ),
+        showMission: showSectionField('Mission-Teaser anzeigen'),
+        showServices: showSectionField('„Was wir tun" anzeigen'),
+        showProjects: showSectionField('Projekte-Teaser anzeigen'),
+        showDogs: showSectionField('Hunde-Teaser anzeigen'),
+        showStory: showSectionField('Geschichte-Teaser anzeigen'),
+        showQuote: showSectionField('Gründer-Zitat anzeigen'),
+        showFaq: showSectionField('FAQ anzeigen'),
       },
     }),
 
@@ -205,6 +284,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('mission')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField('mitte'),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         introEyebrow: fields.text({ label: 'Intro – kleine Zeile' }),
         introHeadline: fields.text({ label: 'Intro – Überschrift', multiline: true }),
@@ -271,6 +352,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('help')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         tiersEyebrow: fields.text({ label: 'Spenden-Beträge – kleine Zeile' }),
         tiersHeadline: fields.text({ label: 'Spenden-Beträge – Überschrift', multiline: true }),
@@ -336,6 +419,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('adoption')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         commitmentEyebrow: fields.text({ label: 'Dauer-Block – kleine Zeile' }),
         commitmentText: fields.text({ label: 'Dauer-Block – grosser Text', multiline: true }),
@@ -393,6 +478,8 @@ export default config({
         heroTitleAccent: fields.text({ label: 'Hero – Überschrift farbiger Teil' }),
         heroSub: fields.text({ label: 'Hero – Untertext', multiline: true }),
         heroImage: sectionImage('about')('Hero – Hintergrundbild'),
+        heroTextPosition: heroTextPositionField(),
+        heroImageFocus: imageFocusField('Hero – Bildausschnitt'),
 
         storyEyebrow: fields.text({ label: 'Geschichte – kleine Zeile' }),
         storyHeadline: fields.text({ label: 'Geschichte – Überschrift', multiline: true }),
@@ -608,6 +695,7 @@ export default config({
           publicPath: '/images/',
           description: 'Foto direkt hochladen – kein GitHub-Wissen nötig',
         }),
+        imageFocus: imageFocusField('Bildausschnitt des Fotos'),
         available: fields.checkbox({
           label: 'Verfügbar zur Adoption',
           defaultValue: true,

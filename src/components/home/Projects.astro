@@ -1,0 +1,31 @@
+---
+// Startseite → Projekte-Teaser (3 Karten aus der Projekte-Collection).
+import Lines from '@/components/Lines.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  sub: string;
+  projects: ReadonlyArray<any>;
+}
+const { eyebrow, headline, sub, projects } = Astro.props;
+---
+
+<section class="py-20 bg-gray-dark">
+  <div class="container-x">
+    <div class="text-center mb-12">
+      <p class="eyebrow mb-3">{eyebrow}</p>
+      <h2 class="section-heading"><Lines text={headline} /></h2>
+      <p class="section-subheading mx-auto mt-4">{sub}</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      {projects.map((project) => (
+        <ProjectCard project={project} />
+      ))}
+    </div>
+    <div class="text-center">
+      <a href="/projekte/" class="btn-primary btn-large">Alle Projekte ansehen</a>
+    </div>
+  </div>
+</section>

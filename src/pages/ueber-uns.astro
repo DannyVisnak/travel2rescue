@@ -5,6 +5,7 @@ import ContactForm from '@/components/ContactForm.astro';
 import TeamShowcase from '@/components/TeamShowcase.astro';
 import Lines from '@/components/Lines.astro';
 import RichText from '@/components/RichText.astro';
+import { heroLayout, heroOverlay, imageFocusClass } from '@/lib/layout';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -16,6 +17,12 @@ const heroTitle = c?.heroTitle || 'Wer sind';
 const heroTitleAccent = c?.heroTitleAccent || 'wir eigentlich?';
 const heroSub = c?.heroSub || 'Ein Pärchen auf Weltreise. Ein Straßenhund. Und eine Entscheidung, die alles veränderte.';
 const heroImage = img(c?.heroImage, '/images/fynn eileen dogs horizontal.jpg');
+const aboutHeroPosition = c?.heroTextPosition;
+const aboutHero = heroLayout(aboutHeroPosition);
+// Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
+// zeigte nur Himmel und schnitt die Köpfe ab. Deshalb dieser Standard.
+const aboutHeroImageClass = imageFocusClass(c?.heroImageFocus, 'object-[center_40%]');
+const aboutHeroOverlay = heroOverlay(aboutHeroPosition, 'from-black/85 via-black/60 to-black/20');
 
 const storyEyebrow = c?.storyEyebrow || 'Wie alles begann';
 const storyHeadline = c?.storyHeadline || 'Der Weg\nzum Verein.';
@@ -56,12 +63,10 @@ const contactHeadline = c?.contactHeadline || 'Wir freuen uns\nvon dir zu hören
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <!-- Das Foto ist fast quadratisch, die Gesichter liegen mittig — object-top
-           zeigte nur Himmel und schnitt die Köpfe ab -->
-      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class="w-full h-full object-cover object-[center_40%]" width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/85 via-black/60 to-black/20" />
+      <img src={heroImage} alt="Fynn und Eileen mit ihren Hunden" class:list={['w-full h-full object-cover', aboutHeroImageClass]} width="1200" height="800" fetchpriority="high" loading="eager" decoding="async" />
+      <div class:list={['absolute inset-0', aboutHeroOverlay]} />
     </div>
-    <div class="container-x relative z-10 max-w-2xl">
+    <div class:list={['container-x relative z-10 max-w-2xl', aboutHero.box]}>
       <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="font-serif text-5xl md:text-6xl font-semibold leading-[1.05] tracking-tight mb-6">
         <Lines text={heroTitle} /><br />

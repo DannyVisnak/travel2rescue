@@ -7,6 +7,7 @@ import ContactForm from '@/components/ContactForm.astro';
 import VermitteltStrip from '@/components/VermitteltStrip.astro';
 import Lines from '@/components/Lines.astro';
 import FaqSchema from '@/components/FaqSchema.astro';
+import { heroLayout, heroOverlay, heroSubClass, imageFocusClass } from '@/lib/layout';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 
@@ -28,6 +29,10 @@ const heroTitle = a?.heroTitle || 'Find deinen';
 const heroTitleAccent = a?.heroTitleAccent || 'besten Freund fürs Leben.';
 const heroSub = a?.heroSub || 'Jeder Hund verdient ein liebevolles Zuhause. Unsere Hunde haben Schlimmeres überlebt, als du dir vorstellen kannst – und jetzt sind sie bereit für ihr letztes, schönstes Kapitel.';
 const heroImage = img(a?.heroImage, '/images/fynneileen dogs.jpeg');
+const adoptHeroPosition = a?.heroTextPosition;
+const adoptHero = heroLayout(adoptHeroPosition);
+const adoptHeroImageClass = imageFocusClass(a?.heroImageFocus, '');
+const adoptHeroOverlay = heroOverlay(adoptHeroPosition, 'from-black/85 to-black/40');
 
 const commitmentEyebrow = a?.commitmentEyebrow || 'Was uns unterscheidet';
 const commitmentText = a?.commitmentText || 'Eine Adoption aus Lombok dauert';
@@ -84,19 +89,19 @@ const faqs = helpData?.adoptionFaqs?.length ? helpData.adoptionFaqs : fallbackFa
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src={heroImage} alt="Gerettete Hunde bei Travel2Rescue" class="w-full h-full object-cover" width="1200" height="1800" fetchpriority="high" loading="eager" decoding="async" />
-      <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/40" />
+      <img src={heroImage} alt="Gerettete Hunde bei Travel2Rescue" class:list={['w-full h-full object-cover', adoptHeroImageClass]} width="1200" height="1800" fetchpriority="high" loading="eager" decoding="async" />
+      <div class:list={['absolute inset-0', adoptHeroOverlay]} />
     </div>
-    <div class="container-x relative z-10 max-w-2xl">
+    <div class:list={['container-x relative z-10 max-w-2xl', adoptHero.box]}>
       <p class="eyebrow mb-5">{heroEyebrow}</p>
       <h1 class="text-5xl md:text-6xl font-black mb-6">
         <Lines text={heroTitle} /><br />
         <span class="text-amber-500">{heroTitleAccent}</span>
       </h1>
-      <p class="text-xl text-white/70 leading-relaxed mb-8">
+      <p class:list={['text-xl text-white/70 leading-relaxed mb-8', heroSubClass(adoptHeroPosition)]}>
         {heroSub}
       </p>
-      <div class="flex flex-wrap gap-3">
+      <div class:list={['flex flex-wrap gap-3', adoptHero.buttons]}>
         <a href="#hunde" class="btn-primary btn-large">Hunde entdecken</a>
         <a href="#prozess" class="btn-ghost btn-large">So lange dauert es</a>
       </div>

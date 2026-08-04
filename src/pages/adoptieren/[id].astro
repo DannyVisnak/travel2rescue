@@ -3,6 +3,7 @@ import BaseLayout from '@/layouts/BaseLayout.astro';
 import CTABand from '@/components/CTABand.astro';
 import RichText from '@/components/RichText.astro';
 import { richTextToPlain } from '@/lib/richtext';
+import { imageFocusClass } from '@/lib/layout';
 import { reader } from '@/lib/keystatic';
 import { img } from '@/lib/img';
 import { SITE } from '@/data/site';
@@ -38,6 +39,9 @@ const dog = {
 };
 // Hunde ohne Foto (frisch angelegt) bekommen das Gruppenfoto als Platzhalter
 const dogImage = img(dog.image, '/images/fynneileen dogs.jpeg');
+// Hochkant-Handyfotos schneiden sonst gern den Kopf ab — Eileen kann den
+// Ausschnitt pro Hund im Admin wählen.
+const dogImageClass = imageFocusClass(entry.imageFocus, '');
 
 // Steckbrief — leere Felder werden automatisch ausgeblendet
 const steckbrief = [
@@ -95,7 +99,7 @@ const dogJsonLd = {
   <!-- Hero -->
   <section class="relative py-24 overflow-hidden">
     <div class="absolute inset-0">
-      <img src={dogImage} alt={dog.name} class="w-full h-full object-cover" width="1200" height="900" fetchpriority="high" loading="eager" decoding="async" />
+      <img src={dogImage} alt={dog.name} class:list={['w-full h-full object-cover', dogImageClass]} width="1200" height="900" fetchpriority="high" loading="eager" decoding="async" />
       <div class="absolute inset-0 bg-gradient-to-r from-black/85 to-black/30" />
     </div>
     <div class="container-x relative z-10 max-w-2xl">
@@ -163,7 +167,7 @@ const dogJsonLd = {
           <img
             src={dogImage}
             alt={dog.name}
-            class="rounded-2xl w-full aspect-[3/4] object-cover"
+            class:list={['rounded-2xl w-full aspect-[3/4] object-cover', dogImageClass]}
             loading="lazy"
           />
         </div>

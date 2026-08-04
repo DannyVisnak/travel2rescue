@@ -1,0 +1,42 @@
+---
+// Startseite → Adoptions-Teaser mit grossem Hintergrundfoto.
+import DogCard from '@/components/DogCard.astro';
+import type { Dog } from '@/data/dogs';
+
+interface Props {
+  eyebrow: string;
+  headline: string;
+  sub: string;
+  image: string;
+  /** Die 3 Hunde auf der Startseite. */
+  teaserDogs: ReadonlyArray<Dog>;
+  /** Gesamtzahl verfügbarer Hunde (für „Alle X Hunde ansehen"). */
+  totalDogs: number;
+}
+const { eyebrow, headline, sub, image, teaserDogs, totalDogs } = Astro.props;
+---
+
+<section class="relative py-20 overflow-hidden">
+  <div class="absolute inset-0">
+    <img src={image} alt="" class="w-full h-full object-cover object-center" loading="lazy" />
+    <div class="absolute inset-0 bg-gradient-to-b from-black/90 via-black/75 to-black/90" />
+  </div>
+  <div class="container-x relative z-10">
+    <div class="text-center mb-12">
+      <p class="text-xs font-semibold uppercase tracking-[0.25em] text-white/50 mb-3">
+        Aktuell warten {totalDogs} {totalDogs === 1 ? 'Hund' : 'Hunde'} auf ein Zuhause
+      </p>
+      <p class="eyebrow mb-3">{eyebrow}</p>
+      <h2 class="section-heading">{headline}</h2>
+      <p class="section-subheading mx-auto mt-4">{sub}</p>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      {teaserDogs.map((dog) => (
+        <DogCard dog={dog} />
+      ))}
+    </div>
+    <div class="text-center">
+      <a href="/adoptieren/" class="btn-primary btn-large">Alle {totalDogs} Hunde ansehen</a>
+    </div>
+  </div>
+</section>
