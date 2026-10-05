@@ -2,17 +2,24 @@
   "heroEyebrow": "Travel2Rescue e.V. · Kuta, Lombok",
   "heroTitleTop": "100.000",
   "heroTitleAccent": "Straßenhunde.",
-  "heroTitleBottom": "Wir sehen hin. alter",
+  "heroTitleBottom": "Wir sehen hin.",
   "heroSub": "Jeden Tag kämpfen Hunde auf Lombok ums Überleben – hungrig, krank, allein.\nFynn & Eileen haben aufgehört wegzuschauen. Wir auch nicht mehr.",
   "heroImage": "/images/home/heroImage.jpeg",
+  "heroTextPosition": "links",
+  "heroImageFocus": "auto",
   "trustItems": [
     "e.V. seit 2023",
     "Vereinsregister Hof",
     "100% Tierschutz",
     "Steuerlich absetzbar"
   ],
+  "missionBody": [],
   "storyEyebrow": "Unsere Geschichte",
   "storyHeadline": "Aus Mitleid wurde Verantwortung.",
+  "storyBody": [
+    "Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.\n",
+    "Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht.\n"
+  ],
   "storyPostcard": "Lombok, März 2023 — der eine Welpe, der alles veränderte.",
   "servicesEyebrow": "Was wir konkret tun",
   "servicesHeadline": "Direkt helfen. Nachhaltig verändern.",
@@ -44,30 +51,34 @@
     {
       "question": "Kann ich mal vorbeikommen und die Hunde streicheln?",
       "answer": [
-        "Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle."
+        "Wir lieben Besuch, aber wir haben kein öffentliches Tierheim – wir pflegen die Hunde privat bei uns zu Hause und in Pflegestellen. Da wir nur zu zweit sind, können wir keinen Besuch empfangen. Unser Fokus liegt 24/7 auf der Versorgung der Notfälle.\n"
       ]
     },
     {
       "question": "Ich habe einen Hund gesehen, der Hilfe braucht – was tun?",
       "answer": [
-        "Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach."
+        "Schick uns ein Video und den genauen Standort per DM auf Instagram. Wir prüfen unsere Kapazitäten und vernetzen dich mit anderen Organisationen, falls wir nicht helfen können. Bitte hab Verständnis – wir sind voll bis unters Dach.\n"
       ]
     },
     {
       "question": "Wo genau geht mein Geld hin?",
       "answer": [
-        "Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind."
+        "Zu 100% in die Tierhilfe. Wir haben keine Verwaltungskosten. Dein Geld kauft Futter, bezahlt Kastrationen und begleicht die Tierarztrechnungen, die unser größter Kostenpunkt sind.\n"
       ]
     },
     {
       "question": "Wie funktioniert eine Adoption aus Indonesien?",
       "answer": [
-        "Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess."
+        "Möglich, aber ein Marathon. Aufgrund der Tollwut-Bestimmungen dauert die Ausreisevorbereitung mindestens 6–7 Monate (Titer-Test, Wartezeiten, Papiere). Wenn du diese Geduld mitbringst, begleiten wir dich durch den gesamten Prozess.\n"
       ]
     }
   ],
-  "storyBody": [
-    "Eigentlich wollten Fynn & Eileen nur reisen. Dann kam dieser eine Welpe – geschlagen, allein auf der Straße. Sie schauten sich an. Kein Wort. Und blieben.",
-    "Was als Schüssel Futter vor der Tür begann, wurde zur Lebensaufgabe. Heute sind sie Gründer des gemeinnützigen Vereins Travel2Rescue e.V. und kämpfen jeden Tag für die Hunde, die sonst niemand sieht."
-  ]
+  "sectionOrder": [],
+  "showMission": true,
+  "showServices": true,
+  "showProjects": true,
+  "showDogs": true,
+  "showStory": true,
+  "showQuote": true,
+  "showFaq": true
 }
